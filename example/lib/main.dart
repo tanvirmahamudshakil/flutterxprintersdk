@@ -132,7 +132,7 @@ class _MyAppState extends State<MyApp> {
                                   businessname: "dvjsvsjbhvsdv",
                                   businessphone: "6516515151",
                                   connectiontype: Connectiontype.bluetooth,
-                                  fontsize: 30,
+                                  fontsize: 16,
                                   orderiteam: orderiteam,
                                   bluetoothaddress: d.device.remoteId.str,
                                   bluetoothname: d.device.localName,

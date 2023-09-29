@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,6 @@ import com.zxy.tiny.Tiny
 import com.zxy.tiny.Tiny.BitmapCompressOptions
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.math.log
 
 class printerservice(mcontext: Context, morderModel: OrderModel, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
 
@@ -72,41 +70,33 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
 
 
     fun orderrootget(): LinearLayout {
-//        val printSize: Int = fontsize
+        val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
         if (orderModel.order_channel.uppercase() == "ONLINE") {
             bind.businessName.text = businessname
-//            bind.businessName.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((23).toFloat()))
         } else {
             bind.businessName.setText("")
         }
 
         var addedDeliveryCharge = 0.0
         bind.businessLocation.text = businessaddress
-//        bind.businessLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((20).toFloat()))
         bind.businessPhone.text = businessphone
-//        bind.businessPhone.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((20).toFloat()))
         bind.orderType.text = orderModel.order_type.uppercase()
-//        bind.orderType.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((22).toFloat()))
         bind.orderTime.text = "Order at : " + orderModel.order_date
-//        bind.orderTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((18).toFloat()))
-
 
         val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
         val output: String = formatter.format(parser.parse(orderModel.requested_delivery_timestamp))
         bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output}"
-//        bind.collectionAt.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((22).toFloat()))
         bind.orderNo.text = "${orderModel.id}";
-//        bind.orderNo.setTextSize(TypedValue.COMPLEX_UNIT_SP, ((20).toFloat()))
 
         var allitemsheight = 0
         bind.items.removeAllViews()
         for (j in 0 until orderModel.order_products.size) {
 //            Log.e(orderModel.items.get(j).uuid, orderModel.items.get(j).kitchenItem + " ")
-            val childView = getView(j, context, 0, )
+            val childView = getView(j, context, 0, printSize)
             bind.items.addView(childView)
-            //                bmps.add(getBi  tmapFromItemView(childView));
+            //                bmps.add(getBitmapFromItemView(childView));
             allitemsheight += childView!!.measuredHeight
         }
 
@@ -123,6 +113,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                     orderModel.payable_amount
                 )
         }
+
         bind.orderPaidMessage.text = paidOrNot
 
 //        if (orderModel.refundAmount !== 0) {
@@ -307,7 +298,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         bind.comments.text = comment
         bind.address.text = dlAddress
 
-//        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
+        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
         return bind.root;
 
     }
@@ -344,8 +335,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         view.draw(canvas)
 
         //create resized image and display
-        Log.d("tanvirbitmapimagesize", "getBitmapFromView: ${returnedBitmap.width}")
-        val maxImageSize = 2070f
+        val maxImageSize = 570f
         val ratio = maxImageSize / returnedBitmap.width
         val width = Math.round(ratio * returnedBitmap.width)
         val height = Math.round(ratio * returnedBitmap.height)
@@ -354,7 +344,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
     }
 
 
-    fun getView(position: Int, mCtx: Context?, style: Int,): View? {
+    fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
         val item: OrderProduct = orderModel.order_products.get(position)
         val str3 = StringBuilder()
@@ -419,9 +409,9 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
             price = item.net_amount
         if (item.comment != null) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
-//        binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
+        binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
         binding.itemPrice.text = "£ " + String.format(Locale.getDefault(), "%.2f", price)
-//        binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
+        binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
 //        binding.itemPrice.textSize = fontSize.toFloat()
         binding.root.buildDrawingCache(true)
 //        Log.e("FontSize==>", binding.itemText.textSize + "f")
