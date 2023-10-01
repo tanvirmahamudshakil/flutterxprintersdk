@@ -133,6 +133,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
               //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
               result.success("printer connected successfull")
             }else{
+              Toast.makeText(context, "printer not connect. check your printer ip", Toast.LENGTH_SHORT).show()
               result.success("printer not connect. check your printer ip")
             }
           }
@@ -145,8 +146,10 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
             if (isConnect){
               Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
               //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
+
               result.success("printer connected successfull")
             }else{
+              Toast.makeText(context, "printer not connect. check your usb", Toast.LENGTH_SHORT).show()
               result.success("printer not connect. check your printer ip")
             }
           }
