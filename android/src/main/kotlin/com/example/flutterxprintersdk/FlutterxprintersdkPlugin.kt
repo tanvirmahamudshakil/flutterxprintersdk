@@ -107,17 +107,11 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   fun xprinterconnectcheck(call: MethodCall, result: Result) {
-    serviceBinding.checkConnection(object : OnDeviceConnect{
-      override fun onConnect(isConnect: Boolean) {
-        Toast.makeText(context, "connected ${isConnect}", Toast.LENGTH_SHORT).show();
-        result.success(isConnect)
-      }
-    })
-//    if (serviceBinding.IS_CONNECTED){
-//      result.success(true)
-//    }else{
-//      result.success(false)
-//    }
+    if (serviceBinding.IS_CONNECTED){
+      result.success(true)
+    }else{
+      result.success(false)
+    }
   }
 
   fun xprinterconnect(call: MethodCall, result: Result) {
