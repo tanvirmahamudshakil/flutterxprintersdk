@@ -4,8 +4,9 @@ enum Connectiontype { ip, usb, bluetooth }
 
 class Flutterxprintersdk {
   final methodChannel = const MethodChannel('flutterxprintersdk');
-  String printerconnect = "printerconnect";
+  String printerconnect = "xprinterconnect";
   String bluetoothprintdata = "bluetoothprintdata";
+  String printerdisconect = "printerdisconnect";
 
   Future<String?> initialxprinter() async {
     final version =
@@ -34,13 +35,11 @@ class Flutterxprintersdk {
     return version!;
   }
 
-
   Future bluetoothprint(Map<String, Object?> orderiteam) async {
         await methodChannel.invokeMethod(bluetoothprintdata, {"orderiteam" : orderiteam});
   }
 
-
-  Future printorder({required Map<String, Object?> orderiteam, required Connectiontype connectiontype, String? ip, String? bluetoothname, String? bluetoothaddress, required String businessname, required String businessaddress, required String businessphone, required int fontsize}) async {
+  Future<dynamic> printorder({required Map<String, Object?> orderiteam, required Connectiontype connectiontype, String? ip, String? bluetoothname, String? bluetoothaddress, required String businessname, required String businessaddress, required String businessphone, required int fontsize}) async {
     Map<String, dynamic> quary = {
       "orderiteam": orderiteam, 
       "type": connectiontype == Connectiontype.ip
@@ -56,8 +55,12 @@ class Flutterxprintersdk {
       "businessphone": businessphone,
       "fontsize": fontsize
     };
-    
-    
-    await methodChannel.invokeMethod("print",quary);
+
+   return await methodChannel.invokeMethod("print",quary);
   }
+
+  Future<dynamic> xprinterdisconnect() async {
+    return await methodChannel.invokeMethod(printerdisconect);
+  }
+
 }

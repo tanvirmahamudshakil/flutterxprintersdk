@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="370dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_gravity="center"
     android:padding="10dp"
     android:paddingTop="0dp"
     >
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="370dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:id="@+id/rootViewPrint"
         >
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="REDMANGO"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textSize="23sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:id="@+id/logoTitle"-->
-<!--            />-->
+        <!--        <TextView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="REDMANGO"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textSize="23sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            android:textColor="@color/black"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:id="@+id/logoTitle"-->
+        <!--            />-->
 
         <TextView
             android:id="@+id/businessName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="fdf"
             android:textAlignment="center"
-            android:gravity="center"
-            android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="23sp"
+            android:gravity="center"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:textAllCaps = "true"
             />
         <TextView
             android:id="@+id/businessLocation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Luton, United Kingdom"
-            android:layout_gravity="center"
             android:textAlignment="center"
+            android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,53 +81,52 @@
             android:src="@drawable/dotted"
             android:contentDescription="Dotted" />
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="COLLECTION"
+                android:text="LOCAL"
                 android:textAlignment="center"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:id="@+id/orderType"></TextView>
+                android:id="@+id/orderType"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/containerTableNo"
+                >
 
+            </LinearLayout>
         </LinearLayout>
+
         <TextView
             android:id="@+id/orderTime"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Order at : 05/09/2023 12:30 pm"
-            android:textAlignment="center"
+            android:text="ASAP"
             android:gravity="center"
-            android:layout_gravity="center"
+            android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="18sp"></TextView>
+            android:textSize="18sp"
+            />
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/collectionAt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Collection at : 05/09/2023 12:28 pm"
-            android:textAlignment="center"
-            android:layout_gravity="center"
+            android:text="ASAP"
             android:gravity="center"
-            android:textSize="22sp"
-            android:textStyle="bold"
+            android:textAlignment="center"
             android:textColor="@color/black"
-            android:id="@+id/collection_at"></TextView>
-
-
-<!--        <TextView-->
-<!--            android:id="@+id/orderTime"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="ASAP"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="18sp"-->
-<!--            />-->
+            android:textSize="18sp"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,74 +153,42 @@
                 android:textSize="20sp"
                 />
         </LinearLayout>
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:gravity="center"-->
-<!--            android:id="@+id/containerPaymentMoethod"-->
-<!--            >-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Payment Method : "-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp"-->
-<!--                />-->
-<!--            <TextView-->
-<!--                android:id="@+id/paymentMethod"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="ASAP"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp"-->
-<!--                />-->
-<!--        </LinearLayout>-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:gravity="center"-->
-<!--            android:id="@+id/containerOrderFrom"-->
-<!--            >-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Order From : "-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp"-->
-<!--                />-->
-<!--            <TextView-->
-<!--                android:id="@+id/orderFrom"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="ASAP"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp"-->
-<!--                />-->
-<!--        </LinearLayout>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/containerPaymentMoethod"
+            >
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/containerOrderFrom"
+            >
+        </LinearLayout>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:src="@drawable/dotted"
             android:contentDescription="Dotted"
             />
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/items"-->
-<!--            android:layout_gravity="end"-->
-<!--            />-->
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/items"-->
-<!--            android:layout_gravity="end"-->
-<!--            />-->
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/items"-->
+        <!--            android:layout_gravity="end"-->
+        <!--            />-->
+        <!--        <ImageView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/items"-->
+        <!--            android:layout_gravity="end"-->
+        <!--            />-->
         <LinearLayout
             android:id="@+id/items"
             android:layout_width="match_parent"
@@ -263,8 +230,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:width="100dp"
+                    android:text="0.00"
                     android:gravity="end"
-                    android:text="£0.00"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -282,7 +249,6 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/subTotal"
                     android:text="Sub Total"
-
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -291,7 +257,7 @@
                     android:id="@+id/subTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -320,7 +286,7 @@
                     android:id="@+id/deliveryCharge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -350,7 +316,7 @@
                     android:id="@+id/discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -379,7 +345,7 @@
                     android:id="@+id/plasticBag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -408,7 +374,7 @@
                     android:id="@+id/containerBag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -436,16 +402,17 @@
 
 
                     />
+
                 <TextView
                     android:id="@+id/adjustment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:layout_alignParentEnd="true"
+                    android:width="100dp"
                     android:gravity="end"
+                    android:text="0.00"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:width="100dp"
-                    android:layout_alignParentEnd="true"
                     android:textSize="18sp"
 
                     />
@@ -468,16 +435,17 @@
 
 
                     />
+
                 <TextView
                     android:id="@+id/tipsAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:layout_alignParentEnd="true"
+                    android:width="100dp"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:width="100dp"
-                    android:layout_alignParentEnd="true"
                     android:textSize="18sp"
 
                     />
@@ -503,7 +471,7 @@
                     android:id="@+id/total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -540,7 +508,7 @@
                     android:id="@+id/cardPay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -570,7 +538,7 @@
                     android:id="@+id/cashPay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="£0.00"
+                    android:text="0.00"
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -593,7 +561,6 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/dueTotal"
                     android:text="Due Total"
-
                     android:textColor="@color/black"
                     android:textAlignment="textStart"
                     android:textSize="18sp"
@@ -605,10 +572,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+
+                    android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:width="100dp"
-                    android:gravity="end"
                     android:layout_alignParentEnd="true"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -623,8 +591,8 @@
             android:text="ORDER NOT PAID"
             android:textAlignment="center"
             android:textSize="22sp"
-            android:gravity="center"
             android:textStyle="bold"
+            android:gravity="center"
             android:textColor="@color/black"
             android:id="@+id/orderPaidMessage"
             />
@@ -653,7 +621,4 @@
             android:textSize="20sp"
             />
     </LinearLayout>
-
-
-
 </LinearLayout>

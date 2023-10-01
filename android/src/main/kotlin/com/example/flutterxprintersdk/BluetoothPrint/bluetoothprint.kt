@@ -25,7 +25,6 @@ class bluetoothprint(mcontext : Context) {
 
     fun  bluetoothconnect(name: String, address: String) {
 
-        startActivityForResult(Intent(context, ScanningActivity), ScanningActivity.SCANNING_FOR_PRINTER)
         if (Printooth.hasPairedPrinter()){
             var printer1 = Printooth.getPairedPrinter()
             Printooth.setPrinter(printer1!!.name, printer1.address)

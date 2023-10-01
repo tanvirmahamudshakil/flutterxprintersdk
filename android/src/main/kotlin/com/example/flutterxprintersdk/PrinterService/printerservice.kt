@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +15,18 @@ import com.example.flutterxprintersdk.Model.OrderModel.OrderProduct
 import com.example.flutterxprintersdk.Model.OrderModel.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
+import com.example.xprinter.App.TheApp
+import com.example.xprinter.esepos.OnPrintProcess
+import com.example.xprinter.esepos.PosServiceBinding
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.ImagePrintable
 import com.mazenrashed.printooth.data.printable.Printable
 import com.zxy.tiny.Tiny
 import com.zxy.tiny.Tiny.BitmapCompressOptions
+import net.posprinter.posprinterface.ProcessData
+import net.posprinter.posprinterface.TaskCallback
+import net.posprinter.utils.BitmapToByteData
+import net.posprinter.utils.DataForSendToPrinterPos80
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -56,6 +65,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                     if (isSuccess) {
                         var b2 = bitmap
                         var printable: ArrayList<Printable> = ArrayList()
+                        b2 = resizeImage(b2, 530, true)
                         printable!!.add(ImagePrintable.Builder(b2).build())
                         Printooth.printer().print(printable)
                     }
@@ -440,6 +450,137 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
             bitmaps.add(b)
         }
         return bitmaps
+    }
+
+
+    fun printxprinteripdata(serviceBinding: PosServiceBinding) {
+        val bitmap: Bitmap =  getBitmapFromView(orderrootget())
+        printBitmap(bitmap, object : OnPrintProcess{
+            override fun onSuccess() {
+                Log.d("xprinterdata", "onSuccess: successfully print")
+            }
+
+            override fun onError(msg: String?) {
+                Log.d("xprinterdata", "onError: xprinter not print")
+            }
+        }, serviceBinding)
+    }
+
+    fun printxprinterusbdata(serviceBinding: PosServiceBinding) {
+        val bitmap: Bitmap =  getBitmapFromView(orderrootget())
+        printBitmap(bitmap, object : OnPrintProcess{
+            override fun onSuccess() {
+                Log.d("xprinterdata", "onSuccess: successfully print")
+            }
+
+            override fun onError(msg: String?) {
+                Log.d("xprinterdata", "onError: xprinter not print")
+            }
+        }, serviceBinding)
+    }
+
+
+
+    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess,serviceBinding: PosServiceBinding) {
+        try {
+            val options = BitmapCompressOptions()
+            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
+                .compress { isSuccess, bitmap ->
+                    if (isSuccess) {
+                        var b2 = bitmap
+                        b2 = resizeImage(b2, 530, true)
+                        printUSBbitamp(b2, process, serviceBinding)
+                    }
+                }
+        } catch (e: java.lang.Exception) {
+            process.onError(e.toString())
+        }
+    }
+
+    /*
+    print the bitmap ,the connection is USB
+     */
+    private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
+        val height = printBmp.height
+        // if height > 200 cut the bitmap
+        if (height > 200) {
+            serviceBinding.binder!!.WriteSendData(object : TaskCallback {
+                override fun OnSucceed() {
+                    process.onSuccess()
+                }
+
+                override fun OnFailed() {
+                    process.onError("Failed")
+                }
+            }, ProcessData {
+                val list: MutableList<ByteArray> = java.util.ArrayList()
+                list.add(DataForSendToPrinterPos80.initializePrinter())
+                var bitmaplist: List<Bitmap?>? = java.util.ArrayList()
+                bitmaplist = cutBitmap(200, printBmp) //cut bitmap
+                if (bitmaplist!!.size != 0) {
+                    for (i in bitmaplist.indices) {
+                        list.add(
+                            DataForSendToPrinterPos80.printRasterBmp(
+                                0,
+                                bitmaplist[i],
+                                BitmapToByteData.BmpType.Threshold,
+                                BitmapToByteData.AlignType.Center,
+                                576
+                            )
+                        )
+                    }
+                }
+                list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
+                list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
+                list
+            })
+        } else {
+            serviceBinding.binder!!.WriteSendData(object : TaskCallback {
+                override fun OnSucceed() {
+                    process.onSuccess()
+                }
+
+                override fun OnFailed() {
+                    process.onError("Failed")
+                }
+            }, ProcessData {
+                val list: MutableList<ByteArray> = java.util.ArrayList()
+                list.add(DataForSendToPrinterPos80.initializePrinter())
+                list.add(
+                    DataForSendToPrinterPos80.printRasterBmp(
+                        0,
+                        printBmp,
+                        BitmapToByteData.BmpType.Threshold,
+                        BitmapToByteData.AlignType.Center,
+                        600
+                    )
+                )
+                list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
+                list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
+                list
+            })
+        }
+    }
+
+    fun resizeImage(bitmap: Bitmap, w: Int, ischecked: Boolean): Bitmap? {
+        var resizedBitmap: Bitmap? = null
+        val width = bitmap.width
+        val height = bitmap.height
+        if (width == w) {
+            return bitmap
+        }
+
+        //resize image with width
+        val newHeight = height * w / width
+        val scaleWidth = w.toFloat() / width
+        val scaleHeight = newHeight.toFloat() / height
+        val matrix = Matrix()
+        matrix.postScale(scaleWidth, scaleHeight)
+        // if you want to rotate the Bitmap
+        // matrix.postRotate(45);
+        resizedBitmap =
+            Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true)
+        return resizedBitmap
     }
 
 

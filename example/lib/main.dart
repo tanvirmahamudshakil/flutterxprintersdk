@@ -97,8 +97,17 @@ class _MyAppState extends State<MyApp> {
               child: Text("Connection Check"),
             ),
             MaterialButton(
-              onPressed: () {
-                printerconnect();
+              onPressed: () async {
+               var data =await _flutterxprintersdkPlugin.printorder(
+                                  businessaddress: "sdbvsbvsdv",
+                                  businessname: "dvjsvsjbhvsdv",
+                                  businessphone: "6516515151",
+                                  connectiontype: Connectiontype.ip,
+                                  fontsize: 30,
+                                  orderiteam: orderiteam,
+                                  ip: "192.168.0.104"
+                                );
+                            print(data);
               },
               child: Text("Printer Connect"),
             ),
@@ -132,10 +141,11 @@ class _MyAppState extends State<MyApp> {
                                   businessname: "dvjsvsjbhvsdv",
                                   businessphone: "6516515151",
                                   connectiontype: Connectiontype.bluetooth,
-                                  fontsize: 16,
+                                  fontsize: 20,
                                   orderiteam: orderiteam,
                                   bluetoothaddress: d.device.remoteId.str,
                                   bluetoothname: d.device.localName,
+                                  ip: "192.168.0.104"
 
                                 );
                             print(data);

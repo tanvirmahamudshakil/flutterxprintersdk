@@ -47,10 +47,16 @@ class PosServiceBinding(mcontext: Context){
         context!!.bindService(posService, conn, Context.BIND_AUTO_CREATE)
     }
 
-    fun disposeBinding() {
+    fun disposeBinding(listener: OnDeviceConnect) {
         binder!!.DisconnectCurrentPort(object : TaskCallback {
-            override fun OnSucceed() {}
-            override fun OnFailed() {}
+            override fun OnSucceed() {
+                IS_CONNECTED = false;
+                listener.onConnect(false)
+            }
+            override fun OnFailed() {
+                IS_CONNECTED = true;
+                listener.onConnect(true)
+            }
         })
     }
 
@@ -92,6 +98,7 @@ class PosServiceBinding(mcontext: Context){
 
     fun connetUSB(listener: OnDeviceConnect) {
         val usbList = PosPrinterDev.GetUsbPathNames(context)
+        Log.d("usblist", "connetUSB: $usbList")
         if (usbList != null && usbList.size > 0) {
             if (binder != null) {
                 binder!!.ConnectUsbPort(context, usbList[0], object : TaskCallback {
