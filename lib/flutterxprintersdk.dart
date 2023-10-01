@@ -16,7 +16,7 @@ class Flutterxprintersdk {
 
   Future<bool> connectioncheck() async {
     final version =
-        await methodChannel.invokeMethod<bool>('check_connection', []);
+        await methodChannel.invokeMethod<bool>('check_connection');
     return version!;
   }
 
