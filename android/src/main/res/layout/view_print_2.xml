@@ -220,7 +220,7 @@
                     android:text="Refunded"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
 
@@ -234,7 +234,7 @@
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
             </RelativeLayout>
             <RelativeLayout
@@ -251,7 +251,7 @@
                     android:text="Sub Total"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/subTotal"
@@ -263,7 +263,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
             </RelativeLayout>
             <RelativeLayout
@@ -281,7 +281,7 @@
                     android:text="Delivery Charge"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp" />
+                    android:textSize="20sp" />
                 <TextView
                     android:id="@+id/deliveryCharge"
                     android:layout_width="wrap_content"
@@ -291,7 +291,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:width="100dp"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:layout_alignParentEnd="true"
                     />
             </RelativeLayout>
@@ -310,7 +310,7 @@
                     android:text="Discount"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/discount"
@@ -322,7 +322,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
             </RelativeLayout>
             <RelativeLayout
@@ -339,7 +339,7 @@
                     android:text="Plastic Bag"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/plasticBag"
@@ -351,7 +351,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
             </RelativeLayout>
             <RelativeLayout
@@ -368,7 +368,7 @@
                     android:text="Container Bag"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/containerBag"
@@ -380,7 +380,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
             </RelativeLayout>
@@ -398,7 +398,7 @@
                     android:text="Adjustment"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
 
                     />
@@ -413,7 +413,7 @@
                     android:text="0.00"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
             </RelativeLayout>
@@ -431,7 +431,7 @@
                     android:text="Tips"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
 
                     />
@@ -446,7 +446,7 @@
                     android:gravity="end"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
             </RelativeLayout>
@@ -464,7 +464,7 @@
                     android:text="Total"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     />
                 <TextView
@@ -477,7 +477,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
 
                     />
@@ -501,7 +501,7 @@
                     android:text="Card Pay"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
                 <TextView
@@ -514,7 +514,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
             </RelativeLayout>
@@ -532,7 +532,7 @@
                     android:text="Cash Pay"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     />
                 <TextView
                     android:id="@+id/cashPay"
@@ -544,7 +544,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
 
                     />
             </RelativeLayout>
@@ -563,7 +563,7 @@
                     android:text="Due Total"
                     android:textColor="@color/black"
                     android:textAlignment="textStart"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
 
                     />
@@ -578,7 +578,7 @@
                     android:textColor="@color/black"
                     android:width="100dp"
                     android:layout_alignParentEnd="true"
-                    android:textSize="19sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
 
                     />
