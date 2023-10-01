@@ -1,5 +1,6 @@
 package com.example.flutterxprintersdk.PrinterService
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -79,6 +80,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun orderrootget(): LinearLayout {
         val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
@@ -87,15 +89,19 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         } else {
             bind.businessName.setText("")
         }
-
-        var addedDeliveryCharge = 0.0
-        bind.businessLocation.text = businessaddress
-        bind.businessPhone.text = businessphone
-        bind.orderType.text = orderModel.order_type.uppercase()
-        bind.orderTime.text = "Order at : " + orderModel.order_date
-
         val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
+        var addedDeliveryCharge = 0.0
+        bind.businessLocation.text = businessaddress
+        if (businessphone != null && businessphone != ""){
+            bind.businessPhone.text = businessphone
+        }else{
+            bind.businessPhone.visibility = View.GONE
+        }
+        bind.orderType.text = orderModel.order_type.uppercase()
+        bind.orderTime.text = "Order at : ${formatter.format(parser.parse(orderModel.order_date))}"
+
+
         val output: String = formatter.format(parser.parse(orderModel.requested_delivery_timestamp))
         bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output}"
         bind.orderNo.text = "${orderModel.id}";
