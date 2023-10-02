@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
-import com.example.flutterxprintersdk.Model.OrderModel.OrderModel
 import com.example.flutterxprintersdk.PrinterService.printerservice
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.OnDeviceConnect
@@ -180,7 +179,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var fontsize : Int? = call.argument("fontsize")
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
+    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
 
     if (serviceBinding.IS_CONNECTED){
       if (connecttype == "ip"){
@@ -272,7 +271,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var fontsize : Int? = call.argument("fontsize")
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
+    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
     serviceBinding.connetUSB(object : OnDeviceConnect{
       @RequiresApi(Build.VERSION_CODES.O)
       override fun onConnect(isConnect: Boolean) {
@@ -297,7 +296,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var fontsize : Int? = call.argument("fontsize")
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
+    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
 //    bluetoothprint(context).bluetoothprinterinit();
 //    bluetoothprint(context).bluetoothconnect(bluetoothname!!, bluetoothaddress!!)
  //   printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
@@ -309,7 +308,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   fun bluetooth_print_data(call: MethodCall, result: Result) {
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
+    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
     bluetoothprint(context).orderprint(modeldata)
 
   }

@@ -13,9 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.example.flutterxprintersdk.Model.OrderModel.OrderModel
-import com.example.flutterxprintersdk.Model.OrderModel.OrderProduct
-import com.example.flutterxprintersdk.Model.OrderModel.RequesterGuest
+import com.example.flutterxprintersdk.OrderData
+import com.example.flutterxprintersdk.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
@@ -34,10 +33,10 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.log
 import kotlin.math.roundToInt
 
-class printerservice(mcontext: Context, morderModel: OrderModel, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
+class printerservice(mcontext: Context, morderModel: OrderData, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
 
     private lateinit var context: Context
-    private lateinit var orderModel: OrderModel
+    private lateinit var orderModel: OrderData
     private lateinit var businessname: String
     private lateinit var businessaddress: String
     private lateinit var businessphone: String
@@ -97,17 +96,17 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         bind.businessLocation.text = businessaddress
         bind.businessPhone.text = businessphone
 
-        bind.orderType.text = "${orderModel.order_type}"
-        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.order_date,parser)}"
-        val output = LocalDate.parse(orderModel.requested_delivery_timestamp,parser)
-        bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output.dayOfMonth}"
+        bind.orderType.text = "${orderModel.orderType}"
+        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.orderDate,parser)}"
+        val output = LocalDate.parse(orderModel.requestedDeliveryTimestamp,parser)
+        bind.collectionAt.text = "${orderModel.orderType?.let { capitalize(it) }} at : ${output.dayOfMonth}"
 
         bind.orderNo.text = "${orderModel.id}";
 
 
         var allitemsheight = 0
         bind.items.removeAllViews()
-        for (j in orderModel.order_products.indices) {
+        for (j in orderModel.orderProducts.indices) {
             val childView = getView(j, context, 0, printSize)
             bind.items.addView(childView)
             allitemsheight += childView!!.measuredHeight
@@ -115,12 +114,12 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
 
 
         var paidOrNot = "";
-        if (orderModel.cash_entry.isNotEmpty()) {
+        if (orderModel.cashEntry.isNotEmpty()) {
             paidOrNot ="ORDER IS PAID"
         } else  {
             paidOrNot = "ORDER NOT PAID"
             bind.dueTotalContainer.visibility = View.VISIBLE
-            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payable_amount)
+            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
         }
 
 
@@ -128,20 +127,20 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         bind.refundContainer.visibility = View.GONE
 
 
-        val subTotal: Double = orderModel.net_amount - addedDeliveryCharge
+        val subTotal: Double = orderModel.netAmount!! - addedDeliveryCharge
         bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
 
 
 
         bind.txtDeliveryCharge.text = "Delivery Charge";
-        bind.deliveryCharge.text = "£ " + orderModel.delivery_charge.toFloat().toString()
+        bind.deliveryCharge.text = "£ " + orderModel.deliveryCharge!!.toFloat().toString()
 
         bind.cardPayContainer.visibility = View.GONE
         bind.cashPayContainer.visibility = View.GONE
-        if (orderModel.order_channel.uppercase() == "ONLINE") {
-            if (orderModel.discounted_amount > 0) {
+        if (orderModel.orderChannel!!.uppercase() == "ONLINE") {
+            if (orderModel.discountedAmount!! > 0) {
                 bind.discount.text =
-                    "£ " +  String.format( "%.2f",  orderModel.discounted_amount)
+                    "£ " +  String.format( "%.2f",  orderModel.discountedAmount)
             } else bind.discount.text =
                 "£ " + String.format("%.2f", 0.0)
         } else {
@@ -149,7 +148,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
             bind.discountTitle.text = discountStr
             var discountAmount = 0.0
             bind.discount.text =
-                "£ " + String.format( "%.2f", orderModel.discounted_amount)
+                "£ " + String.format( "%.2f", orderModel.discountedAmount)
         }
 
 
@@ -163,16 +162,16 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
 
 
         bind.total.text =
-            "£ " +String.format( "%.2f",orderModel.payable_amount)
+            "£ " +String.format( "%.2f",orderModel.payableAmount)
 
 
         var dlAddress = "Service charge is not included\n\n"
 
 
 
-        if (orderModel.order_type == "DELIVERY" || orderModel.order_type == "COLLECTION" || orderModel.order_type == "TAKEOUT") {
-            val customerModel: RequesterGuest = orderModel.requester_guest
-            dlAddress += "Name : ${customerModel.first_name} ${customerModel.last_name}\n"
+        if (orderModel.orderType == "DELIVERY" || orderModel.orderType == "COLLECTION" || orderModel.orderType == "TAKEOUT") {
+            val customerModel: RequesterGuest? = orderModel.requesterGuest
+            dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
             dlAddress += "Phone : ${customerModel.phone}"
         }
 
@@ -238,24 +237,24 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
-        val item: OrderProduct = orderModel.order_products[position]
+        val item = orderModel.orderProducts[position]
         val str3 = StringBuilder()
-        if (position < orderModel.order_products.size - 1) {
-            if (orderModel.order_products[position].product.sort_order < orderModel.order_products[position + 1].product.sort_order) {
+        if (position < orderModel.orderProducts.size - 1) {
+            if (orderModel.orderProducts[position].product!!.sortOrder!! < orderModel.orderProducts[position + 1].product!!.sortOrder!!) {
                 binding.underLine.visibility = View.VISIBLE
             }
         }
         if (style == 0) {
             if (item.components.isNotEmpty()) {
-                str3.append(item.unit).append(" x ").append(item.product.short_name)
+                str3.append(item.unit).append(" x ").append(item.product!!.shortName)
                 for (section in item.components) {
                     var _comName = ""
-                    if (section.product.short_name.uppercase() != "NONE") {
-                        _comName = section.product.short_name
+                    if (section.product!!.shortName!!.uppercase() != "NONE") {
+                        _comName = section.product!!.shortName!!
                     }
                     if (section.components.isNotEmpty()) {
-                        if (section.components.first().product.short_name.uppercase() != "NONE") {
-                            _comName += " -> " + section.components.first().product.short_name
+                        if (section.components.first().product!!.shortName!!.uppercase() != "NONE") {
+                            _comName += " -> " + section.components.first().product!!.shortName
                         }
                     }
                     if (_comName != "") {
@@ -263,25 +262,25 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                     }
                 }
             } else {
-                str3.append(item.unit).append(" x ").append(item.product.short_name)
+                str3.append(item.unit).append(" x ").append(item.product!!.shortName)
             }
         } else {
             if (item.components.isNotEmpty()) {
                 for (section in item.components) {
                     var _comName = ""
-                    if (section.product.short_name != "NONE") {
-                        _comName = section.product.short_name
+                    if (section.product!!.shortName != "NONE") {
+                        _comName = section.product!!.shortName!!
                     }
-                    if (section.product.short_name != "NONE") _comName += " -> " + section.product.short_name
-                    str3.append(item.unit).append(" x ").append(item.product.short_name).append(" : ")
+                    if (section.product!!.shortName != "NONE") _comName += " -> " + section.product!!.shortName
+                    str3.append(item.unit).append(" x ").append(item.product!!.shortName).append(" : ")
                         .append(_comName)
                 }
             } else {
-                str3.append(item.unit).append(" x ").append(item.product.short_name)
+                str3.append(item.unit).append(" x ").append(item.product!!.shortName)
             }
         }
         var price = 0.0
-        price = item.net_amount
+        price = item.netAmount!!
         if(item.comment != null) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
