@@ -98,97 +98,97 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         bind.businessPhone.text = businessphone
 
         bind.orderType.text = "${orderModel.order_type}"
-//        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.order_date,parser)}"
-//        val output = LocalDate.parse(orderModel.requested_delivery_timestamp,parser)
-//        bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output.dayOfMonth}"
-//
-//        bind.orderNo.text = "${orderModel.id}";
+        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.order_date,parser)}"
+        val output = LocalDate.parse(orderModel.requested_delivery_timestamp,parser)
+        bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output.dayOfMonth}"
+
+        bind.orderNo.text = "${orderModel.id}";
 
 
-//        var allitemsheight = 0
-//        bind.items.removeAllViews()
-//        for (j in orderModel.order_products.indices) {
-//            val childView = getView(j, context, 0, printSize)
-//            bind.items.addView(childView)
-//            allitemsheight += childView!!.measuredHeight
-//        }
-//
-//
-//        var paidOrNot = "";
-//        if (orderModel.cash_entry.isNotEmpty()) {
-//            paidOrNot ="ORDER IS PAID"
-//        } else  {
-//            paidOrNot = "ORDER NOT PAID"
-//            bind.dueTotalContainer.visibility = View.VISIBLE
-//            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payable_amount)
-//        }
-//
-//
-//        bind.orderPaidMessage.text = paidOrNot
-//        bind.refundContainer.visibility = View.GONE
-//
-//
-//        val subTotal: Double = orderModel.net_amount - addedDeliveryCharge
-//        bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
-//
-//
-//
-//        bind.txtDeliveryCharge.text = "Delivery Charge";
-//        bind.deliveryCharge.text = "£ " + orderModel.delivery_charge.toFloat().toString()
-//
-//        bind.cardPayContainer.visibility = View.GONE
-//        bind.cashPayContainer.visibility = View.GONE
-//        if (orderModel.order_channel.uppercase() == "ONLINE") {
-//            if (orderModel.discounted_amount > 0) {
-//                bind.discount.text =
-//                    "£ " +  String.format( "%.2f",  orderModel.discounted_amount)
-//            } else bind.discount.text =
-//                "£ " + String.format("%.2f", 0.0)
-//        } else {
-//            var discountStr = "Discount"
-//            bind.discountTitle.text = discountStr
-//            var discountAmount = 0.0
-//            bind.discount.text =
-//                "£ " + String.format( "%.2f", orderModel.discounted_amount)
-//        }
-//
-//
-//        bind.plasticBagContainer.visibility = View.GONE
-//
-//        bind.containerBagContainer.visibility = View.GONE
-//
-//        bind.adjustmentContainer.visibility = View.GONE
-//        bind.tipsContainer.visibility = View.GONE
-//        bind.containerOrderNo.visibility = View.VISIBLE
-//
-//
-//        bind.total.text =
-//            "£ " +String.format( "%.2f",orderModel.payable_amount)
-//
-//
-//        var dlAddress = "Service charge is not included\n\n"
-//
-//
-//
-//        if (orderModel.order_type == "DELIVERY" || orderModel.order_type == "COLLECTION" || orderModel.order_type == "TAKEOUT") {
-//            val customerModel: RequesterGuest = orderModel.requester_guest
-//            dlAddress += "Name : ${customerModel.first_name} ${customerModel.last_name}\n"
-//            dlAddress += "Phone : ${customerModel.phone}"
-//        }
-//
-//        var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"
-//
-//        comment += """
-//
-//
-//
-//
-//        """.trimIndent()
-//
-//        bind.comments.text = comment
-//        bind.address.text = dlAddress
-//
-//        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
+        var allitemsheight = 0
+        bind.items.removeAllViews()
+        for (j in orderModel.order_products.indices) {
+            val childView = getView(j, context, 0, printSize)
+            bind.items.addView(childView)
+            allitemsheight += childView!!.measuredHeight
+        }
+
+
+        var paidOrNot = "";
+        if (orderModel.cash_entry.isNotEmpty()) {
+            paidOrNot ="ORDER IS PAID"
+        } else  {
+            paidOrNot = "ORDER NOT PAID"
+            bind.dueTotalContainer.visibility = View.VISIBLE
+            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payable_amount)
+        }
+
+
+        bind.orderPaidMessage.text = paidOrNot
+        bind.refundContainer.visibility = View.GONE
+
+
+        val subTotal: Double = orderModel.net_amount - addedDeliveryCharge
+        bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
+
+
+
+        bind.txtDeliveryCharge.text = "Delivery Charge";
+        bind.deliveryCharge.text = "£ " + orderModel.delivery_charge.toFloat().toString()
+
+        bind.cardPayContainer.visibility = View.GONE
+        bind.cashPayContainer.visibility = View.GONE
+        if (orderModel.order_channel.uppercase() == "ONLINE") {
+            if (orderModel.discounted_amount > 0) {
+                bind.discount.text =
+                    "£ " +  String.format( "%.2f",  orderModel.discounted_amount)
+            } else bind.discount.text =
+                "£ " + String.format("%.2f", 0.0)
+        } else {
+            var discountStr = "Discount"
+            bind.discountTitle.text = discountStr
+            var discountAmount = 0.0
+            bind.discount.text =
+                "£ " + String.format( "%.2f", orderModel.discounted_amount)
+        }
+
+
+        bind.plasticBagContainer.visibility = View.GONE
+
+        bind.containerBagContainer.visibility = View.GONE
+
+        bind.adjustmentContainer.visibility = View.GONE
+        bind.tipsContainer.visibility = View.GONE
+        bind.containerOrderNo.visibility = View.VISIBLE
+
+
+        bind.total.text =
+            "£ " +String.format( "%.2f",orderModel.payable_amount)
+
+
+        var dlAddress = "Service charge is not included\n\n"
+
+
+
+        if (orderModel.order_type == "DELIVERY" || orderModel.order_type == "COLLECTION" || orderModel.order_type == "TAKEOUT") {
+            val customerModel: RequesterGuest = orderModel.requester_guest
+            dlAddress += "Name : ${customerModel.first_name} ${customerModel.last_name}\n"
+            dlAddress += "Phone : ${customerModel.phone}"
+        }
+
+        var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"
+
+        comment += """
+
+
+
+
+        """.trimIndent()
+
+        bind.comments.text = comment
+        bind.address.text = dlAddress
+
+        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
 
         return bind.root;
 
@@ -240,11 +240,11 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
         val item: OrderProduct = orderModel.order_products[position]
         val str3 = StringBuilder()
-//        if (position < orderModel.order_products.size - 1) {
-//            if (orderModel.order_products[position].product.sort_order < orderModel.order_products[position + 1].product.sort_order) {
-//                binding.underLine.visibility = View.VISIBLE
-//            }
-//        }
+        if (position < orderModel.order_products.size - 1) {
+            if (orderModel.order_products[position].product.sort_order < orderModel.order_products[position + 1].product.sort_order) {
+                binding.underLine.visibility = View.VISIBLE
+            }
+        }
         if (style == 0) {
             if (item.components.isNotEmpty()) {
                 str3.append(item.unit).append(" x ").append(item.product.short_name)
@@ -282,10 +282,10 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         }
         var price = 0.0
         price = item.net_amount
-        str3.append("\nNote : ").append(item.comment)
+        if(item.comment != null) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
-        binding.itemPrice.text = "£ ${String.format(price.toString())}"
+        binding.itemPrice.text = "£ ${String.format("%.2f", price.toString())}"
         binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
         binding.root.buildDrawingCache(true)
         return binding.root
