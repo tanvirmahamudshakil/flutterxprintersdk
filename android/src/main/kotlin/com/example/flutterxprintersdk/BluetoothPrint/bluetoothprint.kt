@@ -1,7 +1,7 @@
 package com.example.flutterxprintersdk.BluetoothPrint
 
 import android.content.Context
-import com.example.flutterxprintersdk.Model.OrderModel2.OrderData
+import com.example.flutterxprintersdk.OrderData
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.Printable
 import com.mazenrashed.printooth.data.printable.TextPrintable

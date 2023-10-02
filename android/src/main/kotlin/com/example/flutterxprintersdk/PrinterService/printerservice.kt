@@ -13,8 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.example.flutterxprintersdk.Model.OrderModel2.OrderData
-import com.example.flutterxprintersdk.Model.OrderModel2.RequesterGuest
+import com.example.flutterxprintersdk.OrderData
+import com.example.flutterxprintersdk.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
@@ -100,7 +100,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         bind.businessPhone.text = businessphone
         bind.orderType.text = "${orderModel.orderType}"
         bind.orderTime.text = "Order at : ${formatter.format(parser.parse(orderModel.orderDate))}"
-        bind.collectionAt.text = "${orderModel.orderType?.let { capitalize(it) }} at : ${formatter.format(parser.parse(orderModel.requestedDeliveryTimestamp))}"
+        bind.collectionAt.text = "${orderModel.orderType} at : ${formatter.format(parser.parse(orderModel.requestedDeliveryTimestamp))}"
 
         bind.orderNo.text = "${orderModel.id}";
 

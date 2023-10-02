@@ -7,9 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
-import com.example.flutterxprintersdk.Model.OrderModel2.OrderData
 import com.example.flutterxprintersdk.PrinterService.printerservice
-import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.OnDeviceConnect
 import com.example.xprinter.esepos.PosServiceBinding
 import com.google.gson.Gson
