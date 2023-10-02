@@ -21,6 +21,7 @@ class bluetoothprint(mcontext : Context) {
             var printer1 = Printooth.getPairedPrinter()
             Printooth.setPrinter(printer1!!.name, printer1.address)
         }else{
+            Printooth.init(context);
             Printooth.setPrinter(name, address)
         }
     }
