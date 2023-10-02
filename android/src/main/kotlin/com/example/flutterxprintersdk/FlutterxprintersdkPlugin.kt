@@ -50,7 +50,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     context = flutterPluginBinding.applicationContext
     serviceBinding = PosServiceBinding(context)
     serviceBinding.initBinding()
-
+    bluetoothprint(context).bluetoothprinterinit();
     channel.setMethodCallHandler(this)
   }
 
@@ -298,9 +298,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-    bluetoothprint(context).bluetoothprinterinit();
+
     bluetoothprint(context).bluetoothconnect(bluetoothname!!, bluetoothaddress!!)
-    printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
+    printerservice(context, modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
 
 
   }

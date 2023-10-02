@@ -17,11 +17,9 @@ class bluetoothprint(mcontext : Context) {
 
 
     fun  bluetoothconnect(name: String, address: String) {
-
         if (Printooth.hasPairedPrinter()){
             var printer1 = Printooth.getPairedPrinter()
             Printooth.setPrinter(printer1!!.name, printer1.address)
-//            printerservice().bluetoothimageprint(context);
         }else{
             Printooth.setPrinter(name, address)
         }
