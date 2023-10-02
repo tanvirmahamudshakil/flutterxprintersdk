@@ -28,10 +28,10 @@ import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import kotlin.math.log
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import kotlin.math.roundToInt
+
 
 class printerservice(mcontext: Context, morderModel: OrderData, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
 
@@ -84,22 +84,24 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     fun orderrootget(): LinearLayout {
 
         val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
         bind.businessName.text = businessname
 
-        val parser = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
+
+
         var addedDeliveryCharge = 0.0
         bind.businessLocation.text = businessaddress
         bind.businessPhone.text = businessphone
-
         bind.orderType.text = "${orderModel.orderType}"
-        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.orderDate,parser)}"
-        val output = LocalDate.parse(orderModel.requestedDeliveryTimestamp,parser)
-        bind.collectionAt.text = "${orderModel.orderType?.let { capitalize(it) }} at : ${output.dayOfMonth}"
+        bind.orderTime.text = "Order at : ${formatter.format(parser.parse(orderModel.orderDate))}"
+        bind.collectionAt.text = "${orderModel.orderType?.let { capitalize(it) }} at : ${formatter.format(parser.parse(orderModel.requestedDeliveryTimestamp))}"
 
         bind.orderNo.text = "${orderModel.id}";
 
@@ -284,7 +286,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         if(item.comment != null) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
-        binding.itemPrice.text = "£ ${String.format("%.2f", price.toString())}"
+        binding.itemPrice.text = "£ ${String.format("%.2f", price.toFloat())}"
         binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
         binding.root.buildDrawingCache(true)
         return binding.root

@@ -2,7 +2,7 @@ package com.example.flutterxprintersdk.BluetoothPrint
 
 import android.content.Context
 import androidx.core.app.ActivityCompat.startActivityForResult
-import com.example.flutterxprintersdk.Model.OrderModel.OrderModel
+import com.example.flutterxprintersdk.OrderData
 import com.example.flutterxprintersdk.PrinterService.printerservice
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.Printable
@@ -35,7 +35,7 @@ class bluetoothprint(mcontext : Context) {
    }
 
 
-    fun orderprint( morderModel: OrderModel) {
+    fun orderprint( morderModel: OrderData) {
 //        printerservice(context, morderModel).bluetoothimageprint()
     }
 
