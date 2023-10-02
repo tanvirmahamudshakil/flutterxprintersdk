@@ -2,11 +2,14 @@ package com.example.flutterxprintersdk
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
 import com.example.flutterxprintersdk.Model.OrderModel.OrderModel
 import com.example.flutterxprintersdk.PrinterService.printerservice
+import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.OnDeviceConnect
 import com.example.xprinter.esepos.PosServiceBinding
 import com.google.gson.Gson
@@ -51,6 +54,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     channel.setMethodCallHandler(this)
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   override fun onMethodCall(call: MethodCall, result: Result) {
     if (call.method == "getPlatformVersion") {
       xprinterinit();
@@ -164,6 +168,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       result.success("connect printer not found")
     }
   }
+  @RequiresApi(Build.VERSION_CODES.O)
   fun xprinterprint(call: MethodCall, result: Result) {
     var connecttype = call.argument<String>("type")
     var ip: String? = call.argument<String>("ip")
@@ -183,10 +188,8 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       }else{
         printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinterusbdata(serviceBinding)
       }
-      Toast.makeText(context, "print successfully", Toast.LENGTH_SHORT).show()
       result.success("print successfull")
     }else{
-      Toast.makeText(context, "print not connected", Toast.LENGTH_SHORT).show()
       result.success("printer not connected")
     }
 
@@ -271,6 +274,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
     serviceBinding.connetUSB(object : OnDeviceConnect{
+      @RequiresApi(Build.VERSION_CODES.O)
       override fun onConnect(isConnect: Boolean) {
         if (isConnect == true){
           printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinterusbdata(serviceBinding)
@@ -282,6 +286,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     })
   }
 
+  @RequiresApi(Build.VERSION_CODES.O)
   fun bluetooth_printer_connect(call: MethodCall, result: Result){
     var connecttype = call.argument<String>("type")
     var bluetoothname: String? = call.argument<String>("bluetoothname")
@@ -295,7 +300,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
 //    bluetoothprint(context).bluetoothprinterinit();
 //    bluetoothprint(context).bluetoothconnect(bluetoothname!!, bluetoothaddress!!)
-    printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
+ //   printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
+
+
   }
 
 
@@ -308,6 +315,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
 
+  @RequiresApi(Build.VERSION_CODES.O)
   fun printdata(call: MethodCall, result: Result) {
     var connecttype = call.argument<String>("type")
     if (connecttype == "ip"){

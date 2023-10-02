@@ -18,10 +18,6 @@ class bluetoothprint(mcontext : Context) {
         context = mcontext;
     }
 
-    fun bluetoothprinterinit() {
-        Printooth.init(context)
-
-    }
 
     fun  bluetoothconnect(name: String, address: String) {
 

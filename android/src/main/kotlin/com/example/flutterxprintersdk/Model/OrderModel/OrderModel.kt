@@ -3,7 +3,7 @@ package com.example.flutterxprintersdk.Model.OrderModel
 data class OrderModel(
     val branch: Branch,
     val branch_id: Int,
-    val cash_entry: List<CashEntry>,
+    val cash_entry: List<Any>,
     val comment: String,
     val created_at: String,
     val delivery_charge: Int,

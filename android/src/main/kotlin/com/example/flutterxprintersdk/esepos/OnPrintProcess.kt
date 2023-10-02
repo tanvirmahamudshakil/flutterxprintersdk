@@ -1,4 +1,4 @@
-package com.example.xprinter.esepos
+package com.example.flutterxprintersdk.esepos
 
 interface OnPrintProcess {
     fun onSuccess()

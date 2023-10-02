@@ -98,7 +98,20 @@ class _MyAppState extends State<MyApp> {
             ),
             MaterialButton(
               onPressed: () async {
-               var data =await _flutterxprintersdkPlugin.printorder(
+               // var data =await _flutterxprintersdkPlugin.printorder(
+               //                    businessaddress: "sdbvsbvsdv",
+               //                    businessname: "dvjsvsjbhvsdv",
+               //                    businessphone: "6516515151",
+               //                    connectiontype: Connectiontype.ip,
+               //                    fontsize: 30,
+               //                    orderiteam: orderiteam,
+               //                    ip: "192.168.0.104"
+               //                  );
+               //              print(data);
+
+               var data = await  _flutterxprintersdkPlugin.xprinterconnect(Connectiontype.ip, "192.168.0.104");
+
+               var data2 =await _flutterxprintersdkPlugin.printorder(
                                   businessaddress: "sdbvsbvsdv",
                                   businessname: "dvjsvsjbhvsdv",
                                   businessphone: "6516515151",
@@ -107,7 +120,7 @@ class _MyAppState extends State<MyApp> {
                                   orderiteam: orderiteam,
                                   ip: "192.168.0.104"
                                 );
-                            print(data);
+               print(data);
               },
               child: Text("Printer Connect"),
             ),

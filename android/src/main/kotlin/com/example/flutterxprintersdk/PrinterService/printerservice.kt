@@ -6,18 +6,19 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
+import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.Model.OrderModel.OrderModel
 import com.example.flutterxprintersdk.Model.OrderModel.OrderProduct
 import com.example.flutterxprintersdk.Model.OrderModel.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
-import com.example.xprinter.App.TheApp
-import com.example.xprinter.esepos.OnPrintProcess
+import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.PosServiceBinding
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.ImagePrintable
@@ -28,17 +29,19 @@ import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlin.math.log
+import kotlin.math.roundToInt
 
 class printerservice(mcontext: Context, morderModel: OrderModel, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
 
-    lateinit var context: Context
-    lateinit var orderModel: OrderModel
-    lateinit var businessname: String
-    lateinit var businessaddress: String
-    lateinit var businessphone: String
-     var fontsize: Int = 30
+    private lateinit var context: Context
+    private lateinit var orderModel: OrderModel
+    private lateinit var businessname: String
+    private lateinit var businessaddress: String
+    private lateinit var businessphone: String
+     private var fontsize: Int = 30
 
     init {
         context = mcontext;
@@ -50,6 +53,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
     }
 
     // bluetooth print
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bluetoothimageprint(name: String, address: String)   {
         Printooth.init(context)
         if (Printooth.hasPairedPrinter()){
@@ -80,247 +84,118 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     fun orderrootget(): LinearLayout {
+
         val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
-        if (orderModel.order_channel.uppercase() == "ONLINE") {
-            bind.businessName.text = businessname
-        } else {
-            bind.businessName.setText("")
-        }
-        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
+        bind.businessName.text = businessname
+
+        val parser = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         var addedDeliveryCharge = 0.0
         bind.businessLocation.text = businessaddress
-        if (businessphone != null && businessphone != ""){
-            bind.businessPhone.text = businessphone
-        }else{
-            bind.businessPhone.visibility = View.GONE
-        }
-        bind.orderType.text = orderModel.order_type.uppercase()
-        bind.orderTime.text = "Order at : ${formatter.format(parser.parse(orderModel.order_date))}"
+        bind.businessPhone.text = businessphone
+
+        bind.orderType.text = "${orderModel.order_type}"
+//        bind.orderTime.text = "Order at : ${LocalDate.parse(orderModel.order_date,parser)}"
+//        val output = LocalDate.parse(orderModel.requested_delivery_timestamp,parser)
+//        bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output.dayOfMonth}"
+//
+//        bind.orderNo.text = "${orderModel.id}";
 
 
-        val output: String = formatter.format(parser.parse(orderModel.requested_delivery_timestamp))
-        bind.collectionAt.text = "${capitalize(orderModel.order_type)} at : ${output}"
-        bind.orderNo.text = "${orderModel.id}";
-
-        var allitemsheight = 0
-        bind.items.removeAllViews()
-        for (j in 0 until orderModel.order_products.size) {
-//            Log.e(orderModel.items.get(j).uuid, orderModel.items.get(j).kitchenItem + " ")
-            val childView = getView(j, context, 0, printSize)
-            bind.items.addView(childView)
-            //                bmps.add(getBitmapFromItemView(childView));
-            allitemsheight += childView!!.measuredHeight
-        }
-
-        var paidOrNot = "";
-        if (orderModel.cash_entry.isNotEmpty()) {
-            paidOrNot ="ORDER IS PAID"
-        } else if (orderModel.cash_entry.isEmpty()) {
-            paidOrNot = "ORDER NOT PAID"
-            bind.dueTotalContainer.visibility = View.VISIBLE
-            bind.dueTotal.text =
-                "£ " + java.lang.String.format(
-                    Locale.getDefault(),
-                    "%.2f",
-                    orderModel.payable_amount
-                )
-        }
-
-        bind.orderPaidMessage.text = paidOrNot
-
-//        if (orderModel.refundAmount !== 0) {
-//            bind.refunded.text =
-//                "£ " + java.lang.String.format(Locale.getDefault(), "%.2f", orderModel.refundAmount)
-//        } else {
-//            bind.refundContainer.visibility = View.GONE
+//        var allitemsheight = 0
+//        bind.items.removeAllViews()
+//        for (j in orderModel.order_products.indices) {
+//            val childView = getView(j, context, 0, printSize)
+//            bind.items.addView(childView)
+//            allitemsheight += childView!!.measuredHeight
 //        }
-        bind.refundContainer.visibility = View.GONE
-
-        val subTotal: Double = orderModel.net_amount - addedDeliveryCharge
-        bind.subTotal.text =
-            "£ " + String.format(Locale.getDefault(), "%.2f", subTotal)
-
-//        if (orderModel.order_type.uppercase(Locale.ROOT).equals("DELIVERY")) {
-//            bind.deliveryCharge.text =
-//                "£ " + java.lang.String.format(
-//                    Locale.getDefault(),
-//                    "%.2f",
-//                    orderModel.delivery_charge
-//                )
-//            try {
-//                val distance: Double = orderModel.shippingAddress.properties.distance
-//                bind.txtDeliveryCharge.text = "Delivery Charge (" + String.format(
-//                    Locale.getDefault(),
-//                    "%.2f",
-//                    distance
-//                ) + " miles)"
-//            } catch (e: java.lang.Exception) {
-//                e.printStackTrace()
-//            }
-//        } else {
-//            bind.deliveryChargeContainer.visibility = View.GONE
-//        }
-//        bind.deliveryChargeContainer.visibility = View.GONE
-        bind.txtDeliveryCharge.text = "Delivery Charge";
-        bind.deliveryCharge.text = "£ " + String.format(Locale.getDefault(), "%.2f", orderModel.delivery_charge.toFloat())
-//        bind.deliveryCharge.text =
-//                "£ " + String.format(Locale.getDefault(), "%.2f", orderModel.delivery_charge)
-
-
-//            if (style == 0) {
-//                if (cardPayment != 0)
-//                    bind.cardPay.setText("£ " + String.format(Locale.getDefault(), "%.2f", cardPayment));
-//                else
-//                    bind.cardPayContainer.setVisibility(View.GONE);
 //
 //
-//                if (cashPayment != 0)
-//                    bind.cashPay.setText("£ " + String.format(Locale.getDefault(), "%.2f", cashPayment));
-//                else
-//                    bind.cashPayContainer.setVisibility(View.GONE);
+//        var paidOrNot = "";
+//        if (orderModel.cash_entry.isNotEmpty()) {
+//            paidOrNot ="ORDER IS PAID"
+//        } else  {
+//            paidOrNot = "ORDER NOT PAID"
+//            bind.dueTotalContainer.visibility = View.VISIBLE
+//            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payable_amount)
+//        }
 //
-//            }
-        bind.cardPayContainer.visibility = View.GONE
-        bind.cashPayContainer.visibility = View.GONE
-
-        if (orderModel.order_channel.uppercase(Locale.getDefault()) == "ONLINE") {
-            if (orderModel.discounted_amount > 0) {
-//                if (orderModel.discountCode == null) orderModel.discountCode = ""
-//                bind.discountTitle.text = "Discount (" + orderModel.discountCode + ")"
-                bind.discount.text =
-                    "£ " + java.lang.String.format(
-                        Locale.getDefault(),
-                        "%.2f",
-                        orderModel.discounted_amount
-                    )
-            } else bind.discount.text =
-                "£ " + String.format(Locale.getDefault(), "%.2f", 0.0)
-        } else {
-            var discountStr = "Discount"
-//            if (orderModel.d > 0) {
-//                discountStr = "Discount (" + orderModel.discountPercentage + "%)"
-//            }
-            bind.discountTitle.text = discountStr
-            var discountAmount = 0.0
-//            if (!orderModel.order_channel.equals("ONLINE") && !orderModel.fixedDiscount) {
-//                var discountableTotal = 0.0
-//                for (item in orderModel.items) {
-//                    if (item.uuid.equals("plastic-bag")) {
-//                    } else if (item.uuid.equals("container")) {
-//                    } else if (item.type.equals("DELIVERY")) {
-//                    } else {
-//                        var price = 0.0
-//                        if (!item.offered) {
-//                            price = item.subTotal * item.quantity
-//                            if (item.extra != null) {
-//                                for (extraItem in item.extra) {
-//                                    price += extraItem.price
-//                                }
-//                            }
-//                        } else price = item.total
-//                        if (item.discountable) {
-//                            discountableTotal += price
-//                        } else {
-//                            Log.e("Override==>", orderModel.isDiscountOverride + "")
-//                            if (orderModel.isDiscountOverride) {
-//                                discountableTotal += price
-//                            }
-//                        }
-//                    }
-//                }
-//                discountAmount = discountableTotal * (orderModel.discountPercentage as Float / 100)
-//            } else {
-//                discountAmount = orderModel.discountAmount
-//            }
-            bind.discount.text =
-                "£ " + String.format(Locale.getDefault(), "%.2f", orderModel.discounted_amount)
-        }
-
-//        if (orderModel.p > 0) bind.plasticBag.text =
-//            "£ " + java.lang.String.format(
-//                Locale.getDefault(),
-//                "%.2f",
-//                orderModel.plasticBagCost
-//            ) else
-
-        bind.plasticBagContainer.visibility =
-            View.GONE
-
-
-//        if (orderModel.containerBagCost > 0) bind.containerBag.text =
-//            "£ " + java.lang.String.format(
-//                Locale.getDefault(),
-//                "%.2f",
-//                orderModel.containerBagCost
-//            ) else
-        bind.containerBagContainer.visibility =
-            View.GONE
-
-
-//        if (orderModel.adjustmentAmount > 0) bind.adjustment.text =
-//            "£ " + java.lang.String.format(
-//                Locale.getDefault(),
-//                "%.2f",
-//                orderModel.adjustmentAmount
-//            ) else
-        bind.adjustmentContainer.visibility =
-            View.GONE
-
-//        if (orderModel.tips > 0) {
-//            bind.tipsAmount.text =
-//                "£ " + java.lang.String.format(Locale.getDefault(), "%.2f", orderModel.tips)
+//
+//        bind.orderPaidMessage.text = paidOrNot
+//        bind.refundContainer.visibility = View.GONE
+//
+//
+//        val subTotal: Double = orderModel.net_amount - addedDeliveryCharge
+//        bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
+//
+//
+//
+//        bind.txtDeliveryCharge.text = "Delivery Charge";
+//        bind.deliveryCharge.text = "£ " + orderModel.delivery_charge.toFloat().toString()
+//
+//        bind.cardPayContainer.visibility = View.GONE
+//        bind.cashPayContainer.visibility = View.GONE
+//        if (orderModel.order_channel.uppercase() == "ONLINE") {
+//            if (orderModel.discounted_amount > 0) {
+//                bind.discount.text =
+//                    "£ " +  String.format( "%.2f",  orderModel.discounted_amount)
+//            } else bind.discount.text =
+//                "£ " + String.format("%.2f", 0.0)
 //        } else {
-//            bind.tipsContainer.visibility = View.GONE
+//            var discountStr = "Discount"
+//            bind.discountTitle.text = discountStr
+//            var discountAmount = 0.0
+//            bind.discount.text =
+//                "£ " + String.format( "%.2f", orderModel.discounted_amount)
 //        }
-        bind.tipsContainer.visibility = View.GONE
-
-//        if (!orderPrint) {
-//            bind.containerOrderNo.visibility = View.GONE
-//        } else {
-//            bind.containerOrderNo.visibility = View.VISIBLE
+//
+//
+//        bind.plasticBagContainer.visibility = View.GONE
+//
+//        bind.containerBagContainer.visibility = View.GONE
+//
+//        bind.adjustmentContainer.visibility = View.GONE
+//        bind.tipsContainer.visibility = View.GONE
+//        bind.containerOrderNo.visibility = View.VISIBLE
+//
+//
+//        bind.total.text =
+//            "£ " +String.format( "%.2f",orderModel.payable_amount)
+//
+//
+//        var dlAddress = "Service charge is not included\n\n"
+//
+//
+//
+//        if (orderModel.order_type == "DELIVERY" || orderModel.order_type == "COLLECTION" || orderModel.order_type == "TAKEOUT") {
+//            val customerModel: RequesterGuest = orderModel.requester_guest
+//            dlAddress += "Name : ${customerModel.first_name} ${customerModel.last_name}\n"
+//            dlAddress += "Phone : ${customerModel.phone}"
 //        }
-        bind.containerOrderNo.visibility = View.VISIBLE
+//
+//        var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"
+//
+//        comment += """
+//
+//
+//
+//
+//        """.trimIndent()
+//
+//        bind.comments.text = comment
+//        bind.address.text = dlAddress
+//
+//        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
 
-
-        bind.total.text =
-            "£ " + java.lang.String.format(Locale.getDefault(), "%.2f", orderModel.payable_amount)
-
-
-        var dlAddress = "Service charge is not included\n\n"
-
-
-
-        if (orderModel.order_type == "DELIVERY" || orderModel.order_type == "COLLECTION" || orderModel.order_type == "TAKEOUT") {
-            val customerModel: RequesterGuest = orderModel.requester_guest
-            if (customerModel != null) {
-                dlAddress += "Name : ${customerModel.first_name} ${customerModel.last_name}\n"
-
-                dlAddress += "Phone : ${customerModel.phone}"
-            }
-        }
-
-        var comment = "Comments : " + orderModel.comment
-        comment += """
-            
-            
-            
-            
-        """.trimIndent()
-
-        bind.comments.text = comment
-        bind.address.text = dlAddress
-
-        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
         return bind.root;
 
     }
 
     fun capitalize(str: String): String? {
-        return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+        return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
     private fun getBitmapFromView(view: View): Bitmap {
         val spec = View.MeasureSpec.makeMeasureSpec(
@@ -353,24 +228,25 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         //create resized image and display
         val maxImageSize = 570f
         val ratio = maxImageSize / returnedBitmap.width
-        val width = Math.round(ratio * returnedBitmap.width)
-        val height = Math.round(ratio * returnedBitmap.height)
+        val width = (ratio * returnedBitmap.width).roundToInt()
+        val height = (ratio * returnedBitmap.height).roundToInt()
         //return the bitmap
         return Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
     }
 
 
+
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
-        val item: OrderProduct = orderModel.order_products.get(position)
+        val item: OrderProduct = orderModel.order_products[position]
         val str3 = StringBuilder()
-        if (position < orderModel.order_products.size - 1) {
-            if (orderModel.order_products.get(position).product.sort_order < orderModel.order_products.get(position + 1).product.sort_order) {
-                binding.underLine.setVisibility(View.VISIBLE)
-            }
-        }
+//        if (position < orderModel.order_products.size - 1) {
+//            if (orderModel.order_products[position].product.sort_order < orderModel.order_products[position + 1].product.sort_order) {
+//                binding.underLine.visibility = View.VISIBLE
+//            }
+//        }
         if (style == 0) {
-            if (item.components.size > 0) {
+            if (item.components.isNotEmpty()) {
                 str3.append(item.unit).append(" x ").append(item.product.short_name)
                 for (section in item.components) {
                     var _comName = ""
@@ -390,15 +266,13 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                 str3.append(item.unit).append(" x ").append(item.product.short_name)
             }
         } else {
-            if (item.components.size > 0) {
+            if (item.components.isNotEmpty()) {
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section.product.short_name.equals("NONE")) {
+                    if (section.product.short_name != "NONE") {
                         _comName = section.product.short_name
                     }
-                    if (section.product != null) {
-                        if (!section.product.short_name.equals("NONE")) _comName += " -> " + section.product.short_name
-                    }
+                    if (section.product.short_name != "NONE") _comName += " -> " + section.product.short_name
                     str3.append(item.unit).append(" x ").append(item.product.short_name).append(" : ")
                         .append(_comName)
                 }
@@ -406,32 +280,14 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                 str3.append(item.unit).append(" x ").append(item.product.short_name)
             }
         }
-//        if (item.extra != null && item.extra.size() > 0) {
-//            val str = StringBuilder("\nExtra :")
-//            for (extraItem in item.extra) {
-//                str.append("  *").append(extraItem.shortName)
-//            }
-//            str3.append(str.toString())
-//        }
         var price = 0.0
-//        if (!item.offered) {
-//            price = item.subTotal * item.quantity
-//            if (item.extra != null) {
-//                for (extraItem in item.extra) {
-//                    price += extraItem.price
-//                }
-//            }
-//        } else
-            price = item.net_amount
-        if (item.comment != null) str3.append("\nNote : ").append(item.comment)
+        price = item.net_amount
+        str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
-        binding.itemPrice.text = "£ " + String.format(Locale.getDefault(), "%.2f", price)
+        binding.itemPrice.text = "£ ${String.format(price.toString())}"
         binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
-//        binding.itemPrice.textSize = fontSize.toFloat()
         binding.root.buildDrawingCache(true)
-//        Log.e("FontSize==>", binding.itemText.textSize + "f")
-//        Log.d("mmmmm", "getView: $position")
         return binding.root
     }
 
@@ -459,9 +315,10 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinteripdata(serviceBinding: PosServiceBinding) {
         val bitmap: Bitmap =  getBitmapFromView(orderrootget())
-        printBitmap(bitmap, object : OnPrintProcess{
+        printBitmap(bitmap, object : OnPrintProcess {
             override fun onSuccess() {
                 Log.d("xprinterdata", "onSuccess: successfully print")
             }
@@ -472,9 +329,10 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
         }, serviceBinding)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinterusbdata(serviceBinding: PosServiceBinding) {
         val bitmap: Bitmap =  getBitmapFromView(orderrootget())
-        printBitmap(bitmap, object : OnPrintProcess{
+        printBitmap(bitmap, object : OnPrintProcess {
             override fun onSuccess() {
                 Log.d("xprinterdata", "onSuccess: successfully print")
             }
@@ -487,7 +345,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
 
 
 
-    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess,serviceBinding: PosServiceBinding) {
+    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         try {
             val options = BitmapCompressOptions()
             Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
@@ -523,7 +381,7 @@ class printerservice(mcontext: Context, morderModel: OrderModel, businessname : 
                 list.add(DataForSendToPrinterPos80.initializePrinter())
                 var bitmaplist: List<Bitmap?>? = java.util.ArrayList()
                 bitmaplist = cutBitmap(200, printBmp) //cut bitmap
-                if (bitmaplist!!.size != 0) {
+                if (bitmaplist!!.isNotEmpty()) {
                     for (i in bitmaplist.indices) {
                         list.add(
                             DataForSendToPrinterPos80.printRasterBmp(

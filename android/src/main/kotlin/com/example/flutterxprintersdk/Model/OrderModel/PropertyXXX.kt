@@ -7,5 +7,6 @@ data class PropertyXXX(
     val epos_category: String,
     val featured: String,
     val is_coupon: String,
-    val platform: String
+    val platform: String,
+    val short_description: String
 )

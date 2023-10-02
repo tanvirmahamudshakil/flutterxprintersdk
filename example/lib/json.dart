@@ -1,7 +1,7 @@
 var orderiteam = {
     "id": 10333,
     "local_id": null,
-    "order_type": "COLLECTION",
+    "order_type": "collection",
     "order_channel": "ONLINE",
     "order_date": "2023-09-28 12:31:04",
     "requester_type": "GUEST",
