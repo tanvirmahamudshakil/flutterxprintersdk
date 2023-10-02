@@ -13,8 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.example.flutterxprintersdk.OrderData
-import com.example.flutterxprintersdk.RequesterGuest
+import com.example.flutterxprintersdk.Model.OrderModel2.OrderData
+import com.example.flutterxprintersdk.Model.OrderModel2.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
@@ -29,11 +29,10 @@ import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 
-class printerservice(mcontext: Context, morderModel: OrderData, businessname : String, businessaddress: String, fontsize : Int,businessphone : String) {
+class printerservice(mcontext: Context, morderModel: OrderData, businessname : String, businessaddress: String, fontsize : Int, businessphone : String) {
 
     private lateinit var context: Context
     private lateinit var orderModel: OrderData
@@ -108,7 +107,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
 
         var allitemsheight = 0
         bind.items.removeAllViews()
-        for (j in orderModel.orderProducts.indices) {
+        for (j in orderModel.orderProducts!!.indices) {
             val childView = getView(j, context, 0, printSize)
             bind.items.addView(childView)
             allitemsheight += childView!!.measuredHeight
@@ -116,7 +115,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
 
 
         var paidOrNot = "";
-        if (orderModel.cashEntry.isNotEmpty()) {
+        if (orderModel.cashEntry!!.isNotEmpty()) {
             paidOrNot ="ORDER IS PAID"
         } else  {
             paidOrNot = "ORDER NOT PAID"
@@ -239,22 +238,22 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
-        val item = orderModel.orderProducts[position]
+        val item = orderModel.orderProducts!!.get(position)
         val str3 = StringBuilder()
-        if (position < orderModel.orderProducts.size - 1) {
-            if (orderModel.orderProducts[position].product!!.sortOrder!! < orderModel.orderProducts[position + 1].product!!.sortOrder!!) {
+        if (position < orderModel.orderProducts!!.size - 1) {
+            if (orderModel.orderProducts!![position].product!!.sortOrder!! < orderModel.orderProducts!![position + 1].product!!.sortOrder!!) {
                 binding.underLine.visibility = View.VISIBLE
             }
         }
         if (style == 0) {
-            if (item.components.isNotEmpty()) {
+            if (item.components!!.isNotEmpty()) {
                 str3.append(item.unit).append(" x ").append(item.product!!.shortName)
-                for (section in item.components) {
+                for (section in item.components!!) {
                     var _comName = ""
                     if (section.product!!.shortName!!.uppercase() != "NONE") {
                         _comName = section.product!!.shortName!!
                     }
-                    if (section.components.isNotEmpty()) {
+                    if (section.components!!.isNotEmpty()) {
                         if (section.components.first().product!!.shortName!!.uppercase() != "NONE") {
                             _comName += " -> " + section.components.first().product!!.shortName
                         }
@@ -267,8 +266,8 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
                 str3.append(item.unit).append(" x ").append(item.product!!.shortName)
             }
         } else {
-            if (item.components.isNotEmpty()) {
-                for (section in item.components) {
+            if (item.components!!.isNotEmpty()) {
+                for (section in item.components!!) {
                     var _comName = ""
                     if (section.product!!.shortName != "NONE") {
                         _comName = section.product!!.shortName!!

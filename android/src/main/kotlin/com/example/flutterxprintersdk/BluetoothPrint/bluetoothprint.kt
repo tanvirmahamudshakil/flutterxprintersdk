@@ -1,14 +1,10 @@
 package com.example.flutterxprintersdk.BluetoothPrint
 
 import android.content.Context
-import androidx.core.app.ActivityCompat.startActivityForResult
-import com.example.flutterxprintersdk.OrderData
-import com.example.flutterxprintersdk.PrinterService.printerservice
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.Printable
 import com.mazenrashed.printooth.data.printable.TextPrintable
 import com.mazenrashed.printooth.data.printer.DefaultPrinter
-import com.mazenrashed.printooth.ui.ScanningActivity
 
 class bluetoothprint(mcontext : Context) {
 
