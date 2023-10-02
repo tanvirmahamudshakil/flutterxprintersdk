@@ -27,6 +27,10 @@ class bluetoothprint(mcontext : Context) {
         }
     }
 
+    fun bluetoothprinterinit(){
+        Printooth.init(context);
+    }
+
    fun disconnected() {
        Printooth.removeCurrentPrinter()
    }
