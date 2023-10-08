@@ -121,9 +121,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
-    if (businessdata.printerConnection == "ip"){
+    if (businessdata.printerConnection == "IP Connection"){
       if(!serviceBinding.IS_CONNECTED){
-        serviceBinding.connectNet("192.168.0.104", object : OnDeviceConnect{
+        serviceBinding.connectNet(businessdata.ip.toString(), object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
               Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
@@ -135,7 +135,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
           }
         });
       }
-    }else if(businessdata.printerConnection == "usb"){
+    }else if(businessdata.printerConnection == "USB Connection"){
       if(!serviceBinding.IS_CONNECTED){
         serviceBinding.connetUSB(object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
