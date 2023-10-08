@@ -195,7 +195,7 @@ class _MyAppState extends State<MyApp> {
     printOnDelivery: 1,
     printOnTableOrder: 1,
     printOnTackwayOrder: 1,
-    printerConnection: "ip",
+    printerConnection: "IP Connection",
     selectPrinter: "xprinter",
     showOrderNoInvoice: true,
     bluetoothAddress: "86:67:7A:1E:0D:34",

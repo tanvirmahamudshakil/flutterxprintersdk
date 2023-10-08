@@ -49,7 +49,7 @@ class PosServiceBinding(mcontext: Context){
 
     fun disposeBinding(listener: OnDeviceConnect) {
 
-        binder!!.DisconnetNetPort(object : TaskCallback {
+        binder!!.DisconnectCurrentPort(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = false;
                 listener.onConnect(false)
