@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutterxprintersdk/Model/printerbusinessmodel.dart';
 import 'package:flutterxprintersdk/flutterxprintersdk.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -49,7 +50,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> printerconnect() async {
     var data =
-        await _flutterxprintersdkPlugin.xprinterconnect(connectiontype, "");
+        await _flutterxprintersdkPlugin.xprinterconnect(printermodel);
     print(data);
   }
 
@@ -71,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   
 
   Future bluetoothprint() async {
-    await _flutterxprintersdkPlugin.bluetoothprint(orderiteam);
+    await _flutterxprintersdkPlugin.bluetoothprint(orderiteam: orderiteam,printerBusinessModel: printermodel);
   }
 
 
@@ -98,37 +99,29 @@ class _MyAppState extends State<MyApp> {
             ),
             MaterialButton(
               onPressed: () async {
-               // var data =await _flutterxprintersdkPlugin.printorder(
+
+               var data = await  _flutterxprintersdkPlugin.xprinterconnect(printermodel);
+               print(data);
+               
+               //
+               // var data2 =await _flutterxprintersdkPlugin.printorder(
                //                    businessaddress: "sdbvsbvsdv",
                //                    businessname: "dvjsvsjbhvsdv",
                //                    businessphone: "6516515151",
-               //                    connectiontype: Connectiontype.ip,
+               //                    connectiontype: Connectiontype.usb,
                //                    fontsize: 30,
                //                    orderiteam: orderiteam,
                //                    ip: "192.168.0.104"
                //                  );
-               //              print(data);
-
-               var data = await  _flutterxprintersdkPlugin.xprinterconnect(Connectiontype.ip, "192.168.0.104");
-
-               var data2 =await _flutterxprintersdkPlugin.printorder(
-                                  businessaddress: "sdbvsbvsdv",
-                                  businessname: "dvjsvsjbhvsdv",
-                                  businessphone: "6516515151",
-                                  connectiontype: Connectiontype.ip,
-                                  fontsize: 30,
-                                  orderiteam: orderiteam,
-                                  ip: "192.168.0.104"
-                                );
-               print(data);
+               // print(data);
               },
-              child: Text("Printer Connect"),
+              child: Text("XPrinter Connect"),
             ),
             MaterialButton(
               onPressed: () {
                bluetoothprint();
               },
-              child: Text("Bluetooth Printer"),
+              child: const Text("Bluetooth Printer"),
             ),
             StreamBuilder<List<ScanResult>>(
               stream: scanresult,
@@ -150,16 +143,9 @@ class _MyAppState extends State<MyApp> {
                           onTap: () async {
                             var data =
                                 await _flutterxprintersdkPlugin.printorder(
-                                  businessaddress: "sdbvsbvsdv",
-                                  businessname: "dvjsvsjbhvsdv",
-                                  businessphone: "6516515151",
-                                  connectiontype: Connectiontype.bluetooth,
-                                  fontsize: 20,
+                                  printerBusinessModel: printermodel,
                                   orderiteam: orderiteam,
-                                  bluetoothaddress: d.device.remoteId.str,
-                                  bluetoothname: d.device.localName,
-                                  ip: "192.168.0.104"
-
+                                
                                 );
                             print(data);
                             // setState(() async {
@@ -176,9 +162,48 @@ class _MyAppState extends State<MyApp> {
                 }
               },
             ),
+            MaterialButton(
+              onPressed: () async {
+                var data = await  _flutterxprintersdkPlugin.xprinterconnect(printermodel);
+                print(data);
+
+              },
+              child: Text("Xprinter Connect"),
+            ),
+             MaterialButton(
+              onPressed: () async {
+                var data = await  _flutterxprintersdkPlugin.xprinterdisconnect();
+                print(data);
+
+              },
+              child: Text("Xprinter disconnect"),
+            ),
           ],
         ),
       ),
     );
   }
+
+
+
+  // printer business model
+
+  PrinterBusinessModel printermodel = PrinterBusinessModel(
+    autoPrint: true,
+    fontSize: 16,
+    printOnCollection: 2,
+    printOnDelivery: 1,
+    printOnTableOrder: 1,
+    printOnTackwayOrder: 1,
+    printerConnection: "ip",
+    selectPrinter: "bluetooth",
+    showOrderNoInvoice: true,
+    bluetoothAddress: "86:67:7A:1E:0D:34",
+    bluetoothName: "dsvsdvsd",
+    businessname: "sdvsdvsdv",
+    businessphone: "01932336565",
+    ip: "192.168.0.104"
+  );
+
+
 }

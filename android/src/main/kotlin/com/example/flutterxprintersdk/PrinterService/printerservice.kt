@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.Typeface
 import android.os.Build
 import android.util.Log
 import android.util.TypedValue
@@ -14,6 +15,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.OrderData
+import com.example.flutterxprintersdk.PrinterBusinessData
 import com.example.flutterxprintersdk.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
@@ -29,25 +31,28 @@ import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
 import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
-class printerservice(mcontext: Context, morderModel: OrderData, businessname : String, businessaddress: String, fontsize : Int, businessphone : String) {
+class printerservice(mcontext: Context, morderModel: OrderData, businessdata: PrinterBusinessData) {
 
-    private lateinit var context: Context
-    private lateinit var orderModel: OrderData
-    private lateinit var businessname: String
-    private lateinit var businessaddress: String
-    private lateinit var businessphone: String
-     private var fontsize: Int = 30
+    private var context: Context
+    private  var orderModel: OrderData
+    private  var businessname: String
+    private  var businessaddress: String
+    private  var businessphone: String
+    private var fontsize: Int = 30
+    private var noofprint: Int =1
 
     init {
         context = mcontext;
         orderModel = morderModel;
-        this.businessname = businessname
-        this.businessaddress = businessaddress
-        this.businessphone = businessphone
-        this.fontsize = fontsize
+        this.businessname = businessdata.businessname!!;
+        this.businessaddress =  businessdata.bluetoothAddress!!;
+        this.businessphone =  businessdata.businessphone!!;
+        this.fontsize =  businessdata.fontSize!!;
+        noofprint = businessdata.printOnCollection!!
     }
 
     // bluetooth print
@@ -60,19 +65,23 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         }else{
             Printooth.setPrinter(name, address)
         }
-        val bitmap: Bitmap =  getBitmapFromView(orderrootget())
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         try {
+            var printable: ArrayList<Printable> = ArrayList()
             val options = BitmapCompressOptions()
-            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
-                .compress { isSuccess, bitmap ->
-                    if (isSuccess) {
-                        var b2 = bitmap
-                        var printable: ArrayList<Printable> = ArrayList()
-                        b2 = resizeImage(b2, 530, true)
-                        printable!!.add(ImagePrintable.Builder(b2).build())
-                        Printooth.printer().print(printable)
+            for (bitmap in bitmaplist){
+                Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
+                    .compress { isSuccess, bitmap ->
+                        if (isSuccess) {
+                            var b2 = bitmap
+
+                            b2 = resizeImage(b2, 530, true)
+                            printable!!.add(ImagePrintable.Builder(b2).build())
+
+                        }
                     }
-                }
+            }
+            Printooth.printer().print(printable)
         } catch (e: Exception) {
 
         }
@@ -197,7 +206,9 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
     fun capitalize(str: String): String? {
         return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
-    private fun getBitmapFromView(view: View): Bitmap {
+
+    private fun getBitmapFromView(view: View): ArrayList<Bitmap> {
+        var bitmaplist : ArrayList<Bitmap>  = ArrayList<Bitmap>();
         val spec = View.MeasureSpec.makeMeasureSpec(
             0,
             View.MeasureSpec.UNSPECIFIED
@@ -231,10 +242,14 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         val width = (ratio * returnedBitmap.width).roundToInt()
         val height = (ratio * returnedBitmap.height).roundToInt()
         //return the bitmap
-        return Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
+
+        var bitmap = Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
+        for (i in 1..noofprint){
+            bitmaplist.add(bitmap)
+        }
+
+        return bitmaplist;
     }
-
-
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
@@ -291,7 +306,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         return binding.root
     }
 
-
     private fun cutBitmap(h: Int, bitmap: Bitmap): List<Bitmap>? {
         val width = bitmap.width
         val height = bitmap.height
@@ -314,35 +328,54 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
         return bitmaps
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinteripdata(serviceBinding: PosServiceBinding) {
-        val bitmap: Bitmap =  getBitmapFromView(orderrootget())
-        printBitmap(bitmap, object : OnPrintProcess {
-            override fun onSuccess() {
-                Log.d("xprinterdata", "onSuccess: successfully print")
-            }
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
 
-            override fun onError(msg: String?) {
-                Log.d("xprinterdata", "onError: xprinter not print")
-            }
-        }, serviceBinding)
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
+
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinterusbdata(serviceBinding: PosServiceBinding) {
-        val bitmap: Bitmap =  getBitmapFromView(orderrootget())
-        printBitmap(bitmap, object : OnPrintProcess {
-            override fun onSuccess() {
-                Log.d("xprinterdata", "onSuccess: successfully print")
-            }
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
 
-            override fun onError(msg: String?) {
-                Log.d("xprinterdata", "onError: xprinter not print")
-            }
-        }, serviceBinding)
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun printxprinterbluetoothdata(serviceBinding: PosServiceBinding) {
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
+
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
+        }
+    }
 
 
     fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
@@ -425,7 +458,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
             })
         }
     }
-
     fun resizeImage(bitmap: Bitmap, w: Int, ischecked: Boolean): Bitmap? {
         var resizedBitmap: Bitmap? = null
         val width = bitmap.width
@@ -446,6 +478,5 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessname : S
             Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true)
         return resizedBitmap
     }
-
 
 }

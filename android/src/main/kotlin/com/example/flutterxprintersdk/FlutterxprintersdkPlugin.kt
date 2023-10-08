@@ -54,6 +54,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onMethodCall(call: MethodCall, result: Result) {
+    var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
+    val json = Gson().toJson(printerbusinessdata)
+    var businessdata = Gson().fromJson<PrinterBusinessData>(json, PrinterBusinessData::class.java)
     if (call.method == "getPlatformVersion") {
       xprinterinit();
     }
@@ -61,19 +64,20 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       xprinterconnectcheck(call, result);
     }
     else if(call.method == xprinterconnect) {
-      var connecttype = call.argument<String>("type")
-      if(connecttype == "ip"){
-        xprinterconnect(call, result);
-      } else if(connecttype == "bluetooth") {
-        bluetooth_printer_connect(call, result);
-      } else{
-        xprinterconnect(call, result)
-      }
+//      var connecttype = call.argument<String>("type")
+//      if(connecttype == "ip"){
+//        xprinterconnect(call, result, businessdata);
+//      } else if(connecttype == "bluetooth") {
+//        bluetooth_printer_connect(call, result, businessdata);
+//      } else{
+//        xprinterconnect(call, result, businessdata)
+//      }
+      xprinterconnect(call, result, businessdata)
     }
     else if(call.method == bluetoothprintdata) {
-      bluetooth_print_data(call, result);
+      bluetooth_print_data(call, result, businessdata);
     } else if(call.method == print){
-      printdata(call, result)
+      printdata(call, result, businessdata)
     }else if(call.method == printerdisconnect) {
       xprinterdisconnect(call, result);
     }
@@ -116,17 +120,14 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     }
   }
 
-  fun xprinterconnect(call: MethodCall, result: Result) {
-    var connecttype = call.argument<String>("type")
-    var ip: String? = call.argument<String>("ip")
-    if (connecttype == "ip"){
+  private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+    Log.d("tanvir", "xprinterconnect: ${businessdata.ip}")
+    if (businessdata.printerConnection == "ip"){
       if(!serviceBinding.IS_CONNECTED){
-        serviceBinding.connectNet(ip, object : OnDeviceConnect{
+        serviceBinding.connectNet(businessdata.ip, object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
-            Log.d("connection", "onConnect: ${isConnect}")
             if (isConnect){
               Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-              //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
               result.success("printer connected successfull")
             }else{
               Toast.makeText(context, "printer not connect. check your printer ip", Toast.LENGTH_SHORT).show()
@@ -135,14 +136,12 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
           }
         });
       }
-    }else{
+    }else if(businessdata.printerConnection == "usb"){
       if(!serviceBinding.IS_CONNECTED){
         serviceBinding.connetUSB(object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
               Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-              //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
-
               result.success("printer connected successfull")
             }else{
               Toast.makeText(context, "printer not connect. check your usb", Toast.LENGTH_SHORT).show()
@@ -151,11 +150,25 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
           }
         });
       }
+    }else{
+      if(!serviceBinding.IS_CONNECTED){
+        serviceBinding.connetbluetooth(businessdata.bluetoothAddress,object : OnDeviceConnect{
+          override fun onConnect(isConnect: Boolean) {
+            if (isConnect){
+              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
+              result.success("printer connected successfull")
+            }else{
+              Toast.makeText(context, "printer not connect. check your bluetooth address", Toast.LENGTH_SHORT).show()
+              result.success("printer not connect. check your bluetooth address")
+            }
+          }
+        });
+      }
     }
 
   }
 
-  fun  xprinterdisconnect(call: MethodCall, result: Result) {
+  private fun  xprinterdisconnect(call: MethodCall, result: Result) {
     if (serviceBinding.IS_CONNECTED){
       serviceBinding.disposeBinding(object : OnDeviceConnect{
         override fun onConnect(isConnect: Boolean) {
@@ -166,25 +179,21 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       result.success("connect printer not found")
     }
   }
+
   @RequiresApi(Build.VERSION_CODES.O)
-  fun xprinterprint(call: MethodCall, result: Result) {
-    var connecttype = call.argument<String>("type")
-    var ip: String? = call.argument<String>("ip")
-    var bluetoothname: String? = call.argument<String>("bluetoothname")
-    var bluetoothaddress: String? = call.argument<String>("bluetoothaddress")
-    var businessname : String? = call.argument("businessname")
-    var businesssaddress : String? = call.argument("businessaddress")
-    var businessphone : String? = call.argument("businessphone")
-    var fontsize : Int? = call.argument("fontsize")
+  fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
 
     if (serviceBinding.IS_CONNECTED){
-      if (connecttype == "ip"){
-        printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
+      if (businessdata.printerConnection == "ip"){
+        printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+      }else if(businessdata.printerConnection == "usb"){
+        printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
       }else{
-        printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinterusbdata(serviceBinding)
+        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
       }
       result.success("print successfull")
     }else{
@@ -193,135 +202,34 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   }
 
-//  fun xprinter_connect_ip(call: MethodCall, result: Result) {
-//    var connecttype = call.argument<String>("type")
-//    var ip: String? = call.argument<String>("ip")
-//    var bluetoothname: String? = call.argument<String>("bluetoothname")
-//    var bluetoothaddress: String? = call.argument<String>("bluetoothaddress")
-//    var businessname : String? = call.argument("businessname")
-//    var businesssaddress : String? = call.argument("businessaddress")
-//    var businessphone : String? = call.argument("businessphone")
-//    var fontsize : Int? = call.argument("fontsize")
-//    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
-//    val json = Gson().toJson(orderiteamdata)
-//    var modeldata = Gson().fromJson<OrderModel>(json, OrderModel::class.java)
-//    if (serviceBinding.IS_CONNECTED){
-//      CoroutineScope(Dispatchers.IO).async {
-//        serviceBinding.disposeBinding(object : OnDeviceConnect{
-//          override fun onConnect(isConnect: Boolean) {
-//            if (!isConnect) {
-//              Toast.makeText(context, "disconnect successfully", Toast.LENGTH_SHORT).show()
-//            }
-//          }
-//
-//        });
-//      }
-//      serviceBinding.connectNet(ip, object : OnDeviceConnect{
-//        override fun onConnect(isConnect: Boolean) {
-//          Log.d("connection", "onConnect: ${isConnect}")
-//          if (isConnect){
-//
-//            //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
-//            result.success("printer connected successfull")
-//          }else{
-//            result.success("printer not connect. check your printer ip")
-//          }
-//        }
-//      });
-//
-//
-//
-////      Toast.makeText(context, "all ready connected connected", Toast.LENGTH_SHORT).show()
-//    }else{
-//
-//      Toast.makeText(context, "not connected", Toast.LENGTH_SHORT).show()
-//      serviceBinding.connectNet(ip, object : OnDeviceConnect{
-//        override fun onConnect(isConnect: Boolean) {
-//          Log.d("connection", "onConnect: ${isConnect}")
-//          if (isConnect){
-//
-//   //       printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinteripdata(serviceBinding)
-//            result.success("printer connected successfull")
-//          }else{
-//            result.success("printer not connect. check your printer ip")
-//          }
-//        }
-//      });
-//
-//    }
-//
-//
-//
-//
-//
-//
-//
-//  }
-
-  fun xprinter_connect_usb(call: MethodCall, result: Result) {
-    Log.d("xprinter", "xprinter_connect_usb: usb connect")
-    var connecttype = call.argument<String>("type")
-    var ip: String? = call.argument<String>("ip")
-    var bluetoothname: String? = call.argument<String>("bluetoothname")
-    var bluetoothaddress: String? = call.argument<String>("bluetoothaddress")
-    var businessname : String? = call.argument("businessname")
-    var businesssaddress : String? = call.argument("businessaddress")
-    var businessphone : String? = call.argument("businessphone")
-    var fontsize : Int? = call.argument("fontsize")
-    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
-    val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-    serviceBinding.connetUSB(object : OnDeviceConnect{
-      @RequiresApi(Build.VERSION_CODES.O)
-      override fun onConnect(isConnect: Boolean) {
-        if (isConnect == true){
-          printerservice(context,modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).printxprinterusbdata(serviceBinding)
-          result.success("printer connected successfull")
-        }else{
-          result.success("printer not connect. check your usb cable")
-        }
-      }
-    })
-  }
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun bluetooth_printer_connect(call: MethodCall, result: Result){
-    var connecttype = call.argument<String>("type")
-    var bluetoothname: String? = call.argument<String>("bluetoothname")
-    var bluetoothaddress: String? = call.argument<String>("bluetoothaddress")
-    var businessname : String? = call.argument("businessname")
-    var businesssaddress : String? = call.argument("businessaddress")
-    var businessphone : String? = call.argument("businessphone")
-    var fontsize : Int? = call.argument("fontsize")
+  fun bluetooth_printer_connect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData){
+
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
 
-    bluetoothprint(context).bluetoothconnect(bluetoothname!!, bluetoothaddress!!)
-    printerservice(context, modeldata, businessname!!,businesssaddress!!,fontsize!!, businessphone!!).bluetoothimageprint(bluetoothname!!, bluetoothaddress!!)
-
+    bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+    printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
 
   }
 
 
-  fun bluetooth_print_data(call: MethodCall, result: Result) {
+  private fun bluetooth_print_data(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
     bluetoothprint(context).orderprint(modeldata)
-
   }
 
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun printdata(call: MethodCall, result: Result) {
-    var connecttype = call.argument<String>("type")
-    if (connecttype == "ip"){
-      xprinterprint(call, result)
-    }else if(connecttype == "usb") {
-      xprinterprint(call, result)
-    }else if(connecttype == "bluetooth") {
-      bluetooth_printer_connect(call, result);
+  fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+    if (businessdata.selectPrinter == "xprinter"){
+      xprinterprint(call, result,businessdata)
+    }else if(businessdata.selectPrinter == "bluetooth") {
+      bluetooth_printer_connect(call, result, businessdata);
     }
   }
 }

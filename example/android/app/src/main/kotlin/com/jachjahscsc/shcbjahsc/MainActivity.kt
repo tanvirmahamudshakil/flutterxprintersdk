@@ -1,4 +1,4 @@
-package com.example.flutterxprintersdk_example
+package com.jachjahscsc.shcbjahsc
 
 import io.flutter.embedding.android.FlutterActivity
 

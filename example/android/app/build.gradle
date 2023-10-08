@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.flutterxprintersdk_example"
+    namespace "com.jachjahscsc.shcbjahsc"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -39,10 +39,15 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    signingConfigs {
+        dev {
+            v2SigningEnabled true
+        }
+     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.flutterxprintersdk_example"
+        applicationId "com.jachjahscsc.shcbjahsc"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24

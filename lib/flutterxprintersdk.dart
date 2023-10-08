@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 
-enum Connectiontype { ip, usb, bluetooth }
+import 'Model/printerbusinessmodel.dart';
+
+enum Connectiontype { ip, usb, bluetooth, xbluetooth }
 
 class Flutterxprintersdk {
   final methodChannel = const MethodChannel('flutterxprintersdk');
@@ -20,47 +22,36 @@ class Flutterxprintersdk {
     return version!;
   }
 
-  Future<String> xprinterconnect(
-      Connectiontype connectiontype, String? ip) async {
-    Map<String, dynamic> data = {
-      "type": connectiontype == Connectiontype.ip
-          ? "ip"
-          : connectiontype == Connectiontype.bluetooth
-              ? "bluetooth"
-              : "usb",
-      "ip": ip
+  Future<String> xprinterconnect(PrinterBusinessModel printermodel) async {
+    Map<String, dynamic> quary = {
+      "printer_model_data": printermodel.toJson()
     };
-    final version =
-        await methodChannel.invokeMethod<String>(printerconnect, data);
+    final version = await methodChannel.invokeMethod<String>(printerconnect, quary);
     return version!;
   }
 
-  Future bluetoothprint(Map<String, Object?> orderiteam) async {
-        await methodChannel.invokeMethod(bluetoothprintdata, {"orderiteam" : orderiteam});
+  Future bluetoothprint({required Map<String, Object?> orderiteam, required PrinterBusinessModel printerBusinessModel}) async {
+    Map<String, dynamic> quary = {
+      "orderiteam": orderiteam,
+      "printer_model_data": printerBusinessModel.toJson()
+    };
+    await methodChannel.invokeMethod(bluetoothprintdata, quary);
   }
 
-  Future<dynamic> printorder({required Map<String, Object?> orderiteam, required Connectiontype connectiontype, String? ip, String? bluetoothname, String? bluetoothaddress, required String businessname, required String businessaddress, required String businessphone, required int fontsize}) async {
+  Future<dynamic> printorder({required Map<String, Object?> orderiteam, required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {
       "orderiteam": orderiteam, 
-      "type": connectiontype == Connectiontype.ip
-          ? "ip"
-          : connectiontype == Connectiontype.bluetooth
-              ? "bluetooth"
-              : "usb",
-      "ip": ip, 
-      "bluetoothname": bluetoothname, 
-      "bluetoothaddress": bluetoothaddress,
-      "businessname": businessname,
-      "businessaddress": businessaddress,
-      "businessphone": businessphone,
-      "fontsize": fontsize
+      "printer_model_data": printerBusinessModel.toJson()
     };
 
    return await methodChannel.invokeMethod("print",quary);
   }
 
   Future<dynamic> xprinterdisconnect() async {
-    return await methodChannel.invokeMethod(printerdisconect);
+    return await methodChannel.invokeMethod(printerdisconect,);
   }
 
 }
+
+
+

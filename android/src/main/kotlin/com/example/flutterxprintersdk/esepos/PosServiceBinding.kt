@@ -48,7 +48,8 @@ class PosServiceBinding(mcontext: Context){
     }
 
     fun disposeBinding(listener: OnDeviceConnect) {
-        binder!!.DisconnectCurrentPort(object : TaskCallback {
+
+        binder!!.DisconnetNetPort(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = false;
                 listener.onConnect(false)
@@ -61,6 +62,7 @@ class PosServiceBinding(mcontext: Context){
     }
 
     fun checkConnection(listener: OnDeviceConnect) {
+
         binder!!.CheckLinkedState(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = true;
@@ -144,7 +146,6 @@ class PosServiceBinding(mcontext: Context){
 //                        setPortType(PortType.USB)
                         listener.onConnect(true)
                     }
-
                     override fun OnFailed() {
                         IS_CONNECTED = false
                         listener.onConnect(false)
