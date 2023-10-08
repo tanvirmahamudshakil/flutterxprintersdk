@@ -18,6 +18,7 @@ data class PrinterBusinessData (
   @SerializedName("bluetooth_name"         ) var bluetoothName       : String?  = null,
   @SerializedName("bluetooth_address"      ) var bluetoothAddress    : String?  = null,
   @SerializedName("businessname"           ) var businessname        : String?  = null,
-  @SerializedName("businessphone"          ) var businessphone       : String?  = null
+  @SerializedName("businessphone"          ) var businessphone       : String?  = null,
+  @SerializedName("businessaddress"        ) var businessaddress     : String?  = null
 
 )

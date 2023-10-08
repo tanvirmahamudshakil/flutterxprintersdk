@@ -121,10 +121,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
-    Log.d("tanvir", "xprinterconnect: ${businessdata.ip}")
     if (businessdata.printerConnection == "ip"){
       if(!serviceBinding.IS_CONNECTED){
-        serviceBinding.connectNet(businessdata.ip, object : OnDeviceConnect{
+        serviceBinding.connectNet("192.168.0.104", object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
               Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()

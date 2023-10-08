@@ -49,7 +49,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         context = mcontext;
         orderModel = morderModel;
         this.businessname = businessdata.businessname!!;
-        this.businessaddress =  businessdata.bluetoothAddress!!;
+        this.businessaddress =  businessdata.businessaddress!!;
         this.businessphone =  businessdata.businessphone!!;
         this.fontsize =  businessdata.fontSize!!;
         noofprint = businessdata.printOnCollection!!

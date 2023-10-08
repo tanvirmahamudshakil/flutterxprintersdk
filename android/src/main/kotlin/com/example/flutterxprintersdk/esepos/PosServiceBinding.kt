@@ -77,10 +77,12 @@ class PosServiceBinding(mcontext: Context){
     }
 
     fun connectNet(ipAddress: String?, listener: OnDeviceConnect) {
+        Log.d("tanvir", "xprinter: ${ipAddress}")
+
         if (ipAddress!! == null || ipAddress == "") {
             listener.onConnect(false)
         } else {
-            if (binder != null && TheApp().IS_CONNECT_NET_PRINTER === false) {
+            if (binder != null && !TheApp().IS_CONNECT_NET_PRINTER) {
                 binder!!.ConnectNetPort(ipAddress, 9100, object : TaskCallback {
                     override fun OnSucceed() {
                         IS_CONNECTED = true
@@ -94,6 +96,7 @@ class PosServiceBinding(mcontext: Context){
                     }
                 })
             } else {
+                Log.e("tanvir binder", "connectNet: binder null", )
                 IS_CONNECTED = false
                 listener.onConnect(false)
             }
