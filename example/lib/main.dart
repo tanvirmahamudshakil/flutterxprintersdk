@@ -104,16 +104,12 @@ class _MyAppState extends State<MyApp> {
                print(data);
                
                //
-               // var data2 =await _flutterxprintersdkPlugin.printorder(
-               //                    businessaddress: "sdbvsbvsdv",
-               //                    businessname: "dvjsvsjbhvsdv",
-               //                    businessphone: "6516515151",
-               //                    connectiontype: Connectiontype.usb,
-               //                    fontsize: 30,
-               //                    orderiteam: orderiteam,
-               //                    ip: "192.168.0.104"
-               //                  );
-               // print(data);
+               var data2 =await _flutterxprintersdkPlugin.printorder(
+                                  
+                                  orderiteam: orderiteam,
+                                  printerBusinessModel: printermodel
+                                );
+               print(data2);
               },
               child: Text("XPrinter Connect"),
             ),
@@ -190,13 +186,13 @@ class _MyAppState extends State<MyApp> {
 
   PrinterBusinessModel printermodel = PrinterBusinessModel(
     autoPrint: true,
-    fontSize: 16,
-    printOnCollection: 2,
+    fontSize: 28,
+    printOnCollection: 1,
     printOnDelivery: 1,
     printOnTableOrder: 1,
     printOnTackwayOrder: 1,
-    printerConnection: "IP Connection",
-    selectPrinter: "xprinter",
+    printerConnection: "USB Connection",
+    selectPrinter: "X Printer",
     showOrderNoInvoice: true,
     bluetoothAddress: "86:67:7A:1E:0D:34",
     bluetoothName: "dsvsdvsd",

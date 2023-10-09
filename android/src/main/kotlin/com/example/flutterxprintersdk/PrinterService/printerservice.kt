@@ -3,6 +3,7 @@ package com.example.flutterxprintersdk.PrinterService
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
@@ -30,6 +31,7 @@ import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -70,16 +72,25 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
             var printable: ArrayList<Printable> = ArrayList()
             val options = BitmapCompressOptions()
             for (bitmap in bitmaplist){
-                Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
-                    .compress { isSuccess, bitmap ->
-                        if (isSuccess) {
-                            var b2 = bitmap
+                val originalBitmap: Bitmap? = bitmap
+                val compressFormat = Bitmap.CompressFormat.JPEG
+                val compressionQuality = 10 // Adjust the quality as needed
 
-                            b2 = resizeImage(b2, 530, true)
-                            printable!!.add(ImagePrintable.Builder(b2).build())
+                val compressedData =
+                    originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
-                        }
-                    }
+                var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 530, true)
+                printable!!.add(ImagePrintable.Builder(b2!!).build())
+//                Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
+//                    .compress { isSuccess, bitmap ->
+//                        if (isSuccess) {
+//                            var b2 = bitmap
+//
+//                            b2 = resizeImage(b2, 530, true)
+//                            printable!!.add(ImagePrintable.Builder(b2!!).build())
+//
+//                        }
+//                    }
             }
             Printooth.printer().print(printable)
         } catch (e: Exception) {
@@ -380,15 +391,25 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
     fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         try {
-            val options = BitmapCompressOptions()
-            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
-                .compress { isSuccess, bitmap ->
-                    if (isSuccess) {
-                        var b2 = bitmap
-                        b2 = resizeImage(b2, 530, true)
-                        printUSBbitamp(b2, process, serviceBinding)
-                    }
-                }
+            val originalBitmap: Bitmap? = bitmap
+            val compressFormat = Bitmap.CompressFormat.JPEG
+            val compressionQuality = 10 // Adjust the quality as needed
+
+            val compressedData =
+                originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+
+            var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 530, true)
+            printUSBbitamp(b2!!, process, serviceBinding)
+//            val options = BitmapCompressOptions()
+//            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
+//                .compress { isSuccess, bitmap ->
+//                    if (isSuccess) {
+//                        var b2 = bitmap
+//                        b2 = resizeImage(b2, 530, true)
+//                        printUSBbitamp(b2, process, serviceBinding)
+//                    }
+//                }
+
         } catch (e: java.lang.Exception) {
             process.onError(e.toString())
         }
@@ -477,6 +498,17 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         resizedBitmap =
             Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true)
         return resizedBitmap
+    }
+
+
+    fun compressBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat, quality: Int): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(format, quality, stream)
+        return stream.toByteArray()
+    }
+
+    fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
 }

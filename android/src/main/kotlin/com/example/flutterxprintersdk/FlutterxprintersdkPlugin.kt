@@ -54,6 +54,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onMethodCall(call: MethodCall, result: Result) {
+
     var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
     val json = Gson().toJson(printerbusinessdata)
     var businessdata = Gson().fromJson<PrinterBusinessData>(json, PrinterBusinessData::class.java)
@@ -225,7 +226,10 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   @RequiresApi(Build.VERSION_CODES.O)
   fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+    Log.d("xprinter", "printdata: ${businessdata.selectPrinter}")
+
     if (businessdata.selectPrinter == "X Printer"){
+
       xprinterprint(call, result,businessdata)
     }else if(businessdata.selectPrinter == "bluetooth") {
       bluetooth_printer_connect(call, result, businessdata);
