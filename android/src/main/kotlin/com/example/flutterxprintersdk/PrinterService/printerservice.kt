@@ -255,10 +255,10 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         //return the bitmap
 
         var bitmap = Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
+
         for (i in 1..noofprint){
             bitmaplist.add(bitmap)
         }
-
         return bitmaplist;
     }
 
@@ -509,6 +509,24 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
     fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getimagebytes(): ArrayList<ByteArray?> {
+        val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+
+       for (bitmap in bitmaplist){
+           var b2 = resizeImage(bitmap, 530, true)
+           val originalBitmap: Bitmap? = b2
+           val compressFormat = Bitmap.CompressFormat.JPEG
+           val compressionQuality = 10 // Adjust the quality as needed
+
+           val compressedData =
+               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+           newbitmaplist.add(compressedData)
+       }
+        return newbitmaplist;
     }
 
 }
