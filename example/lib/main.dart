@@ -187,7 +187,7 @@ class _MyAppState extends State<MyApp> {
 
   PrinterBusinessModel printermodel = PrinterBusinessModel(
       autoPrint: true,
-      fontSize: 28,
+      fontSize: 16,
       printOnCollection: 1,
       printOnDelivery: 1,
       printOnTableOrder: 1,
