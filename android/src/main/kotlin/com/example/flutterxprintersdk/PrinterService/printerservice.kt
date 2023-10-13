@@ -113,7 +113,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         bind.businessName.text = businessname
 
 
-        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
 
 
