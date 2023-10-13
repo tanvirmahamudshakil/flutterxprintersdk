@@ -9,6 +9,7 @@ class Flutterxprintersdk {
   String printerconnect = "xprinterconnect";
   String bluetoothprintdata = "bluetoothprintdata";
   String printerdisconect = "printerdisconnect";
+  String printimage = "printimage";
 
   Future<String?> initialxprinter() async {
     final version =
@@ -17,20 +18,20 @@ class Flutterxprintersdk {
   }
 
   Future<bool> connectioncheck() async {
-    final version =
-        await methodChannel.invokeMethod<bool>('check_connection');
+    final version = await methodChannel.invokeMethod<bool>('check_connection');
     return version!;
   }
 
   Future<String> xprinterconnect(PrinterBusinessModel printermodel) async {
-    Map<String, dynamic> quary = {
-      "printer_model_data": printermodel.toJson()
-    };
-    final version = await methodChannel.invokeMethod<String>(printerconnect, quary);
+    Map<String, dynamic> quary = {"printer_model_data": printermodel.toJson()};
+    final version =
+        await methodChannel.invokeMethod<String>(printerconnect, quary);
     return version!;
   }
 
-  Future bluetoothprint({required Map<String, Object?> orderiteam, required PrinterBusinessModel printerBusinessModel}) async {
+  Future bluetoothprint(
+      {required Map<String, Object?> orderiteam,
+      required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {
       "orderiteam": orderiteam,
       "printer_model_data": printerBusinessModel.toJson()
@@ -38,20 +39,26 @@ class Flutterxprintersdk {
     await methodChannel.invokeMethod(bluetoothprintdata, quary);
   }
 
-  Future<dynamic> printorder({required Map<String, Object?> orderiteam, required PrinterBusinessModel printerBusinessModel}) async {
+  Future<dynamic> printorder(
+      {required Map<String, Object?> orderiteam,
+      required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {
-      "orderiteam": orderiteam, 
+      "orderiteam": orderiteam,
       "printer_model_data": printerBusinessModel.toJson()
     };
 
-   return await methodChannel.invokeMethod("print",quary);
+    return await methodChannel.invokeMethod("print", quary);
   }
 
   Future<dynamic> xprinterdisconnect() async {
-    return await methodChannel.invokeMethod(printerdisconect,);
+    return await methodChannel.invokeMethod(
+      printerdisconect,
+    );
   }
 
+
+  Future<dynamic> getimagebytes({required Map<String, Object?> orderiteam,required PrinterBusinessModel printerBusinessModel}) async {
+    Map<String, dynamic> quary = {"orderiteam": orderiteam, "printer_model_data": printerBusinessModel.toJson()};
+    return await methodChannel.invokeMethod(printimage, quary);
+  }
 }
-
-
-

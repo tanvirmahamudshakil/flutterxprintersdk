@@ -49,8 +49,7 @@ class _MyAppState extends State<MyApp> {
   Connectiontype connectiontype = Connectiontype.bluetooth;
 
   Future<void> printerconnect() async {
-    var data =
-        await _flutterxprintersdkPlugin.xprinterconnect(printermodel);
+    var data = await _flutterxprintersdkPlugin.xprinterconnect(printermodel);
     print(data);
   }
 
@@ -69,12 +68,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Stream<List<ScanResult>> get scanresult => FlutterBluePlus.scanResults;
-  
 
   Future bluetoothprint() async {
-    await _flutterxprintersdkPlugin.bluetoothprint(orderiteam: orderiteam,printerBusinessModel: printermodel);
+    await _flutterxprintersdkPlugin.bluetoothprint(
+        orderiteam: orderiteam, printerBusinessModel: printermodel);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,23 +97,20 @@ class _MyAppState extends State<MyApp> {
             ),
             MaterialButton(
               onPressed: () async {
+                var data = await _flutterxprintersdkPlugin
+                    .xprinterconnect(printermodel);
+                print(data);
 
-               var data = await  _flutterxprintersdkPlugin.xprinterconnect(printermodel);
-               print(data);
-               
-               //
-               var data2 =await _flutterxprintersdkPlugin.printorder(
-                                  
-                                  orderiteam: orderiteam,
-                                  printerBusinessModel: printermodel
-                                );
-               print(data2);
+                //
+                var data2 = await _flutterxprintersdkPlugin.printorder(
+                    orderiteam: orderiteam, printerBusinessModel: printermodel);
+                print(data2);
               },
               child: Text("XPrinter Connect"),
             ),
             MaterialButton(
               onPressed: () {
-               bluetoothprint();
+                bluetoothprint();
               },
               child: const Text("Bluetooth Printer"),
             ),
@@ -139,10 +134,9 @@ class _MyAppState extends State<MyApp> {
                           onTap: () async {
                             var data =
                                 await _flutterxprintersdkPlugin.printorder(
-                                  printerBusinessModel: printermodel,
-                                  orderiteam: orderiteam,
-                                
-                                );
+                              printerBusinessModel: printermodel,
+                              orderiteam: orderiteam,
+                            );
                             print(data);
                             // setState(() async {
                             //   _device = d.device;
@@ -160,19 +154,26 @@ class _MyAppState extends State<MyApp> {
             ),
             MaterialButton(
               onPressed: () async {
-                var data = await  _flutterxprintersdkPlugin.xprinterconnect(printermodel);
+                var data = await _flutterxprintersdkPlugin
+                    .xprinterconnect(printermodel);
                 print(data);
-
               },
               child: Text("Xprinter Connect"),
             ),
-             MaterialButton(
+            MaterialButton(
               onPressed: () async {
-                var data = await  _flutterxprintersdkPlugin.xprinterdisconnect();
+                var data = await _flutterxprintersdkPlugin.xprinterdisconnect();
                 print(data);
-
               },
               child: Text("Xprinter disconnect"),
+            ),
+
+            MaterialButton(
+              onPressed: () async {
+                var data = await _flutterxprintersdkPlugin.getimagebytes(orderiteam: orderiteam, printerBusinessModel: printermodel);
+                print("ascbashjcbajhsb ${data}");
+              },
+              child: Text("image bytes data get"),
             ),
           ],
         ),
@@ -185,22 +186,19 @@ class _MyAppState extends State<MyApp> {
   // printer business model
 
   PrinterBusinessModel printermodel = PrinterBusinessModel(
-    autoPrint: true,
-    fontSize: 28,
-    printOnCollection: 1,
-    printOnDelivery: 1,
-    printOnTableOrder: 1,
-    printOnTackwayOrder: 1,
-    printerConnection: "USB Connection",
-    selectPrinter: "bluetooth",
-    showOrderNoInvoice: true,
-    bluetoothAddress: "86:67:7A:1E:0D:34",
-    bluetoothName: "dsvsdvsd",
-    businessname: "sdvsdvsdv",
-    businessphone: "01932336565",
-    ip: "192.168.0.104",
-    businessaddress: "sdkjbvjsdhbvjhsbdv"
-  );
-
-
+      autoPrint: true,
+      fontSize: 28,
+      printOnCollection: 1,
+      printOnDelivery: 1,
+      printOnTableOrder: 1,
+      printOnTackwayOrder: 1,
+      printerConnection: "USB Connection",
+      selectPrinter: "X Printer",
+      showOrderNoInvoice: true,
+      bluetoothAddress: "86:67:7A:1E:0D:34",
+      bluetoothName: "dsvsdvsd",
+      businessname: "sdvsdvsdv",
+      businessphone: "01932336565",
+      ip: "192.168.0.104",
+      businessaddress: "sdkjbvjsdhbvjhsbdv");
 }
