@@ -6,8 +6,9 @@ import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.Printable
 import com.mazenrashed.printooth.data.printable.TextPrintable
 import com.mazenrashed.printooth.data.printer.DefaultPrinter
+import java.io.Serializable
 
-class bluetoothprint(mcontext : Context) {
+class bluetoothprint(mcontext : Context)  {
 
     var context : Context;
 

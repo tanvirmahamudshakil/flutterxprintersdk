@@ -192,7 +192,7 @@ class _MyAppState extends State<MyApp> {
     printOnTableOrder: 1,
     printOnTackwayOrder: 1,
     printerConnection: "USB Connection",
-    selectPrinter: "X Printer",
+    selectPrinter: "bluetooth",
     showOrderNoInvoice: true,
     bluetoothAddress: "86:67:7A:1E:0D:34",
     bluetoothName: "dsvsdvsd",

@@ -22,8 +22,9 @@ import net.posprinter.utils.DataForSendToPrinterPos80
 import net.posprinter.utils.PosPrinterDev
 import net.posprinter.utils.PosPrinterDev.PortType
 import net.posprinter.utils.StringUtils
+import java.io.Serializable
 
-class PosServiceBinding(mcontext: Context){
+class PosServiceBinding(mcontext: Context)  {
     private var context: Context? = null
     init {
         context = mcontext;

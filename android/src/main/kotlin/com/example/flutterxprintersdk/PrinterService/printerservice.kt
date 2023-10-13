@@ -32,12 +32,14 @@ import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
 import java.io.ByteArrayOutputStream
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt
 
 
-class printerservice(mcontext: Context, morderModel: OrderData, businessdata: PrinterBusinessData) {
+class printerservice(mcontext: Context, morderModel: OrderData, businessdata: PrinterBusinessData)
+     {
 
     private var context: Context
     private  var orderModel: OrderData
@@ -111,7 +113,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         bind.businessName.text = businessname
 
 
-        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val parser = SimpleDateFormat("yyyy-MM-ddTHH:mm:ss")
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
 
 
