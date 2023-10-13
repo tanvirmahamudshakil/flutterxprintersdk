@@ -116,12 +116,13 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
 
-
+        Log.d("order date", "orderrootget: ${orderModel.orderDate}")
         var addedDeliveryCharge = 0.0
         bind.businessLocation.text = businessaddress
         bind.businessPhone.text = businessphone
         bind.orderType.text = "${orderModel.orderType}"
-        bind.orderTime.text = "Order at : ${formatter.format(parser.parse(orderModel.orderDate))}"
+        bind.orderTime.text = "Order at : ${parser.parse(orderModel.orderDate)
+            ?.let { formatter.format(it) }}"
         bind.collectionAt.text = "${orderModel.orderType} at : ${formatter.format(parser.parse(orderModel.requestedDeliveryTimestamp))}"
 
         bind.orderNo.text = "${orderModel.id}";
