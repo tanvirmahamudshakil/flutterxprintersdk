@@ -1,20 +1,31 @@
 package com.example.flutterxprintersdk.PrinterService
 
+import android.R
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
-import android.graphics.Typeface
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.os.Build
+import android.os.Parcelable
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import com.dantsu.escposprinter.EscPosPrinter
+import com.dantsu.escposprinter.connection.usb.UsbConnection
+import com.dantsu.escposprinter.connection.usb.UsbPrintersConnections
+import com.dantsu.escposprinter.textparser.PrinterTextParserImg
 import com.example.flutterxprintersdk.OrderData
 import com.example.flutterxprintersdk.PrinterBusinessData
 import com.example.flutterxprintersdk.RequesterGuest
@@ -25,14 +36,12 @@ import com.example.xprinter.esepos.PosServiceBinding
 import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.ImagePrintable
 import com.mazenrashed.printooth.data.printable.Printable
-import com.zxy.tiny.Tiny
 import com.zxy.tiny.Tiny.BitmapCompressOptions
 import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
 import net.posprinter.utils.DataForSendToPrinterPos80
 import java.io.ByteArrayOutputStream
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -401,7 +410,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
             val compressedData =
                 originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
-            var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 530, true)
+            var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 550, true)
             printUSBbitamp(b2!!, process, serviceBinding)
 //            val options = BitmapCompressOptions()
 //            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
@@ -527,9 +536,55 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
            val compressedData =
                originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+
            newbitmaplist.add(compressedData)
        }
+
         return newbitmaplist;
     }
+
+
+   // html print new package
+         fun printUsb() {
+             val usbConnection = UsbPrintersConnections.selectFirstConnected(context)
+             val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager?
+             if (usbConnection != null && usbManager != null) {
+                 val printer = EscPosPrinter(UsbConnection(usbManager, usbConnection.device), 203, 48f, 32)
+                 printer
+                     .printFormattedText(
+                         """
+        [C]<img>${PrinterTextParserImg.bitmapToHexadecimalString(printer, context.applicationContext.resources.getDrawableForDensity(R.drawable.alert_dark_frame, DisplayMetrics.DENSITY_MEDIUM))}</img>
+        [L]
+        [C]<u><font size='big'>ORDER N°045</font></u>
+        [L]
+        [C]================================
+        [L]
+        [L]<b>BEAUTIFUL SHIRT</b>[R]9.99e
+        [L]  + Size : S
+        [L]
+        [L]<b>AWESOME HAT</b>[R]24.99e
+        [L]  + Size : 57/58
+        [L]
+        [C]--------------------------------
+        [R]TOTAL PRICE :[R]34.98e
+        [R]TAX :[R]4.23e
+        [L]
+        [C]================================
+        [L]
+        [L]<font size='tall'>Customer :</font>
+        [L]Raymond DUPONT
+        [L]5 rue des girafes
+        [L]31547 PERPETES
+        [L]Tel : +33801201456
+        [L]
+        [C]<barcode type='ean13' height='10'>831254784551</barcode>
+        [C]<qrcode size='20'>https://dantsu.com/</qrcode>
+        """.trimIndent()
+                     )
+             }
+         }
+
+
+
 
 }

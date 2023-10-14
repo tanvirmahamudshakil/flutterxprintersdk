@@ -197,8 +197,11 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
         printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
       }else if(businessdata.printerConnection == "USB Connection"){
         printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
+//        printerservice(context,modeldata, businessdata).printUsb()
       }else{
-        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
+//        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
+        bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+        printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
       }
       result.success("print successfull")
     }else{
