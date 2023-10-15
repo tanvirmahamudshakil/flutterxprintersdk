@@ -354,4 +354,165 @@ var orderiteam ={
         }
     }
 };
+
+
+
+var localorderjson = {
+  "comment": "",
+  "createdAt": "2023-10-15T13:45:56.141266",
+  "customer": {
+    "address": {
+      "building": "dsvsdvsv",
+      "city": "Address",
+      "postcode": "Address",
+      "street": "sdvsdvsdvsdvdsv",
+      "type": "PRIMARY"
+    },
+    "email": "",
+    "firstName": "dsvsdvsdvsdv",
+    "lastName": "sdvsdvsdvsdv",
+    "phone": "01932336514"
+  },
+  "deliveryCharge": 0,
+  "discountedAmount": 0,
+  "id": 0,
+  "items": [
+    {
+      "comment": "",
+      "components": [
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2012,
+          "price": 0,
+          "sortname": "Meal Deal (Chips)",
+          "unit": 1
+        },
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2011,
+          "price": 0,
+          "sortname": "None",
+          "unit": 1
+        },
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2016,
+          "price": 0,
+          "sortname": "Mayonnaise Dips",
+          "unit": 1
+        }
+      ],
+      "id": 2009,
+      "price": 5.19,
+      "sortname": "Chicken Strips",
+      "unit": 1
+    },
+    {
+      "comment": "",
+      "components": [
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2012,
+          "price": 0,
+          "sortname": "Meal Deal (Chips)",
+          "unit": 1
+        },
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2011,
+          "price": 0,
+          "sortname": "None",
+          "unit": 1
+        },
+        {
+          "comment": "",
+          "components": [
+            {
+              "comment": "",
+              "components": [],
+              "id": 2024,
+              "price": 0,
+              "sortname": "Mirianda Orange",
+              "unit": 1
+            }
+          ],
+          "id": 2016,
+          "price": 0,
+          "sortname": "Mayonnaise Dips",
+          "unit": 1
+        }
+      ],
+      "id": 2005,
+      "price": 12.6,
+      "sortname": "Lamb Chops (4pc)",
+      "unit": 1
+    }
+  ],
+  "localId": 16,
+  "netAmount": 17.79,
+  "orderChannel": "EPOS",
+  "orderDate": "2023-10-15T13:45:56.141",
+  "orderType": "TAKEOUT",
+  "payableAmount": 17.79,
+  "paymentId": 0,
+  "paymentType": "PARTIAL",
+  "prescriberId": null,
+  "requestedDeliveryTimestamp": "2023-10-15T14:00:56.139",
+  "requesterId": 0,
+  "requesterType": "PROVIDER",
+  "requesterUuid": "",
+  "shippingAddressId": 0,
+  "status": "NEW",
+  "updatedAt": "2023-10-15T13:45:56.141291"
+};
   

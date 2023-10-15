@@ -10,6 +10,7 @@ class Flutterxprintersdk {
   String bluetoothprintdata = "bluetoothprintdata";
   String printerdisconect = "printerdisconnect";
   String printimage = "printimage";
+  String localorder = "localorder";
 
   Future<String?> initialxprinter() async {
     final version =
@@ -57,8 +58,19 @@ class Flutterxprintersdk {
   }
 
 
-  Future<dynamic> getimagebytes({required Map<String, Object?> orderiteam,required PrinterBusinessModel printerBusinessModel}) async {
+  Future<List<int>?> getimagebytes({required Map<String, Object?> orderiteam,required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {"orderiteam": orderiteam, "printer_model_data": printerBusinessModel.toJson()};
-    return await methodChannel.invokeMethod(printimage, quary);
+    return await methodChannel.invokeMethod<List<int>>(printimage, quary);
+  }
+
+  Future<dynamic> printLocalOrder(
+      {required Map<String, Object?> orderiteam,
+      required PrinterBusinessModel printerBusinessModel}) async {
+    Map<String, dynamic> quary = {
+      "orderiteam": orderiteam,
+      "printer_model_data": printerBusinessModel.toJson()
+    };
+
+    return await methodChannel.invokeMethod(localorder, quary);
   }
 }

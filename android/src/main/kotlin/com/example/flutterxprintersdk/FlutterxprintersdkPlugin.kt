@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
+import com.example.flutterxprintersdk.PrinterService.LocalPrintService
 import com.example.flutterxprintersdk.PrinterService.printerservice
 import com.example.xprinter.esepos.OnDeviceConnect
 import com.example.xprinter.esepos.PosServiceBinding
@@ -31,6 +32,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   private var bluetoothprintdata: String = "bluetoothprintdata";
   private var print: String = "print";
   private var printimage: String = "printimage";
+  private var localorder: String = "localorder";
 
 
 
@@ -68,14 +70,6 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       xprinterconnectcheck(call, result);
     }
     else if(call.method == xprinterconnect) {
-//      var connecttype = call.argument<String>("type")
-//      if(connecttype == "ip"){
-//        xprinterconnect(call, result, businessdata);
-//      } else if(connecttype == "bluetooth") {
-//        bluetooth_printer_connect(call, result, businessdata);
-//      } else{
-//        xprinterconnect(call, result, businessdata)
-//      }
       xprinterconnect(call, result, businessdata)
     }
     else if(call.method == bluetoothprintdata) {
@@ -86,6 +80,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
       xprinterdisconnect(call, result);
     }else if(call.method == printimage) {
       printimagebytes(call, result, businessdata)
+    }else if(call.method == localorder) {
+
+      printdata(call, result, businessdata, true)
     }
     else {
       result.notImplemented()
@@ -186,27 +183,48 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+  fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local: Boolean = false) {
 
-    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
-    val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-
-    if (serviceBinding.IS_CONNECTED){
-      if (businessdata.printerConnection == "IP Connection"){
-        printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
-      }else if(businessdata.printerConnection == "USB Connection"){
-        printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
+ if (local){
+   var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
+   val json = Gson().toJson(orderiteamdata)
+   var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
+   if (serviceBinding.IS_CONNECTED){
+     if (businessdata.printerConnection == "IP Connection"){
+       LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+     }else if(businessdata.printerConnection == "USB Connection"){
+       LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding)
 //        printerservice(context,modeldata, businessdata).printUsb()
-      }else{
+     }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
-        bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
-        printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
-      }
-      result.success("print successfull")
-    }else{
-      result.success("printer not connected")
-    }
+//       bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+//       printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+     }
+     result.success("print successfull")
+   }else{
+     result.success("printer not connected")
+   }
+
+ }else{
+   var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
+   val json = Gson().toJson(orderiteamdata)
+   var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
+   if (serviceBinding.IS_CONNECTED){
+     if (businessdata.printerConnection == "IP Connection"){
+       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+     }else if(businessdata.printerConnection == "USB Connection"){
+       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
+//        printerservice(context,modeldata, businessdata).printUsb()
+     }else{
+//        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
+       bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+       printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+     }
+     result.success("print successfull")
+   }else{
+     result.success("printer not connected")
+   }
+ }
 
   }
 
@@ -233,11 +251,11 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
+  fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local : Boolean = false) {
     Log.d("xprinter", "printdata: ${businessdata.selectPrinter}")
     if (businessdata.selectPrinter == "X Printer"){
-
-      xprinterprint(call, result,businessdata)
+      Log.d("xprinterdata", "onMethodCall: loacal true")
+      xprinterprint(call, result,businessdata,local)
     }else if(businessdata.selectPrinter == "bluetooth") {
       bluetooth_printer_connect(call, result, businessdata);
     }
@@ -249,9 +267,8 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-     var imagebytesdata =  printerservice(context,modeldata, businessdata).getimagebytes()
-    result.success(imagebytesdata)
+     var imagebytesdata: ArrayList<ByteArray?> =  printerservice(context,modeldata, businessdata).getimagebytes()
+    result.success(imagebytesdata[0])
   }
-
 
 }

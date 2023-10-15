@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,10 +6,13 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_pos_printer_platform_image_3/flutter_pos_printer_platform_image_3.dart';
 import 'package:flutterxprintersdk/Model/printerbusinessmodel.dart';
 import 'package:flutterxprintersdk/flutterxprintersdk.dart';
+import 'package:image/image.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'imageprint.dart';
 import 'json.dart';
 
 void main() {
@@ -81,107 +85,129 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Column(
-          children: [
-            MaterialButton(
-              onPressed: () {
-                initPlatformState();
-              },
-              child: Text("Xprinter init"),
-            ),
-            MaterialButton(
-              onPressed: () {
-                connectioncheck();
-              },
-              child: Text("Connection Check"),
-            ),
-            MaterialButton(
-              onPressed: () async {
-                var data = await _flutterxprintersdkPlugin
-                    .xprinterconnect(printermodel);
-                print(data);
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MaterialButton(
+                onPressed: () {
+                  initPlatformState();
+                },
+                child: Text("Xprinter init"),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  connectioncheck();
+                },
+                child: Text("Connection Check"),
+              ),
+              MaterialButton(
+                onPressed: () async {
+                  var data = await _flutterxprintersdkPlugin
+                      .xprinterconnect(printermodel);
+                  print(data);
 
-                //
-                var data2 = await _flutterxprintersdkPlugin.printorder(
-                    orderiteam: orderiteam, printerBusinessModel: printermodel);
-                print(data2);
-              },
-              child: Text("XPrinter Connect"),
-            ),
-            MaterialButton(
-              onPressed: () {
-                bluetoothprint();
-              },
-              child: const Text("Bluetooth Printer"),
-            ),
-            StreamBuilder<List<ScanResult>>(
-              stream: scanresult,
-              builder: (c, snapshot) {
-                if (snapshot.hasData) {
-                  var realdevicelist = snapshot.data!
-                      .where((element) => element.device.localName != '')
-                      .toList();
+                  //
+                  var data2 = await _flutterxprintersdkPlugin.printLocalOrder(
+                      orderiteam: localorderjson,
+                      printerBusinessModel: printermodel);
+                  print(data2);
+                },
+                child: Text("XPrinter Connect"),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  bluetoothprint();
+                },
+                child: const Text("Bluetooth Printer"),
+              ),
+              StreamBuilder<List<ScanResult>>(
+                stream: scanresult,
+                builder: (c, snapshot) {
+                  if (snapshot.hasData) {
+                    var realdevicelist = snapshot.data!
+                        .where((element) => element.device.localName != '')
+                        .toList();
 
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: realdevicelist.length,
-                      itemBuilder: (context, index) {
-                        var d = realdevicelist[index];
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: realdevicelist.length,
+                        itemBuilder: (context, index) {
+                          var d = realdevicelist[index];
 
-                        return ListTile(
-                          title: Text(d.device.localName),
-                          subtitle: Text(d.device.remoteId.str),
-                          onTap: () async {
-                            var data =
-                                await _flutterxprintersdkPlugin.printorder(
-                              printerBusinessModel: printermodel,
-                              orderiteam: orderiteam,
-                            );
-                            print(data);
-                            // setState(() async {
-                            //   _device = d.device;
+                          return ListTile(
+                            title: Text(d.device.localName),
+                            subtitle: Text(d.device.remoteId.str),
+                            onTap: () async {
+                              PrinterBusinessModel printermodel2 =
+                                  PrinterBusinessModel(
+                                      autoPrint: true,
+                                      fontSize: 16,
+                                      printOnCollection: 1,
+                                      printOnDelivery: 1,
+                                      printOnTableOrder: 1,
+                                      printOnTackwayOrder: 1,
+                                      printerConnection: "USB Connection",
+                                      selectPrinter: "bluetooth",
+                                      showOrderNoInvoice: true,
+                                      bluetoothAddress: d.device.remoteId.str,
+                                      bluetoothName: d.device.localName,
+                                      businessname: "sdvsdvsdv",
+                                      businessphone: "01932336565",
+                                      ip: "192.168.0.104",
+                                      businessaddress: "sdkjbvjsdhbvjhsbdv");
+                              var data =
+                                  await _flutterxprintersdkPlugin.printorder(
+                                printerBusinessModel: printermodel2,
+                                orderiteam: orderiteam,
+                              );
+                              print(data);
+                              // setState(() async {
+                              //   _device = d.device;
 
-                            //   connect();
-                            // });
-                          },
-                          trailing: Icon(Icons.check),
-                        );
-                      });
-                } else {
-                  return SizedBox();
-                }
-              },
-            ),
-            MaterialButton(
-              onPressed: () async {
-                var data = await _flutterxprintersdkPlugin
-                    .xprinterconnect(printermodel);
-                print(data);
-              },
-              child: Text("Xprinter Connect"),
-            ),
-            MaterialButton(
-              onPressed: () async {
-                var data = await _flutterxprintersdkPlugin.xprinterdisconnect();
-                print(data);
-              },
-              child: Text("Xprinter disconnect"),
-            ),
-
-            MaterialButton(
-              onPressed: () async {
-                var data = await _flutterxprintersdkPlugin.getimagebytes(orderiteam: orderiteam, printerBusinessModel: printermodel);
-                print("ascbashjcbajhsb ${data}");
-              },
-              child: Text("image bytes data get"),
-            ),
-          ],
+                              //   connect();
+                              // });
+                            },
+                            trailing: Icon(Icons.check),
+                          );
+                        });
+                  } else {
+                    return SizedBox();
+                  }
+                },
+              ),
+              MaterialButton(
+                onPressed: () async {
+                  var data = await _flutterxprintersdkPlugin
+                      .xprinterconnect(printermodel);
+                  print(data);
+                },
+                child: Text("Xprinter Connect"),
+              ),
+              MaterialButton(
+                onPressed: () async {
+                  var data =
+                      await _flutterxprintersdkPlugin.xprinterdisconnect();
+                  print(data);
+                },
+                child: Text("Xprinter disconnect"),
+              ),
+              MaterialButton(
+                onPressed: () async {
+                  var data = await _flutterxprintersdkPlugin.getimagebytes(
+                      orderiteam: orderiteam,
+                      printerBusinessModel: printermodel);
+                  //  ImagePrint().imageprint(data);
+                  // print("ascbashjcbajhsb ${data}");
+                },
+                child: Text("image bytes data get"),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
-
 
   // printer business model
 
@@ -195,7 +221,7 @@ class _MyAppState extends State<MyApp> {
       printerConnection: "USB Connection",
       selectPrinter: "X Printer",
       showOrderNoInvoice: true,
-      bluetoothAddress: "86:67:7A:1E:0D:34",
+      bluetoothAddress: "DC:0D:30:EE:30:2A",
       bluetoothName: "dsvsdvsd",
       businessname: "sdvsdvsdv",
       businessphone: "01932336565",

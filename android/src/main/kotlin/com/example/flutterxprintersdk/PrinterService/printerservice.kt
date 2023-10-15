@@ -354,7 +354,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinteripdata(serviceBinding: PosServiceBinding) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-
         for (bitmap in bitmaplist){
             printBitmap(bitmap, object : OnPrintProcess {
                 override fun onSuccess() {
@@ -427,9 +426,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         }
     }
 
-    /*
-    print the bitmap ,the connection is USB
-     */
     private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         val height = printBmp.height
         // if height > 200 cut the bitmap
@@ -491,7 +487,9 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
             })
         }
     }
-    fun resizeImage(bitmap: Bitmap, w: Int, ischecked: Boolean): Bitmap? {
+
+
+         fun resizeImage(bitmap: Bitmap, w: Int, ischecked: Boolean): Bitmap? {
         var resizedBitmap: Bitmap? = null
         val width = bitmap.width
         val height = bitmap.height
@@ -534,10 +532,11 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
            val compressFormat = Bitmap.CompressFormat.JPEG
            val compressionQuality = 10 // Adjust the quality as needed
 
-           val compressedData =
-               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+//           val compressedData =
+//               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
-           newbitmaplist.add(compressedData)
+
+           newbitmaplist.add(bitmapToByteArray(b2!!))
        }
 
         return newbitmaplist;
@@ -585,6 +584,10 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
          }
 
 
-
+         fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+             val stream = ByteArrayOutputStream()
+             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+             return stream.toByteArray()
+         }
 
 }

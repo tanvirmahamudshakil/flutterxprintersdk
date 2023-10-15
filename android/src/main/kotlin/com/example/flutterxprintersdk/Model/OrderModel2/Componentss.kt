@@ -3,7 +3,7 @@ package com.example.flutterxprintersdk
 import com.google.gson.annotations.SerializedName
 
 
-data class Components (
+data class Componentss (
 
   @SerializedName("id"                  ) var id                 : Int?                  = null,
   @SerializedName("parent_id"           ) var parentId           : Int?                  = null,
@@ -14,7 +14,7 @@ data class Components (
   @SerializedName("net_amount"          ) var netAmount          : Double?               = null,
   @SerializedName("discountable_amount" ) var discountableAmount : Int?                  = null,
   @SerializedName("comment"             ) var comment            : String?               = null,
-  @SerializedName("components"          ) var components         : ArrayList<Components> = arrayListOf(),
+  @SerializedName("components"          ) var components         : ArrayList<Componentss> = arrayListOf(),
   @SerializedName("product"             ) var product            : Product?              = Product()
 
 )
