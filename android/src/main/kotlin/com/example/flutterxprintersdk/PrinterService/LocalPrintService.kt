@@ -75,7 +75,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                     ?.let { formatter.format(it) }
             }
         }"
-        bind.orderNo.text = "${orderModel.id}";
+        bind.orderNo.text = "${orderModel.localId}";
         var allitemsheight = 0
         bind.items.removeAllViews()
         for (j in orderModel.items!!.indices) {
