@@ -195,7 +195,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
 
         bind.total.text =
-            "£ " +String.format( "%.2f",orderModel.payableAmount)
+            "£ " +String.format( "%.2f",(orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
 
 
         var dlAddress = "Service charge is not included\n\n"

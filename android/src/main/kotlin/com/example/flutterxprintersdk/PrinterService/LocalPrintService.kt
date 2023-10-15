@@ -122,7 +122,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         bind.tipsContainer.visibility = View.GONE
         bind.containerOrderNo.visibility = View.VISIBLE
         bind.total.text =
-            "£ " +String.format( "%.2f",orderModel.payableAmount)
+            "£ " +String.format( "%.2f",(orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
         var dlAddress = "Service charge is not included\n\n"
         if (orderModel.orderType == "DELIVERY" || orderModel.orderType == "COLLECTION" || orderModel.orderType == "TAKEOUT") {
             val customerModel: Customer? = orderModel.customer
