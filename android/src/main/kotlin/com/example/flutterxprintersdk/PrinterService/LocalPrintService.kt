@@ -14,11 +14,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.example.flutterxprintersdk.Customer
-import com.example.flutterxprintersdk.LocalOrderDetails
-import com.example.flutterxprintersdk.OrderData
+import com.example.flutterxprintersdk.Model.LocalOrderDetails.Customer
+import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
 import com.example.flutterxprintersdk.PrinterBusinessData
-import com.example.flutterxprintersdk.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
@@ -145,6 +143,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 
     }
 
+    @SuppressLint("SetTextI18n")
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
         val item = orderModel.items!!.get(position)
@@ -155,17 +154,61 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 //            }
             binding.underLine.visibility = View.VISIBLE
         }
+//        if (style == 0) {
+//            if (item.components!!.isNotEmpty()) {
+//                str3.append(item.unit).append(" x ").append(item.shortName)
+//                for (section in item.components) {
+//                    var _comName = ""
+//                    if (section.shortName!!.uppercase() != "NONE") {
+//                        _comName = section.shortName!!
+//                    }
+//                    if (section.components != null) {
+//                        if (section.components!!.shortName!!.uppercase() != "NONE") {
+//                            _comName += " -> " + section.components!!.shortName
+//                        }
+//                    }
+//                    if (_comName != "") {
+//                        str3.append("\n").append(_comName)
+//                    }
+//                }
+//            } else {
+//                str3.append(item.unit).append(" x ").append(item!!.shortName)
+//            }
+//        } else {
+//            if (item.components!!.isNotEmpty()) {
+//                for (section in item.components!!) {
+//                    var _comName = ""
+//                    if (section.shortName != "NONE") {
+//                        _comName = section.shortName!!
+//                    }
+//                    if (section.shortName != "NONE") _comName += " -> " + section.shortName
+//                    str3.append(item.unit).append(" x ").append(item.shortName).append(" : ")
+//                        .append(_comName)
+//                }
+//            } else {
+//                str3.append(item.unit).append(" x ").append(item.shortName)
+//            }
+//        }
+//        var price = 0.0
+//        price = item.price!!
+//        if(item.comment != null) str3.append("\nNote : ").append(item.comment)
+//        binding.itemText.text = str3.toString()
+//        binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
+//        binding.itemPrice.text = "£ ${String.format("%.2f", price.toFloat())}"
+//        binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
+//        binding.root.buildDrawingCache(true)
+
         if (style == 0) {
-            if (item.components!!.isNotEmpty()) {
-                str3.append(item.unit).append(" x ").append(item.sortname)
-                for (section in item.components!!) {
+            if (item.components.size > 0) {
+                str3.append(item.unit).append(" x ").append(item.shortName)
+                for (section in item.components) {
                     var _comName = ""
-                    if (section.sortname!!.uppercase() != "NONE") {
-                        _comName = section.sortname!!
+                    if (!section!!.shortName.equals("NONE")) {
+                        _comName = section!!.shortName.toString();
                     }
-                    if (section.components!!.isNotEmpty()) {
-                        if (section.components.first().sortname!!.uppercase() != "NONE") {
-                            _comName += " -> " + section.components.first().sortname
+                    if (section.components != null) {
+                        if (!section.components!!.shortName.equals("NONE")) {
+                            _comName += " -> " + section.components!!.shortName
                         }
                     }
                     if (_comName != "") {
@@ -173,31 +216,54 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                     }
                 }
             } else {
-                str3.append(item.unit).append(" x ").append(item!!.sortname)
+                str3.append(item.unit).append(" x ").append(item.shortName)
             }
         } else {
-            if (item.components!!.isNotEmpty()) {
-                for (section in item.components!!) {
+            if (item.components.size > 0) {
+                for (section in item.components) {
                     var _comName = ""
-                    if (section.sortname != "NONE") {
-                        _comName = section.sortname!!
+                    if (!section.shortName.equals("NONE")) {
+                        _comName = section!!.shortName.toString()
                     }
-                    if (section.sortname != "NONE") _comName += " -> " + section.sortname
-                    str3.append(item.unit).append(" x ").append(item.sortname).append(" : ")
+                    if (section.components != null) {
+                        if (!section.components!!.shortName.equals("NONE")) _comName += " -> " + section.components!!.shortName
+                    }
+                    str3.append(item.unit).append(" x ").append(item.shortName).append(" : ")
                         .append(_comName)
                 }
             } else {
-                str3.append(item.unit).append(" x ").append(item.sortname)
+                str3.append(item.unit).append(" x ").append(item.shortName)
             }
         }
+
+        if (item.extra.size > 0) {
+            val str = java.lang.StringBuilder("\nExtra :")
+            for (extraItem in item.extra) {
+                str.append("  *").append(extraItem.shortName)
+            }
+            str3.append(str.toString())
+        }
+
+
         var price = 0.0
-        price = item.price!!
-        if(item.comment != null) str3.append("\nNote : ").append(item.comment)
+
+        if (item.isDiscountApplied == null || !item.isDiscountApplied!!) {
+            price = item.price!! * item.unit!!
+            if (item.extra != null) {
+                for (extraItem in item.extra) {
+                    price += extraItem.price!!
+                }
+            }
+        } else price = item.price!!
+
+        if (!item.comment!!.isEmpty()) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
-        binding.itemPrice.text = "£ ${String.format("%.2f", price.toFloat())}"
+        binding.itemPrice.text =
+            "£ " + String.format(Locale.getDefault(), "%.2f", price)
         binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
         binding.root.buildDrawingCache(true)
+
         return binding.root
     }
     private fun getBitmapFromView(view: View): ArrayList<Bitmap> {
@@ -387,6 +453,37 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
             bitmaps.add(b)
         }
         return bitmaps
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getimagebytes(): ArrayList<ByteArray?> {
+        val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
+        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+
+        for (bitmap in bitmaplist){
+            var b2 = resizeImage(bitmap, 530, true)
+            val originalBitmap: Bitmap? = b2
+            val compressFormat = Bitmap.CompressFormat.JPEG
+            val compressionQuality = 10 // Adjust the quality as needed
+
+//           val compressedData =
+//               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+
+
+            newbitmaplist.add(bitmapToByteArray(b2!!))
+        }
+
+        return newbitmaplist;
+    }
+
+
+
+
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
     }
 
 }

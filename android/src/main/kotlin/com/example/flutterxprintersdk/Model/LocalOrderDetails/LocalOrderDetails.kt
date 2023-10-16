@@ -1,4 +1,4 @@
-package com.example.flutterxprintersdk
+package com.example.flutterxprintersdk.Model.LocalOrderDetails
 
 import com.google.gson.annotations.SerializedName
 
@@ -7,11 +7,9 @@ data class LocalOrderDetails (
 
   @SerializedName("comment"                    ) var comment                    : String?          = null,
   @SerializedName("createdAt"                  ) var createdAt                  : String?          = null,
-  @SerializedName("customer"                   ) var customer                   : Customer?        = Customer(),
   @SerializedName("deliveryCharge"             ) var deliveryCharge             : Int?             = null,
   @SerializedName("discountedAmount"           ) var discountedAmount           : Int?             = null,
   @SerializedName("id"                         ) var id                         : Int?             = null,
-  @SerializedName("items"                      ) var items                      : ArrayList<Items> = arrayListOf(),
   @SerializedName("localId"                    ) var localId                    : Int?             = null,
   @SerializedName("netAmount"                  ) var netAmount                  : Double?          = null,
   @SerializedName("orderChannel"               ) var orderChannel               : String?          = null,
@@ -27,6 +25,8 @@ data class LocalOrderDetails (
   @SerializedName("requesterUuid"              ) var requesterUuid              : String?          = null,
   @SerializedName("shippingAddressId"          ) var shippingAddressId          : Int?             = null,
   @SerializedName("status"                     ) var status                     : String?          = null,
-  @SerializedName("updatedAt"                  ) var updatedAt                  : String?          = null
+  @SerializedName("updatedAt"                  ) var updatedAt                  : String?          = null,
+  @SerializedName("items"                      ) var items                      : ArrayList<Items> = arrayListOf(),
+  @SerializedName("customer"                   ) var customer                   : Customer?        = null
 
 )

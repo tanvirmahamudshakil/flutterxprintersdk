@@ -11,8 +11,6 @@ import 'package:flutterxprintersdk/Model/printerbusinessmodel.dart';
 import 'package:flutterxprintersdk/flutterxprintersdk.dart';
 import 'package:image/image.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import 'imageprint.dart';
 import 'json.dart';
 
 void main() {
@@ -103,11 +101,11 @@ class _MyAppState extends State<MyApp> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  var data = await _flutterxprintersdkPlugin
-                      .xprinterconnect(printermodel);
-                  print(data);
+                  // var data = await _flutterxprintersdkPlugin
+                  //     .xprinterconnect(printermodel);
+                  // print(data);
 
-                  //
+                  // //
                   var data2 = await _flutterxprintersdkPlugin.printLocalOrder(
                       orderiteam: localorderjson,
                       printerBusinessModel: printermodel);
@@ -195,7 +193,7 @@ class _MyAppState extends State<MyApp> {
               MaterialButton(
                 onPressed: () async {
                   var data = await _flutterxprintersdkPlugin.getimagebytes(
-                      orderiteam: orderiteam,
+                      orderiteam: localorderjson,
                       printerBusinessModel: printermodel);
                   //  ImagePrint().imageprint(data);
                   // print("ascbashjcbajhsb ${data}");

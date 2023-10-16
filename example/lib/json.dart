@@ -359,160 +359,301 @@ var orderiteam ={
 
 var localorderjson = {
   "comment": "",
-  "createdAt": "2023-10-15T13:45:56.141266",
-  "customer": {
-    "address": {
-      "building": "dsvsdvsv",
-      "city": "Address",
-      "postcode": "Address",
-      "street": "sdvsdvsdvsdvdsv",
-      "type": "PRIMARY"
-    },
-    "email": "",
-    "firstName": "dsvsdvsdvsdv",
-    "lastName": "sdvsdvsdvsdv",
-    "phone": "01932336514"
-  },
+  "createdAt": "2023-10-16T22:32:53.641935",
   "deliveryCharge": 0,
   "discountedAmount": 0,
   "id": 0,
-  "items": [
-    {
-      "comment": "",
-      "components": [
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2012,
-          "price": 0,
-          "sortname": "Meal Deal (Chips)",
-          "unit": 1
-        },
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2011,
-          "price": 0,
-          "sortname": "None",
-          "unit": 1
-        },
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2016,
-          "price": 0,
-          "sortname": "Mayonnaise Dips",
-          "unit": 1
-        }
-      ],
-      "id": 2009,
-      "price": 5.19,
-      "sortname": "Chicken Strips",
-      "unit": 1
-    },
-    {
-      "comment": "",
-      "components": [
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2012,
-          "price": 0,
-          "sortname": "Meal Deal (Chips)",
-          "unit": 1
-        },
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2011,
-          "price": 0,
-          "sortname": "None",
-          "unit": 1
-        },
-        {
-          "comment": "",
-          "components": [
-            {
-              "comment": "",
-              "components": [],
-              "id": 2024,
-              "price": 0,
-              "sortname": "Mirianda Orange",
-              "unit": 1
-            }
-          ],
-          "id": 2016,
-          "price": 0,
-          "sortname": "Mayonnaise Dips",
-          "unit": 1
-        }
-      ],
-      "id": 2005,
-      "price": 12.6,
-      "sortname": "Lamb Chops (4pc)",
-      "unit": 1
-    }
-  ],
-  "localId": 16,
-  "netAmount": 17.79,
+  "localId": 6,
+  "netAmount": 27.37,
   "orderChannel": "EPOS",
-  "orderDate": "2023-10-15T13:45:56.141",
+  "orderDate": "2023-10-16T22:32:53.642800",
   "orderType": "TAKEOUT",
-  "payableAmount": 17.79,
+  "payableAmount": 27.37,
   "paymentId": 0,
-  "paymentType": "PARTIAL",
+  "paymentType": "NOTPAY",
   "prescriberId": null,
-  "requestedDeliveryTimestamp": "2023-10-15T14:00:56.139",
+  "requestedDeliveryTimestamp": "2023-10-16T22:47:53.638119",
   "requesterId": 0,
   "requesterType": "PROVIDER",
   "requesterUuid": "",
   "shippingAddressId": 0,
   "status": "NEW",
-  "updatedAt": "2023-10-15T13:45:56.141291"
+  "updatedAt": "2023-10-16T22:32:53.641935",
+  "items": [
+    {
+      "id": 2009,
+      "unit": 1,
+      "comment": "",
+      "shortName": "Chicken Strips",
+      "type": "ITEM",
+      "currency": "£",
+      "price": 4.99,
+      "isDiscountApplied": null,
+      "discountPrice": null,
+      "components": [
+        {
+          "id": 2013,
+          "shortName": "Meal Deal (Rice)",
+          "type": "COMPONENT",
+          "groupName": "Choose One",
+          "currency": "£",
+          "price": 3,
+          "unit": 1,
+          "comment": "",
+          "components": {
+            "id": 2024,
+            "shortName": "Mirianda Orange",
+            "type": "COMPONENT",
+            "groupName": null,
+            "currency": "",
+            "price": 0,
+            "unit": 1,
+            "comment": "",
+            "components": null
+          }
+        },
+        {
+          "id": 2014,
+          "shortName": "Peri Peri",
+          "type": "COMPONENT",
+          "groupName": "Flavours",
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": "",
+          "components": {
+            "id": 2087,
+            "shortName": "Extra Hot",
+            "type": "COMPONENT",
+            "groupName": null,
+            "currency": "",
+            "price": 0,
+            "unit": 1,
+            "comment": "",
+            "components": null
+          }
+        },
+        {
+          "id": 2016,
+          "shortName": "Mayonnaise Dips",
+          "type": "COMPONENT",
+          "groupName": "Extra",
+          "currency": "£",
+          "price": 0.2,
+          "unit": 1,
+          "comment": "",
+          "components": null
+        }
+      ],
+      "extra": []
+    },
+    {
+      "id": 2009,
+      "unit": 1,
+      "comment": "",
+      "shortName": "Chicken Strips",
+      "type": "ITEM",
+      "currency": "£",
+      "price": 4.99,
+      "isDiscountApplied": null,
+      "discountPrice": null,
+      "components": [
+        {
+          "id": 2012,
+          "shortName": "Meal Deal (Chips)",
+          "type": "COMPONENT",
+          "groupName": "Choose One",
+          "currency": "£",
+          "price": 2.5,
+          "unit": 1,
+          "comment": "",
+          "components": {
+            "id": 2021,
+            "shortName": "Dr Paper",
+            "type": "COMPONENT",
+            "groupName": null,
+            "currency": "",
+            "price": 0,
+            "unit": 1,
+            "comment": "",
+            "components": null
+          }
+        },
+        {
+          "id": 2015,
+          "shortName": "BBQ",
+          "type": "COMPONENT",
+          "groupName": "Flavours",
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": "",
+          "components": {
+            "id": 2127,
+            "shortName": "Lemon",
+            "type": "COMPONENT",
+            "groupName": null,
+            "currency": "",
+            "price": 0,
+            "unit": 1,
+            "comment": "",
+            "components": null
+          }
+        },
+        {
+          "id": 2017,
+          "shortName": "Chili Dips",
+          "type": "COMPONENT",
+          "groupName": "Extra",
+          "currency": "£",
+          "price": 0.2,
+          "unit": 1,
+          "comment": "",
+          "components": null
+        }
+      ],
+      "extra": [
+        {
+          "id": 2136,
+          "shortName": "Extra garlic",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        },
+        {
+          "id": 2143,
+          "shortName": "Extra g Chilli",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        },
+        {
+          "id": 2141,
+          "shortName": "Extra corrianda",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        },
+        {
+          "id": 2137,
+          "shortName": "Extra chicken",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "£",
+          "price": 0.5,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        }
+      ]
+    },
+    {
+      "id": 2031,
+      "unit": 1,
+      "comment": "",
+      "shortName": "Fillet Burger",
+      "type": "ITEM",
+      "currency": "£",
+      "price": 4.99,
+      "isDiscountApplied": null,
+      "discountPrice": null,
+      "components": [
+        {
+          "id": 2012,
+          "shortName": "Meal Deal (Chips)",
+          "type": "COMPONENT",
+          "groupName": "Options",
+          "currency": "£",
+          "price": 2.5,
+          "unit": 1,
+          "comment": "",
+          "components": {
+            "id": 2024,
+            "shortName": "Mirianda Orange",
+            "type": "COMPONENT",
+            "groupName": null,
+            "currency": "",
+            "price": 0,
+            "unit": 1,
+            "comment": "",
+            "components": null
+          }
+        }
+      ],
+      "extra": [
+        {
+          "id": 2143,
+          "shortName": "Extra g Chilli",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        },
+        {
+          "id": 2136,
+          "shortName": "Extra garlic",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "",
+          "price": 0,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        },
+        {
+          "id": 2138,
+          "shortName": "Extra Hot",
+          "type": "ITEM",
+          "groupName": null,
+          "currency": "£",
+          "price": 0.5,
+          "unit": 1,
+          "comment": null,
+          "components": null
+        }
+      ]
+    },
+    {
+      "id": 2098,
+      "unit": 1,
+      "comment": "",
+      "shortName": "Chicken Nuggets (5pc)",
+      "type": "ITEM",
+      "currency": "£",
+      "price": 3,
+      "isDiscountApplied": null,
+      "discountPrice": null,
+      "components": [],
+      "extra": []
+    }
+  ],
+  "customer": {
+    "firstName": "",
+    "lastName": "",
+    "phone": "",
+    "email": "",
+    "address": {
+      "type": "",
+      "building": "",
+      "street": "",
+      "city": "",
+      "postcode": ""
+    }
+  }
 };
   

@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
+import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
 import com.example.flutterxprintersdk.PrinterService.LocalPrintService
 import com.example.flutterxprintersdk.PrinterService.printerservice
 import com.example.xprinter.esepos.OnDeviceConnect
@@ -266,8 +267,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   fun printimagebytes(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
-    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-     var imagebytesdata: ArrayList<ByteArray?> =  printerservice(context,modeldata, businessdata).getimagebytes()
+    var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
+     var imagebytesdata: ArrayList<ByteArray?> =  LocalPrintService(context,modeldata, businessdata).getimagebytes()
+    Log.d("image data", "printimagebytes: ${imagebytesdata[0]}")
     result.success(imagebytesdata[0])
   }
 
