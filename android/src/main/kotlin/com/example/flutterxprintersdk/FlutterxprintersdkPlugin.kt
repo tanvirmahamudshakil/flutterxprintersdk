@@ -2,10 +2,12 @@ package com.example.flutterxprintersdk
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+
 import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
 import com.example.flutterxprintersdk.PrinterService.LocalPrintService
@@ -20,9 +22,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 
 /** FlutterxprintersdkPlugin */
 class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -34,6 +33,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   private var print: String = "print";
   private var printimage: String = "printimage";
   private var localorder: String = "localorder";
+  private var orderview: String = "orderview"
 
 
 
@@ -82,8 +82,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     }else if(call.method == printimage) {
       printimagebytes(call, result, businessdata)
     }else if(call.method == localorder) {
-
       printdata(call, result, businessdata, true)
+    }else if(call.method == orderview) {
+      orderactivity(call, result, businessdata)
     }
     else {
       result.notImplemented()
@@ -272,5 +273,21 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     Log.d("image data", "printimagebytes: ${imagebytesdata[0]}")
     result.success(imagebytesdata[0])
   }
+
+  fun orderactivity(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {
+    val intent = Intent(context, OrderView::class.java)
+    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
+    val json = Gson().toJson(orderiteamdata)
+
+    var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
+
+    val business = Gson().toJson(printerbusinessdata)
+    intent.putExtra("orderiteam", json);
+    intent.putExtra("business", business);
+    activity.startActivity(intent)
+  }
+
+
+
 
 }

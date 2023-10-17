@@ -200,6 +200,16 @@ class _MyAppState extends State<MyApp> {
                 },
                 child: Text("image bytes data get"),
               ),
+              MaterialButton(
+                onPressed: () async {
+                    await _flutterxprintersdkPlugin.getorderview(
+                      orderiteam: localorderjson,
+                      printerBusinessModel: printermodel);
+                  //  ImagePrint().imageprint(data);
+                  // print("ascbashjcbajhsb ${data}");
+                },
+                child: Text("start activity"),
+              ),
             ],
           ),
         ),

@@ -11,6 +11,7 @@ class Flutterxprintersdk {
   String printerdisconect = "printerdisconnect";
   String printimage = "printimage";
   String localorder = "localorder";
+  String orderview = "orderview";
 
   Future<String?> initialxprinter() async {
     final version =
@@ -72,5 +73,15 @@ class Flutterxprintersdk {
     };
 
     return await methodChannel.invokeMethod(localorder, quary);
+  }
+
+
+  Future getorderview({required Map<String, Object?> orderiteam,
+      required PrinterBusinessModel printerBusinessModel}) async {
+        Map<String, dynamic> quary = {
+      "orderiteam": orderiteam,
+      "printer_model_data": printerBusinessModel.toJson()
+    };
+    await methodChannel.invokeMethod(orderview, quary);
   }
 }

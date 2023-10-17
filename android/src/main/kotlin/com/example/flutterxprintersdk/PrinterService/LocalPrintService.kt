@@ -1,6 +1,7 @@
 package com.example.flutterxprintersdk.PrinterService
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,6 +9,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -82,14 +84,14 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
             allitemsheight += childView!!.measuredHeight
         }
           var paidOrNot = "";
-//        if (orderModel.cashEntry!!.isNotEmpty()) {
-//            paidOrNot ="ORDER IS PAID"
-//        } else  {
-//            paidOrNot = "ORDER NOT PAID"
-//            bind.dueTotalContainer.visibility = View.VISIBLE
-//            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
-//        }
-        paidOrNot = "ORDER NOT PAID"
+        if (!orderModel.paymentType!!.uppercase().equals("NOTPAY")) {
+            paidOrNot ="ORDER IS PAID"
+        } else  {
+            paidOrNot = "ORDER NOT PAID"
+            bind.dueTotalContainer.visibility = View.VISIBLE
+            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
+        }
+//        paidOrNot = "ORDER NOT PAID"
         bind.dueTotalContainer.visibility = View.VISIBLE
         bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
 
@@ -203,11 +205,11 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                 str3.append(item.unit).append(" x ").append(item.shortName)
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section!!.shortName.equals("NONE")) {
+                    if (!section!!.shortName!!.uppercase().equals("NONE")) {
                         _comName = section!!.shortName.toString();
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName.equals("NONE")) {
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) {
                             _comName += " -> " + section.components!!.shortName
                         }
                     }
@@ -222,11 +224,11 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
             if (item.components.size > 0) {
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section.shortName.equals("NONE")) {
+                    if (!section.shortName!!.uppercase().equals("NONE")) {
                         _comName = section!!.shortName.toString()
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName.equals("NONE")) _comName += " -> " + section.components!!.shortName
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) _comName += " -> " + section.components!!.shortName
                     }
                     str3.append(item.unit).append(" x ").append(item.shortName).append(" : ")
                         .append(_comName)
@@ -247,16 +249,32 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 
         var price = 0.0
 
-        if (item.isDiscountApplied == null || !item.isDiscountApplied!!) {
-            price = item.price!! * item.unit!!
-            if (item.extra != null) {
-                for (extraItem in item.extra) {
-                    price += extraItem.price!!
+//        if (item.isDiscountApplied == null || !item.isDiscountApplied!!) {
+//            price = item.price!! * item.unit!!
+//            if (item.extra != null) {
+//                for (extraItem in item.extra) {
+//                    price += extraItem.price!!
+//                }
+//            }
+//        } else price = item.price!!
+
+        if (item.isDiscountApplied != null && item.isDiscountApplied == true){
+            price = item.discountPrice!!.toDouble() * item.unit!!
+        }else{
+            price += item.price!! * item.unit!!;
+            if (item.components != null) {
+                if (item.components!!.isNotEmpty()) {
+                    for ( component in item.components!!) {
+                        price += component.price!!;
+                        if (component.components != null) {
+                            price += component.components!!.price!!;
+                        }
+                    }
                 }
             }
-        } else price = item.price!!
+        }
 
-        if (!item.comment!!.isEmpty()) str3.append("\nNote : ").append(item.comment)
+        if (item.comment!!.isNotEmpty()) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
         binding.itemPrice.text =
@@ -485,5 +503,6 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
     }
+
 
 }
