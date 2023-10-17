@@ -269,9 +269,8 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
     val json = Gson().toJson(orderiteamdata)
     var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
-     var imagebytesdata: ArrayList<ByteArray?> =  LocalPrintService(context,modeldata, businessdata).getimagebytes()
-    Log.d("image data", "printimagebytes: ${imagebytesdata[0]}")
-    result.success(imagebytesdata[0])
+     var imagebytesdata: ByteArray? =  LocalPrintService(context,modeldata, businessdata).getimagebytes()
+    result.success(imagebytesdata)
   }
 
   fun orderactivity(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {

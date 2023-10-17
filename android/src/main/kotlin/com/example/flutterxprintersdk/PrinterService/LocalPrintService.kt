@@ -474,25 +474,63 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getimagebytes(): ArrayList<ByteArray?> {
-        val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-
-        for (bitmap in bitmaplist){
-            var b2 = resizeImage(bitmap, 530, true)
-            val originalBitmap: Bitmap? = b2
-            val compressFormat = Bitmap.CompressFormat.JPEG
-            val compressionQuality = 10 // Adjust the quality as needed
-
-//           val compressedData =
-//               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
 
-            newbitmaplist.add(bitmapToByteArray(b2!!))
+
+    private fun getSingleBitmapFromView(view: View): Bitmap {
+
+        val spec = View.MeasureSpec.makeMeasureSpec(
+            0,
+            View.MeasureSpec.UNSPECIFIED
+        )
+        view.measure(spec, spec)
+        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+
+        //Define a bitmap with the same size as the view
+        val returnedBitmap = Bitmap.createBitmap(
+            view.measuredWidth,
+            view.measuredHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        //Bind a canvas to it
+        val canvas = Canvas(returnedBitmap)
+        //Get the view's background
+        val bgDrawable = view.background
+        if (bgDrawable != null) {
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas)
+        } else {
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE)
         }
+        // draw the view on the canvas
+        view.draw(canvas)
 
-        return newbitmaplist;
+        //create resized image and display
+        val maxImageSize = 570f
+        val ratio = maxImageSize / returnedBitmap.width
+        val width = (ratio * returnedBitmap.width).roundToInt()
+        val height = (ratio * returnedBitmap.height).roundToInt()
+        //return the bitmap
+        var bitmap = Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
+        return bitmap;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getimagebytes(): ByteArray? {
+        val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
+        val bitmaplist: Bitmap =  getSingleBitmapFromView(orderrootget())
+
+        var b2 = resizeImage(bitmaplist, 530, true)
+        val originalBitmap: Bitmap? = b2
+        val compressFormat = Bitmap.CompressFormat.JPEG
+        val compressionQuality = 10 // Adjust the quality as needed
+
+           val compressedData =
+               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+
+
+        return compressedData;
     }
 
 
