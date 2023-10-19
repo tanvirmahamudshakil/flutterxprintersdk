@@ -67,11 +67,13 @@ class PosServiceBinding(mcontext: Context)  {
 
         binder!!.CheckLinkedState(object : TaskCallback {
             override fun OnSucceed() {
+                result.success(true);
                 IS_CONNECTED = true;
 
             }
 
             override fun OnFailed() {
+                result.success(false);
                 IS_CONNECTED = false;
 
             }

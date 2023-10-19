@@ -46,7 +46,6 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   private lateinit var context : Context
   private lateinit var activity : Activity
   lateinit var serviceBinding: PosServiceBinding
-  lateinit var  eventchannel: EventChannel;
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutterxprintersdk")
@@ -61,9 +60,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onMethodCall(call: MethodCall, result: Result) {
-
     var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
-
     val json = Gson().toJson(printerbusinessdata)
     Log.d("printer data", "onMethodCall: ${json}")
     var businessdata = Gson().fromJson<PrinterBusinessData>(json, PrinterBusinessData::class.java)
@@ -121,7 +118,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   fun xprinterconnectcheck(call: MethodCall, result: Result) {
-//    serviceBinding.checkConnection(result);
+    serviceBinding.checkConnection(result);
   }
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
