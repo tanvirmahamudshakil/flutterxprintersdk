@@ -123,9 +123,27 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
     if (businessdata.printerConnection == "IP Connection"){
-      serviceBinding.connectNet(businessdata.ip.toString(), result);
+      serviceBinding.connectNet(businessdata.ip.toString(), object : OnDeviceConnect{
+        override fun onConnect(isConnect: Boolean) {
+          if (isConnect){
+            Toast.makeText(context, "printer connected", Toast.LENGTH_SHORT).show();
+          }else{
+            Toast.makeText(context, "printer not connected", Toast.LENGTH_SHORT).show();
+          }
+        }
+      });
     }else if(businessdata.printerConnection == "USB Connection"){
-      serviceBinding.connetUSB(result);
+      serviceBinding.connetUSB(object : OnDeviceConnect{
+        override fun onConnect(isConnect: Boolean) {
+          if (isConnect){
+            Toast.makeText(context, "printer connected", Toast.LENGTH_SHORT).show();
+          }else{
+            Toast.makeText(context, "printer not connected", Toast.LENGTH_SHORT).show();
+          }
+
+        }
+
+      });
     }else{
       if(!serviceBinding.IS_CONNECTED){
         serviceBinding.connetbluetooth(businessdata.bluetoothAddress,object : OnDeviceConnect{
@@ -185,7 +203,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
      if (businessdata.printerConnection == "IP Connection"){
        printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
      }else if(businessdata.printerConnection == "USB Connection"){
-       printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
+       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding, result)
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
