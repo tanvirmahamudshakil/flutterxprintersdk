@@ -33,6 +33,7 @@ import com.mazenrashed.printooth.Printooth
 import com.mazenrashed.printooth.data.printable.ImagePrintable
 import com.mazenrashed.printooth.data.printable.Printable
 import com.zxy.tiny.Tiny.BitmapCompressOptions
+import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -351,15 +352,17 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printxprinteripdata(serviceBinding: PosServiceBinding)  {
+    fun printxprinteripdata(serviceBinding: PosServiceBinding, result: MethodChannel.Result)  {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
             printBitmap(bitmap, object : OnPrintProcess {
                 override fun onSuccess() {
+                    result.success(true)
                     Log.d("xprinterdata", "onSuccess: successfully print")
                 }
 
                 override fun onError(msg: String?) {
+                    result.success(false)
                     Log.d("xprinterdata", "onError: xprinter not print")
                 }
             }, serviceBinding)

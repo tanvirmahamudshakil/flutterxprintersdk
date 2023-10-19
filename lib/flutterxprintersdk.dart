@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 import 'Model/printerbusinessmodel.dart';
@@ -6,6 +8,7 @@ enum Connectiontype { ip, usb, bluetooth, xbluetooth }
 
 class Flutterxprintersdk {
   final methodChannel = const MethodChannel('flutterxprintersdk');
+  final myEventChannel = const EventChannel('flutterxprintersdk');
   String printerconnect = "xprinterconnect";
   String bluetoothprintdata = "bluetoothprintdata";
   String printerdisconect = "printerdisconnect";
@@ -41,7 +44,7 @@ class Flutterxprintersdk {
     await methodChannel.invokeMethod(bluetoothprintdata, quary);
   }
 
-  Future printorder(
+  Future<bool?> printorder(
       {required Map<String, Object?> orderiteam,
       required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {
@@ -49,7 +52,7 @@ class Flutterxprintersdk {
       "printer_model_data": printerBusinessModel.toJson()
     };
 
-    return await methodChannel.invokeMethod("print", quary);
+    return await methodChannel.invokeMethod<bool>("print", quary);
   }
 
   Future<dynamic> xprinterdisconnect() async {
@@ -84,4 +87,15 @@ class Flutterxprintersdk {
     };
     await methodChannel.invokeMethod(orderview, quary);
   }
+
+
+
+  // event channel
+  
+
+
+
+  
+
+
 }

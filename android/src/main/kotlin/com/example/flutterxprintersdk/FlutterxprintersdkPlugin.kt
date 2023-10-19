@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -44,8 +45,8 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   private lateinit var channel : MethodChannel
   private lateinit var context : Context
   private lateinit var activity : Activity
-
   lateinit var serviceBinding: PosServiceBinding
+  lateinit var  eventchannel: EventChannel;
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutterxprintersdk")
@@ -55,6 +56,8 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     bluetoothprint(context).bluetoothprinterinit();
     channel.setMethodCallHandler(this)
   }
+
+
 
   @RequiresApi(Build.VERSION_CODES.O)
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -211,9 +214,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
-       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
      }else if(businessdata.printerConnection == "USB Connection"){
-       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
+       printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
