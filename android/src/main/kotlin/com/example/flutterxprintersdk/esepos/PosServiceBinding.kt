@@ -13,6 +13,7 @@ import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.App.TheApp
 import com.zxy.tiny.Tiny
 import com.zxy.tiny.callback.BitmapCallback
+import io.flutter.plugin.common.MethodChannel
 import net.posprinter.posprinterface.IMyBinder
 import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
@@ -77,53 +78,60 @@ class PosServiceBinding(mcontext: Context)  {
         })
     }
 
-    fun connectNet(ipAddress: String?, listener: OnDeviceConnect) {
+    fun connectNet(ipAddress: String?, result: MethodChannel.Result) {
         Log.d("tanvir", "xprinter: ${ipAddress}")
 
         if (ipAddress!! == null || ipAddress == "") {
-            listener.onConnect(false)
+            result.success(false);
+
         } else {
             if (binder != null && !TheApp().IS_CONNECT_NET_PRINTER) {
                 binder!!.ConnectNetPort(ipAddress, 9100, object : TaskCallback {
                     override fun OnSucceed() {
+                        result.success(true);
                         IS_CONNECTED = true
-                        listener.onConnect(true)
+
                     }
 
                     override fun OnFailed() {
+                        result.success(false);
                         IS_CONNECTED = false
                         TheApp().IS_CONNECT_NET_PRINTER = false
-                        listener.onConnect(false)
+
                     }
                 })
             } else {
+                result.success(false);
                 Log.e("tanvir binder", "connectNet: binder null", )
                 IS_CONNECTED = false
-                listener.onConnect(false)
+
             }
         }
     }
 
-    fun connetUSB(listener: OnDeviceConnect) {
+    fun connetUSB( result: MethodChannel.Result) {
         val usbList = PosPrinterDev.GetUsbPathNames(context)
         Log.d("usblist", "connetUSB: $usbList")
         if (usbList != null && usbList.size > 0) {
             if (binder != null) {
                 binder!!.ConnectUsbPort(context, usbList[0], object : TaskCallback {
                     override fun OnSucceed() {
+                        result.success(true);
                         IS_CONNECTED = true
 //                        setPortType(PortType.USB)
-                        listener.onConnect(true)
+
                     }
 
                     override fun OnFailed() {
+                        result.success(false);
                         IS_CONNECTED = false
-                        listener.onConnect(false)
+
                     }
                 })
             } else {
+                result.success(false);
                 IS_CONNECTED = false
-                listener.onConnect(false)
+
                 val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
                 intent.putExtra(
                     "msg",
@@ -132,9 +140,10 @@ class PosServiceBinding(mcontext: Context)  {
                 context!!.sendBroadcast(intent)
             }
         } else {
+            result.success(false);
 //            Toast.makeText(context, "device not found", Toast.LENGTH_SHORT).show();
             IS_CONNECTED = false
-            listener.onConnect(false)
+
             val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
             intent.putExtra("msg", "Could not connect to printer!")
             context!!.sendBroadcast(intent)
