@@ -134,10 +134,10 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
         serviceBinding.connectNet(businessdata.ip.toString(), object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
-//              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
+              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
               result.success(true)
             }else{
-//              Toast.makeText(context, "printer not connect. check your printer ip", Toast.LENGTH_SHORT).show()
+              Toast.makeText(context, "printer not connect. check your printer ip", Toast.LENGTH_SHORT).show()
               result.success(false)
             }
           }
@@ -148,10 +148,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
         serviceBinding.connetUSB(object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
-//              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
+              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
               result.success(true)
-            }else{
-//              Toast.makeText(context, "printer not connect. check your usb", Toast.LENGTH_SHORT).show()
+            }else{ Toast.makeText(context, "printer not connect. check your usb", Toast.LENGTH_SHORT).show()
               result.success(false)
             }
           }
