@@ -160,7 +160,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         bind.refundContainer.visibility = View.GONE
 
 
-        val subTotal: Double = orderModel.netAmount!! - addedDeliveryCharge
+        val subTotal: Double = orderModel.netAmount!!
         bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
 
 
@@ -195,7 +195,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
 
         bind.total.text =
-            "£ " +String.format( "%.2f",(orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
+            "£ " +String.format( "%.2f",(orderModel.payableAmount!!))
 
 
         var dlAddress = "Service charge is not included\n\n"

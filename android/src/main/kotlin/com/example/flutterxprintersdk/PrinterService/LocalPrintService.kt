@@ -100,7 +100,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         val subTotal: Double = orderModel.netAmount!! - addedDeliveryCharge
         bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
         bind.txtDeliveryCharge.text = "Delivery Charge";
-        bind.deliveryCharge.text = "£ " + orderModel.deliveryCharge!!.toFloat().toString()
+        bind.deliveryCharge.text = "£ " + orderModel.deliveryCharge!!.toString()
         bind.cardPayContainer.visibility = View.GONE
         bind.cashPayContainer.visibility = View.GONE
         if (orderModel.orderChannel!!.uppercase() == "ONLINE") {
