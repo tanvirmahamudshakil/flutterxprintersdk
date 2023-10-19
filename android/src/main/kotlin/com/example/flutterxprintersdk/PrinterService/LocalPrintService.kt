@@ -114,7 +114,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
             bind.discountTitle.text = discountStr
             var discountAmount = 0.0
             bind.discount.text =
-                "£ " + String.format( "%.2f", orderModel.discountedAmount!!.toFloat())
+                "£ " + String.format( "%.2f", orderModel.discountedAmount!!)
         }
         bind.plasticBagContainer.visibility = View.GONE
         bind.containerBagContainer.visibility = View.GONE

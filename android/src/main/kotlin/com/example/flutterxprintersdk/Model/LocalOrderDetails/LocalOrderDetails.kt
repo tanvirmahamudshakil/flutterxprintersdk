@@ -8,7 +8,7 @@ data class LocalOrderDetails (
   @SerializedName("comment"                    ) var comment                    : String?          = null,
   @SerializedName("createdAt"                  ) var createdAt                  : String?          = null,
   @SerializedName("deliveryCharge"             ) var deliveryCharge             : Int?             = null,
-  @SerializedName("discountedAmount"           ) var discountedAmount           : Int?             = null,
+  @SerializedName("discountedAmount"           ) var discountedAmount           : Double?             = null,
   @SerializedName("id"                         ) var id                         : Int?             = null,
   @SerializedName("localId"                    ) var localId                    : Int?             = null,
   @SerializedName("netAmount"                  ) var netAmount                  : Double?          = null,
