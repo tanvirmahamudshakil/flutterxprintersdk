@@ -41,7 +41,7 @@ class Flutterxprintersdk {
     await methodChannel.invokeMethod(bluetoothprintdata, quary);
   }
 
-  Future<bool> printorder(
+  Future printorder(
       {required Map<String, Object?> orderiteam,
       required PrinterBusinessModel printerBusinessModel}) async {
     Map<String, dynamic> quary = {
