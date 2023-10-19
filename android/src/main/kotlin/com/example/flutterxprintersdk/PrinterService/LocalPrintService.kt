@@ -16,8 +16,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import com.example.example.ShippingAddress
+import com.example.flutterxprintersdk.Model.LocalOrderDetails.Address
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.Customer
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
+import com.example.flutterxprintersdk.Model.OrderModel2.AddressProperty
 import com.example.flutterxprintersdk.PrinterBusinessData
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
@@ -137,6 +140,20 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
             val customerModel: Customer? = orderModel.customer
             dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
             dlAddress += "Phone : ${customerModel.phone}"
+            if (customerModel.address != null ) {
+                val address: Address? = customerModel.address
+                if (address != null) {
+                    val pro: Address = address
+                    // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                    val building = if (pro.building != null) pro.building else ""
+//                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
+                    val streetName = if (pro.street != null) pro.street else ""
+                    val city = if (pro.city != null) pro.city else ""
+
+                    val zip = if (pro.postcode != null) pro.postcode else ""
+                    dlAddress += "\nAddress : $building $streetName\n$city $zip"
+                }
+            }
         }
 
         var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"

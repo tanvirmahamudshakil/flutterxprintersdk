@@ -206,18 +206,20 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
             val customerModel: RequesterGuest? = orderModel.requesterGuest
             dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
             dlAddress += "Phone : ${customerModel.phone}"
-            if (orderModel.shippingAddress != null) {
-                val address: ShippingAddress? = orderModel.shippingAddress
-                if (address!!.addressProperty != null) {
-                    val pro: AddressProperty = address.addressProperty!!
-                    // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
-                    val building = if (pro.house != null) pro.house else ""
+            if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
+                if (orderModel.shippingAddress != null) {
+                    val address: ShippingAddress? = orderModel.shippingAddress
+                    if (address!!.addressProperty != null) {
+                        val pro: AddressProperty = address.addressProperty!!
+                        // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                        val building = if (pro.house != null) pro.house else ""
 //                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
-                    val streetName = if (pro.state != null) pro.state else ""
-                    val city = if (pro.town != null) pro.town else ""
-                    val state = if (pro.state != null) pro.state else ""
-                    val zip = if (pro.postcode != null) pro.postcode else ""
-                    dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
+                        val streetName = if (pro.state != null) pro.state else ""
+                        val city = if (pro.town != null) pro.town else ""
+                        val state = if (pro.state != null) pro.state else ""
+                        val zip = if (pro.postcode != null) pro.postcode else ""
+                        dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
+                    }
                 }
             }
         }
