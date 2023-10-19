@@ -40,6 +40,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     private  var businessphone: String
     private var fontsize: Int = 30
     private var noofprint: Int =1
+    private var businessdatadata : PrinterBusinessData
 
     init {
         context = mcontext;
@@ -49,11 +50,19 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         this.businessphone =  businessdata.businessphone!!;
         this.fontsize =  businessdata.fontSize!!;
         noofprint = businessdata.printOnCollection!!
+        businessdatadata = businessdata;
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     fun orderrootget(): LinearLayout {
+        if (orderModel.orderType == "DELIVERY"){
+            noofprint = businessdatadata.printOnDelivery!!
+        }else if(orderModel.orderType == "COLLECTION"){
+            noofprint = businessdatadata.printOnCollection!!
+        }else{
+            noofprint = businessdatadata.printOnTackwayOrder!!
+        }
         val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
         bind.businessName.text = businessname

@@ -49,6 +49,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     private  var businessphone: String
     private var fontsize: Int = 30
     private var noofprint: Int =1
+         private var businessdatadata: PrinterBusinessData;
 
     init {
         context = mcontext;
@@ -57,7 +58,8 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         this.businessaddress =  businessdata.businessaddress!!;
         this.businessphone =  businessdata.businessphone!!;
         this.fontsize =  businessdata.fontSize!!;
-        noofprint = businessdata.printOnCollection!!
+        noofprint = businessdata.printOnCollection!!;
+        businessdatadata = businessdata
     }
 
     // bluetooth print
@@ -108,6 +110,12 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     fun orderrootget(): LinearLayout {
+
+          if (orderModel.orderType == "DELIVERY"){
+              noofprint = businessdatadata.printOnDelivery!!
+          }else{
+              noofprint = businessdatadata.printOnCollection!!
+          }
 
         val printSize: Int = fontsize
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(context))
