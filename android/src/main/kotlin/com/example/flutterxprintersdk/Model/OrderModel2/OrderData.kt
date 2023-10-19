@@ -19,7 +19,7 @@ data class OrderData (
   @SerializedName("status"                       ) var status                     : String?                  = null,
   @SerializedName("net_amount"                   ) var netAmount                  : Double?                  = null,
   @SerializedName("discounted_amount"            ) var discountedAmount           : Double?                  = null,
-  @SerializedName("delivery_charge"              ) var deliveryCharge             : Int?                     = null,
+  @SerializedName("delivery_charge"              ) var deliveryCharge             : Double?                  = null,
   @SerializedName("payable_amount"               ) var payableAmount              : Double?                  = null,
   @SerializedName("payment_type"                 ) var paymentType                : String?                  = null,
   @SerializedName("payment_id"                   ) var paymentId                  : String?                  = null,

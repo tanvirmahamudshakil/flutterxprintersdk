@@ -202,7 +202,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
                 val address: ShippingAddress? = orderModel.shippingAddress
                 if (address!!.addressProperty != null) {
                     val pro: AddressProperty = address.addressProperty!!
-                    //                                    CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                    // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
                     val building = if (pro.house != null) pro.house else ""
 //                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
                     val streetName = if (pro.state != null) pro.state else ""
