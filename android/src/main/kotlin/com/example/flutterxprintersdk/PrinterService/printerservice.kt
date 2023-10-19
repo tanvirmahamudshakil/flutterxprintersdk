@@ -351,68 +351,55 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun printxprinteripdata(serviceBinding: PosServiceBinding) : Boolean  {
+    fun printxprinteripdata(serviceBinding: PosServiceBinding)  {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-      var job1 =  CoroutineScope(Dispatchers.IO).async {
-          var printbool = false;
-          for (bitmap in bitmaplist){
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
 
-                printbool =  printBitmap(bitmap, object : OnPrintProcess {
-                    override fun onSuccess() {
-                        Log.d("xprinterdata", "onSuccess: successfully print")
-                    }
-
-                    override fun onError(msg: String?) {
-                        Log.d("xprinterdata", "onError: xprinter not print")
-                    }
-                }, serviceBinding)
-            }
-          printbool;
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
         }
-      return  job1.await();
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun printxprinterusbdata(serviceBinding: PosServiceBinding) : Boolean {
+    fun printxprinterusbdata(serviceBinding: PosServiceBinding) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-       var job1 = CoroutineScope(Dispatchers.IO).async {
-            var printbool : Boolean = false;
-            for (bitmap in bitmaplist){
-                printbool=   printBitmap(bitmap, object : OnPrintProcess {
-                    override fun onSuccess() {
-                        Log.d("xprinterdata", "onSuccess: successfully print")
-                    }
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
 
-                    override fun onError(msg: String?) {
-                        Log.d("xprinterdata", "onError: xprinter not print")
-                    }
-                }, serviceBinding)
-            }
-            printbool;
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
         }
-        return  job1.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinterbluetoothdata(serviceBinding: PosServiceBinding) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-        CoroutineScope(Dispatchers.IO).async {
-            for (bitmap in bitmaplist){
-                printBitmap(bitmap, object : OnPrintProcess {
-                    override fun onSuccess() {
-                        Log.d("xprinterdata", "onSuccess: successfully print")
-                    }
+        for (bitmap in bitmaplist){
+            printBitmap(bitmap, object : OnPrintProcess {
+                override fun onSuccess() {
+                    Log.d("xprinterdata", "onSuccess: successfully print")
+                }
 
-                    override fun onError(msg: String?) {
-                        Log.d("xprinterdata", "onError: xprinter not print")
-                    }
-                }, serviceBinding)
-            }
+                override fun onError(msg: String?) {
+                    Log.d("xprinterdata", "onError: xprinter not print")
+                }
+            }, serviceBinding)
         }
     }
 
 
-    suspend fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) : Boolean {
+    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding)  {
         try {
             val originalBitmap: Bitmap? = bitmap
             val compressFormat = Bitmap.CompressFormat.JPEG
@@ -422,12 +409,9 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
                 originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
             var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 550, true)
-           var job1 = CoroutineScope(Dispatchers.IO).async {
-               var successfull =  printUSBbitamp(b2!!, process, serviceBinding);
-               successfull;
-           }
+            printUSBbitamp(b2!!, process, serviceBinding)
 
-            return  job1.await();
+
 //            val options = BitmapCompressOptions()
 //            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
 //                .compress { isSuccess, bitmap ->
@@ -440,80 +424,77 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
         } catch (e: java.lang.Exception) {
             process.onError(e.toString())
-            return  false;
         }
     }
 
-    private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding) : Boolean {
+    private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding)  {
         val height = printBmp.height
-        var printsuccessfull : Boolean =  false;
+
         // if height > 200 cut the bitmap
-        CoroutineScope(Dispatchers.IO).async {
-            if (height > 200) {
-                serviceBinding.binder!!.WriteSendData(object : TaskCallback {
-                    override fun OnSucceed() {
-                        printsuccessfull = true;
-                        process.onSuccess()
-                    }
+        if (height > 200) {
+            serviceBinding.binder!!.WriteSendData(object : TaskCallback {
+                override fun OnSucceed() {
 
-                    override fun OnFailed() {
-                        printsuccessfull = false;
-                        process.onError("Failed")
-                    }
-                }, ProcessData {
-                    val list: MutableList<ByteArray> = java.util.ArrayList()
-                    list.add(DataForSendToPrinterPos80.initializePrinter())
-                    var bitmaplist: List<Bitmap?>? = java.util.ArrayList()
-                    bitmaplist = cutBitmap(200, printBmp) //cut bitmap
-                    if (bitmaplist!!.isNotEmpty()) {
-                        for (i in bitmaplist.indices) {
-                            list.add(
-                                DataForSendToPrinterPos80.printRasterBmp(
-                                    0,
-                                    bitmaplist[i],
-                                    BitmapToByteData.BmpType.Threshold,
-                                    BitmapToByteData.AlignType.Center,
-                                    576
-                                )
+                    process.onSuccess()
+                }
+
+                override fun OnFailed() {
+
+                    process.onError("Failed")
+                }
+            }, ProcessData {
+                val list: MutableList<ByteArray> = java.util.ArrayList()
+                list.add(DataForSendToPrinterPos80.initializePrinter())
+                var bitmaplist: List<Bitmap?>? = java.util.ArrayList()
+                bitmaplist = cutBitmap(200, printBmp) //cut bitmap
+                if (bitmaplist!!.isNotEmpty()) {
+                    for (i in bitmaplist.indices) {
+                        list.add(
+                            DataForSendToPrinterPos80.printRasterBmp(
+                                0,
+                                bitmaplist[i],
+                                BitmapToByteData.BmpType.Threshold,
+                                BitmapToByteData.AlignType.Center,
+                                576
                             )
-                        }
-                    }
-                    list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
-                    list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
-                    list
-                })
-            } else {
-                serviceBinding.binder!!.WriteSendData(object : TaskCallback {
-                    override fun OnSucceed() {
-                        printsuccessfull = true;
-                        process.onSuccess()
-                    }
-
-                    override fun OnFailed() {
-                        printsuccessfull = false;
-                        process.onError("Failed")
-                    }
-                }, ProcessData {
-                    val list: MutableList<ByteArray> = java.util.ArrayList()
-                    list.add(DataForSendToPrinterPos80.initializePrinter())
-                    list.add(
-                        DataForSendToPrinterPos80.printRasterBmp(
-                            0,
-                            printBmp,
-                            BitmapToByteData.BmpType.Threshold,
-                            BitmapToByteData.AlignType.Center,
-                            600
                         )
+                    }
+                }
+                list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
+                list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
+                list
+            })
+        } else {
+            serviceBinding.binder!!.WriteSendData(object : TaskCallback {
+                override fun OnSucceed() {
+
+                    process.onSuccess()
+                }
+
+                override fun OnFailed() {
+
+                    process.onError("Failed")
+                }
+            }, ProcessData {
+                val list: MutableList<ByteArray> = java.util.ArrayList()
+                list.add(DataForSendToPrinterPos80.initializePrinter())
+                list.add(
+                    DataForSendToPrinterPos80.printRasterBmp(
+                        0,
+                        printBmp,
+                        BitmapToByteData.BmpType.Threshold,
+                        BitmapToByteData.AlignType.Center,
+                        600
                     )
-                    list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
-                    list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
-                    list
-                })
-            }
+                )
+                list.add(DataForSendToPrinterPos80.printAndFeedForward(2))
+                list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
+                list
+            })
         }
 
 
-        return  printsuccessfull;
+
     }
 
 

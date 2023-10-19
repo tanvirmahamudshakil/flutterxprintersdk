@@ -12,7 +12,6 @@ import com.example.flutterxprintersdk.BluetoothPrint.bluetoothprint
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
 import com.example.flutterxprintersdk.PrinterService.LocalPrintService
 import com.example.flutterxprintersdk.PrinterService.printerservice
-import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.OnDeviceConnect
 import com.example.xprinter.esepos.PosServiceBinding
 import com.google.gson.Gson
@@ -23,10 +22,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 
 /** FlutterxprintersdkPlugin */
 class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -164,11 +159,11 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
         serviceBinding.connetbluetooth(businessdata.bluetoothAddress,object : OnDeviceConnect{
           override fun onConnect(isConnect: Boolean) {
             if (isConnect){
-//              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-              result.success(true)
+              Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
+              result.success("printer connected successfull")
             }else{
-//              Toast.makeText(context, "printer not connect. check your bluetooth address", Toast.LENGTH_SHORT).show()
-              result.success(false)
+              Toast.makeText(context, "printer not connect. check your bluetooth address", Toast.LENGTH_SHORT).show()
+              result.success("printer not connect. check your bluetooth address")
             }
           }
         });
@@ -190,7 +185,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun xprinterprint(call: MethodCall, result: Result, businessdata: PrinterBusinessData, local: Boolean = false) {
+  fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local: Boolean = false) {
 
  if (local){
    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
@@ -198,27 +193,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
-       LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding, object :
-         OnPrintProcess{
-         override fun onSuccess() {
-           result.success(true);
-         }
-
-         override fun onError(msg: String?) {
-           result.success(false);
-         }
-       })
+       LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
      }else if(businessdata.printerConnection == "USB Connection"){
-       LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding, object :
-         OnPrintProcess{
-         override fun onSuccess() {
-           result.success(true);
-         }
-
-         override fun onError(msg: String?) {
-           result.success(false);
-         }
-       })
+       LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding)
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
@@ -236,18 +213,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
-
-      var printjob =  CoroutineScope(Dispatchers.IO).async {
-         var printsuccess =  printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
-          printsuccess;
-        }
-       Log.d("print job local", "xprinterprint: ${printjob}")
+       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
      }else if(businessdata.printerConnection == "USB Connection"){
-      var printjob = CoroutineScope(MainScope().coroutineContext).async {
-       var printsuccess =  printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding)
-        printsuccess;
-      }
-       Log.d("printjob", "xprinterprint: ${printjob}")
+       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
