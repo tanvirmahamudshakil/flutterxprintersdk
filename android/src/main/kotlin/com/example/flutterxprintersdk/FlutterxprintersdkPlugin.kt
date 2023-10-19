@@ -121,22 +121,14 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   fun xprinterconnectcheck(call: MethodCall, result: Result) {
-    if (serviceBinding.IS_CONNECTED){
-      result.success(true)
-    }else{
-      result.success(false)
-    }
+    serviceBinding.checkConnection(result);
   }
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
     if (businessdata.printerConnection == "IP Connection"){
-      if(!serviceBinding.IS_CONNECTED){
-        serviceBinding.connectNet(businessdata.ip.toString(), result);
-      }
+      serviceBinding.connectNet(businessdata.ip.toString(), result);
     }else if(businessdata.printerConnection == "USB Connection"){
-      if(!serviceBinding.IS_CONNECTED){
-        serviceBinding.connetUSB(result);
-      }
+      serviceBinding.connetUSB(result);
     }else{
       if(!serviceBinding.IS_CONNECTED){
         serviceBinding.connetbluetooth(businessdata.bluetoothAddress,object : OnDeviceConnect{

@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         'Unknown platform version';
   }
 
-  Future<void> connectioncheck() async {
+  Future connectioncheck() async {
     var data = await _flutterxprintersdkPlugin.connectioncheck();
     print(data);
   }
@@ -180,12 +180,12 @@ class _MyAppState extends State<MyApp> {
                   var data = await _flutterxprintersdkPlugin
                       .xprinterconnect(printermodel);
 
-                  var data2 =
-                                  await _flutterxprintersdkPlugin.printorder(
-                                printerBusinessModel: printermodel,
-                                orderiteam: orderiteam,
-                              );
-                              print(data2);
+                  // var data2 =
+                  //                 await _flutterxprintersdkPlugin.printorder(
+                  //               printerBusinessModel: printermodel,
+                  //               orderiteam: orderiteam,
+                  //             );
+                  //             print(data2);
 
 
                   print(data);
