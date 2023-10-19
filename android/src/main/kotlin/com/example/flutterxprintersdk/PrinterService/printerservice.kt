@@ -1,29 +1,24 @@
 package com.example.flutterxprintersdk.PrinterService
 
-import android.R
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager
 import android.os.Build
-import android.os.Parcelable
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import com.example.example.ShippingAddress
+import com.example.flutterxprintersdk.Model.OrderModel2.AddressProperty
 import com.example.flutterxprintersdk.OrderData
 import com.example.flutterxprintersdk.PrinterBusinessData
+import com.example.flutterxprintersdk.Property
 import com.example.flutterxprintersdk.RequesterGuest
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
@@ -34,9 +29,6 @@ import com.mazenrashed.printooth.data.printable.ImagePrintable
 import com.mazenrashed.printooth.data.printable.Printable
 import com.zxy.tiny.Tiny.BitmapCompressOptions
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
@@ -206,6 +198,20 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
             val customerModel: RequesterGuest? = orderModel.requesterGuest
             dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
             dlAddress += "Phone : ${customerModel.phone}"
+            if (orderModel.shippingAddress != null) {
+                val address: ShippingAddress? = orderModel.shippingAddress
+                if (address!!.addressProperty != null) {
+                    val pro: AddressProperty = address.addressProperty!!
+                    //                                    CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                    val building = if (pro.house != null) pro.house else ""
+//                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
+                    val streetName = if (pro.state != null) pro.state else ""
+                    val city = if (pro.town != null) pro.town else ""
+                    val state = if (pro.state != null) pro.state else ""
+                    val zip = if (pro.postcode != null) pro.postcode else ""
+                    dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
+                }
+            }
         }
 
         var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"
