@@ -179,6 +179,15 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () async {
                   var data = await _flutterxprintersdkPlugin
                       .xprinterconnect(printermodel);
+
+                  var data2 =
+                                  await _flutterxprintersdkPlugin.printorder(
+                                printerBusinessModel: printermodel,
+                                orderiteam: orderiteam,
+                              );
+                              print(data2);
+
+
                   print(data);
                 },
                 child: Text("Xprinter Connect"),

@@ -24,6 +24,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
@@ -189,7 +190,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   @RequiresApi(Build.VERSION_CODES.O)
-  fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local: Boolean = false) {
+  fun xprinterprint(call: MethodCall, result: Result, businessdata: PrinterBusinessData, local: Boolean = false) {
 
  if (local){
    var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
@@ -236,29 +237,17 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
 
-       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, object :
-         OnPrintProcess{
-         override fun onSuccess() {
-           result.success(true);
-         }
-
-         override fun onError(msg: String?) {
-           result.success(false);
-         }
-       })
+      var printjob =  CoroutineScope(Dispatchers.IO).async {
+         var printsuccess =  printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+          printsuccess;
+        }
+       Log.d("print job local", "xprinterprint: ${printjob}")
      }else if(businessdata.printerConnection == "USB Connection"){
-      CoroutineScope(MainScope().coroutineContext).async {
-        printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding, object :
-          OnPrintProcess{
-          override fun onSuccess() {
-            result.success(true);
-          }
-
-          override fun onError(msg: String?) {
-            result.success(false);
-          }
-        })
+      var printjob = CoroutineScope(MainScope().coroutineContext).async {
+       var printsuccess =  printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding)
+        printsuccess;
       }
+       Log.d("printjob", "xprinterprint: ${printjob}")
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
