@@ -201,9 +201,9 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
-       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
+       printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
      }else if(businessdata.printerConnection == "USB Connection"){
-       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding, result)
+       printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)

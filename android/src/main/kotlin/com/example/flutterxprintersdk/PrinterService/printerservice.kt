@@ -368,17 +368,14 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printxprinteripdata(serviceBinding: PosServiceBinding, result: MethodChannel.Result)  {
+    fun printxprinteripdata(serviceBinding: PosServiceBinding)  {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
             printBitmap(bitmap, object : OnPrintProcess {
                 override fun onSuccess() {
-                    result.success(true)
                     Log.d("xprinterdata", "onSuccess: successfully print")
                 }
-
                 override fun onError(msg: String?) {
-                    result.success(false)
                     Log.d("xprinterdata", "onError: xprinter not print")
                 }
             }, serviceBinding)
@@ -386,17 +383,17 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printxprinterusbdata(serviceBinding: PosServiceBinding, result: MethodChannel.Result) {
+    fun printxprinterusbdata(serviceBinding: PosServiceBinding) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
             printBitmap(bitmap, object : OnPrintProcess {
                 override fun onSuccess() {
-                    result.success(true);
+
                     Log.d("xprinterdata", "onSuccess: successfully print")
                 }
 
                 override fun onError(msg: String?) {
-                    result.success(false);
+
                     Log.d("xprinterdata", "onError: xprinter not print")
                 }
             }, serviceBinding)
