@@ -23,6 +23,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 
 /** FlutterxprintersdkPlugin */
 class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -232,6 +235,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
    if (serviceBinding.IS_CONNECTED){
      if (businessdata.printerConnection == "IP Connection"){
+
        printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, object :
          OnPrintProcess{
          override fun onSuccess() {
@@ -243,16 +247,18 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
          }
        })
      }else if(businessdata.printerConnection == "USB Connection"){
-       printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding, object :
-         OnPrintProcess{
-         override fun onSuccess() {
-           result.success(true);
-         }
+      CoroutineScope(MainScope().coroutineContext).async {
+        printerservice(context,modeldata, businessdata).printxprinteripdata(serviceBinding, object :
+          OnPrintProcess{
+          override fun onSuccess() {
+            result.success(true);
+          }
 
-         override fun onError(msg: String?) {
-           result.success(false);
-         }
-       })
+          override fun onError(msg: String?) {
+            result.success(false);
+          }
+        })
+      }
 //        printerservice(context,modeldata, businessdata).printUsb()
      }else{
 //        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)

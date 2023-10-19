@@ -399,15 +399,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
             var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 550, true)
             printUSBbitamp(b2!!, process, serviceBinding)
-//            val options = BitmapCompressOptions()
-//            Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
-//                .compress { isSuccess, bitmap ->
-//                    if (isSuccess) {
-//                        var b2 = bitmap
-//                        b2 = resizeImage(b2, 530, true)
-//                        printUSBbitamp(b2, process, serviceBinding)
-//                    }
-//                }
 
         } catch (e: java.lang.Exception) {
             process.onError(e.toString())
