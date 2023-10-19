@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import com.example.example.Requester
 import com.example.example.ShippingAddress
 import com.example.flutterxprintersdk.Model.OrderModel2.AddressProperty
 import com.example.flutterxprintersdk.OrderData
@@ -203,25 +204,47 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
 
         if (orderModel.orderType == "DELIVERY" || orderModel.orderType == "COLLECTION" || orderModel.orderType == "TAKEOUT") {
-            val customerModel: RequesterGuest? = orderModel.requesterGuest
-            dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
-            dlAddress += "Phone : ${customerModel.phone}"
-            if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
-                if (orderModel.shippingAddress != null) {
-                    val address: ShippingAddress? = orderModel.shippingAddress
-                    if (address!!.addressProperty != null) {
-                        val pro: AddressProperty = address.addressProperty!!
-                        // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
-                        val building = if (pro.house != null) pro.house else ""
+           if (orderModel.requesterGuest != null){
+               val customerModel: RequesterGuest? = orderModel.requesterGuest
+               dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
+               dlAddress += "Phone : ${customerModel.phone}"
+               if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
+                   if (orderModel.shippingAddress != null) {
+                       val address: ShippingAddress? = orderModel.shippingAddress
+                       if (address!!.addressProperty != null) {
+                           val pro: AddressProperty = address.addressProperty!!
+                           // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                           val building = if (pro.house != null) pro.house else ""
 //                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
-                        val streetName = if (pro.state != null) pro.state else ""
-                        val city = if (pro.town != null) pro.town else ""
-                        val state = if (pro.state != null) pro.state else ""
-                        val zip = if (pro.postcode != null) pro.postcode else ""
-                        dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
-                    }
-                }
-            }
+                           val streetName = if (pro.state != null) pro.state else ""
+                           val city = if (pro.town != null) pro.town else ""
+                           val state = if (pro.state != null) pro.state else ""
+                           val zip = if (pro.postcode != null) pro.postcode else ""
+                           dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
+                       }
+                   }
+               }
+           }else{
+               val customerModel: Requester? = orderModel.requester!!
+               dlAddress += "Name : ${customerModel!!.name}\n"
+               dlAddress += "Phone : ${customerModel.phone}"
+               if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
+                   if (orderModel.shippingAddress != null) {
+                       val address: ShippingAddress? = orderModel.shippingAddress
+                       if (address!!.addressProperty != null) {
+                           val pro: AddressProperty = address.addressProperty!!
+                           // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                           val building = if (pro.house != null) pro.house else ""
+//                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
+                           val streetName = if (pro.state != null) pro.state else ""
+                           val city = if (pro.town != null) pro.town else ""
+                           val state = if (pro.state != null) pro.state else ""
+                           val zip = if (pro.postcode != null) pro.postcode else ""
+                           dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
+                       }
+                   }
+               }
+           }
         }
 
         var comment = "Comments : ${if(orderModel.comment != null) orderModel.comment else ""}"

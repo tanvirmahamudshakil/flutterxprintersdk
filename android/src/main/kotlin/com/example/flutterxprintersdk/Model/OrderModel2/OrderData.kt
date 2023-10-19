@@ -1,5 +1,6 @@
 package com.example.flutterxprintersdk
 
+import com.example.example.Requester
 import com.example.example.ShippingAddress
 import com.google.gson.annotations.SerializedName
 
@@ -29,7 +30,7 @@ data class OrderData (
   @SerializedName("created_at"                   ) var createdAt                  : String?                  = null,
   @SerializedName("updated_at"                   ) var updatedAt                  : String?                  = null,
   @SerializedName("order_products"               ) var orderProducts              : ArrayList<OrderProducts> = arrayListOf(),
-  @SerializedName("requester"                    ) var requester                  : String?                  = null,
+  @SerializedName("requester"                    ) var requester                  : Requester?                  = null,
   @SerializedName("requester_guest"              ) var requesterGuest             : RequesterGuest?          = RequesterGuest(),
   @SerializedName("shipping_address"             ) var shippingAddress            : ShippingAddress?          = null,
   @SerializedName("order_files"                  ) var orderFiles                 : ArrayList<String>        = arrayListOf(),
