@@ -1,7 +1,6 @@
 package com.example.flutterxprintersdk.PrinterService
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -328,18 +326,10 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         return bitmaplist;
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printxprinteripdata(serviceBinding: PosServiceBinding) {
+    fun printxprinteripdata(serviceBinding: PosServiceBinding, onprintprocess : OnPrintProcess) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
-            printBitmap(bitmap, object : OnPrintProcess {
-                override fun onSuccess() {
-                    Log.d("xprinterdata", "onSuccess: successfully print")
-                }
-
-                override fun onError(msg: String?) {
-                    Log.d("xprinterdata", "onError: xprinter not print")
-                }
-            }, serviceBinding)
+            printBitmap(bitmap, onprintprocess, serviceBinding)
         }
     }
     fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
@@ -383,7 +373,10 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     fun compressBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat, quality: Int): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(format, quality, stream)
-        return stream.toByteArray()
+        val bytearraydata = stream.toByteArray()
+
+
+        return bytearraydata
     }
     fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
@@ -519,18 +512,15 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     @RequiresApi(Build.VERSION_CODES.O)
     fun getimagebytes(): ByteArray? {
         val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
-        val bitmaplist: Bitmap =  getSingleBitmapFromView(orderrootget())
+        val bitmaplist: Bitmap = getSingleBitmapFromView(orderrootget())
 
         var b2 = resizeImage(bitmaplist, 530, true)
         val originalBitmap: Bitmap? = b2
         val compressFormat = Bitmap.CompressFormat.JPEG
         val compressionQuality = 10 // Adjust the quality as needed
 
-           val compressedData =
-               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
-
-        return compressedData;
+        return originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) };
     }
 
 

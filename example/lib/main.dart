@@ -9,6 +9,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_pos_printer_platform_image_3/flutter_pos_printer_platform_image_3.dart';
 import 'package:flutterxprintersdk/Model/printerbusinessmodel.dart';
 import 'package:flutterxprintersdk/flutterxprintersdk.dart';
+import 'package:flutterxprintersdk_example/image_print.dart';
 import 'package:image/image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'json.dart';
@@ -192,11 +193,13 @@ class _MyAppState extends State<MyApp> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  var data = await _flutterxprintersdkPlugin.getimagebytes(
-                      orderiteam: localorderjson,
-                      printerBusinessModel: printermodel);
+                  // var data = await _flutterxprintersdkPlugin.getimagebytes(
+                  //     orderiteam: localorderjson,
+                  //     printerBusinessModel: printermodel);
+                  //     print(Uint8List.fromList(data!));
                   //  ImagePrint().imageprint(data);
                   // print("ascbashjcbajhsb ${data}");
+                  ImagePrintData().imageprint();
                 },
                 child: Text("image bytes data get"),
               ),
@@ -235,4 +238,7 @@ class _MyAppState extends State<MyApp> {
       businessphone: "01932336565",
       ip: "192.168.0.104",
       businessaddress: "sdkjbvjsdhbvjhsbdv");
+
+
+
 }
