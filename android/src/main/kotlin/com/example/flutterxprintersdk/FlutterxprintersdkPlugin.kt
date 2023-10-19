@@ -121,7 +121,7 @@ class FlutterxprintersdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   }
 
   fun xprinterconnectcheck(call: MethodCall, result: Result) {
-    serviceBinding.checkConnection(result);
+//    serviceBinding.checkConnection(result);
   }
 
   private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {

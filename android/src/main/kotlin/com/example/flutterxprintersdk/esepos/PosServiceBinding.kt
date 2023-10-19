@@ -50,28 +50,28 @@ class PosServiceBinding(mcontext: Context)  {
     }
 
     fun disposeBinding(listener: OnDeviceConnect) {
+
         binder!!.DisconnectCurrentPort(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = false;
-
+                listener.onConnect(false)
             }
             override fun OnFailed() {
                 IS_CONNECTED = true;
-
+                listener.onConnect(true)
             }
         })
     }
 
     fun checkConnection(result : MethodChannel.Result) {
+
         binder!!.CheckLinkedState(object : TaskCallback {
             override fun OnSucceed() {
-                result.success(true)
                 IS_CONNECTED = true;
 
             }
 
             override fun OnFailed() {
-                result.success(false)
                 IS_CONNECTED = false;
 
             }
@@ -79,7 +79,6 @@ class PosServiceBinding(mcontext: Context)  {
     }
 
     fun connectNet(ipAddress: String?, result: MethodChannel.Result) {
-        initBinding()
         Log.d("tanvir", "xprinter: ${ipAddress}")
 
         if (ipAddress!! == null || ipAddress == "") {
@@ -99,7 +98,6 @@ class PosServiceBinding(mcontext: Context)  {
                         IS_CONNECTED = false
                         TheApp().IS_CONNECT_NET_PRINTER = false
 
-
                     }
                 })
             } else {
@@ -112,7 +110,6 @@ class PosServiceBinding(mcontext: Context)  {
     }
 
     fun connetUSB( result: MethodChannel.Result) {
-
         val usbList = PosPrinterDev.GetUsbPathNames(context)
         Log.d("usblist", "connetUSB: $usbList")
         if (usbList != null && usbList.size > 0) {
@@ -129,14 +126,12 @@ class PosServiceBinding(mcontext: Context)  {
                         result.success(false);
                         IS_CONNECTED = false
 
-
-
                     }
                 })
             } else {
                 result.success(false);
                 IS_CONNECTED = false
-                binder = null
+
                 val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
                 intent.putExtra(
                     "msg",
@@ -145,7 +140,6 @@ class PosServiceBinding(mcontext: Context)  {
                 context!!.sendBroadcast(intent)
             }
         } else {
-            binder = null
             result.success(false);
 //            Toast.makeText(context, "device not found", Toast.LENGTH_SHORT).show();
             IS_CONNECTED = false
@@ -211,7 +205,7 @@ class PosServiceBinding(mcontext: Context)  {
                 list.add(DataForSendToPrinterPos80.printAndFeedLine())
                 //cut pager
                 list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(66, 1))
-                list
+                return@ProcessData list
             }
             null
         })
