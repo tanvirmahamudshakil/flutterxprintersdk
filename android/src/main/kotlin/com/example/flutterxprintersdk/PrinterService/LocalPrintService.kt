@@ -152,7 +152,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                     val city = if (pro.city != null) pro.city else ""
 
                     val zip = if (pro.postcode != null) pro.postcode else ""
-                    dlAddress += "\nAddress : $building $streetName\n$city $zip"
+                    dlAddress += "\nAddress : $building $streetName $zip"
                 }
             }
         }
