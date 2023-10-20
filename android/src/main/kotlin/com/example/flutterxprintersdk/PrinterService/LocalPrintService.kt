@@ -311,7 +311,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 
         return binding.root
     }
-    private fun getBitmapFromView(view: View): ArrayList<Bitmap> {
+    private fun getBitmapFromView(view: View): Bitmap {
         var bitmaplist : ArrayList<Bitmap>  = ArrayList<Bitmap>();
         val spec = View.MeasureSpec.makeMeasureSpec(
             0,
@@ -349,25 +349,23 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 
         var bitmap = Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
 
-        for (i in 1..noofprint){
-            bitmaplist.add(bitmap)
-        }
-        return bitmaplist;
+//        for (i in 1..noofprint){
+//            bitmaplist.add(bitmap)
+//        }
+        return bitmap;
     }
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinteripdata(serviceBinding: PosServiceBinding,  result: MethodChannel.Result) {
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-        for (bitmap in bitmaplist){
-            printBitmap(bitmap, object : OnPrintProcess{
-                override fun onSuccess() {
-                    result.success(true)
-                }
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
+        printBitmap(bitmaplist, object : OnPrintProcess{
+            override fun onSuccess() {
+                result.success(true)
+            }
 
-                override fun onError(msg: String?) {
-                    result.success(false)
-                }
-            }, serviceBinding)
-        }
+            override fun onError(msg: String?) {
+                result.success(false)
+            }
+        }, serviceBinding)
     }
     fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         try {

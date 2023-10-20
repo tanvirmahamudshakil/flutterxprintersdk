@@ -204,7 +204,7 @@ import io.flutter.plugin.common.MethodChannel.Result
     fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local : Boolean = false) {
       Log.d("xprinter", "printdata: ${businessdata.selectPrinter}")
       if (businessdata.selectPrinter == "X Printer"){
-        Log.d("xprinterdata", "onMethodCall: loacal true")
+        Log.d("xprinterdata", "onMethodCall: loacal ${Boolean}")
         xprinterprint(call, result,businessdata,local)
       }else if(businessdata.selectPrinter == "bluetooth") {
         bluetooth_printer_connect(call, result, businessdata);
@@ -217,8 +217,8 @@ import io.flutter.plugin.common.MethodChannel.Result
       var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
       val json = Gson().toJson(orderiteamdata)
       var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-      var imagebytesdata: ArrayList<ByteArray?> =  printerservice(context,modeldata, businessdata).getimagebytes()
-      result.success(imagebytesdata[0])
+      var imagebytesdata: ByteArray =  printerservice(context,modeldata, businessdata).getimagebytes()
+      result.success(imagebytesdata)
     }
 
     fun orderactivity(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {

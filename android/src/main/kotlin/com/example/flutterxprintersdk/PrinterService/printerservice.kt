@@ -73,20 +73,22 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         }else{
             Printooth.setPrinter(name, address)
         }
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
         try {
             var printable: ArrayList<Printable> = ArrayList()
             val options = BitmapCompressOptions()
-            for (bitmap in bitmaplist){
-                val originalBitmap: Bitmap? = bitmap
-                val compressFormat = Bitmap.CompressFormat.JPEG
-                val compressionQuality = 10 // Adjust the quality as needed
+//            for (bitmap in bitmaplist){
+//
+//            }
+            val originalBitmap: Bitmap? = bitmaplist
+            val compressFormat = Bitmap.CompressFormat.JPEG
+            val compressionQuality = 10 // Adjust the quality as needed
 
-                val compressedData =
-                    originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
+            val compressedData =
+                originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
-                var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 530, true)
-                printable!!.add(ImagePrintable.Builder(b2!!).build())
+            var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 530, true)
+            printable!!.add(ImagePrintable.Builder(b2!!).build())
 //                Tiny.getInstance().source(bitmap).asBitmap().withOptions(options)
 //                    .compress { isSuccess, bitmap ->
 //                        if (isSuccess) {
@@ -97,7 +99,6 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 //
 //                        }
 //                    }
-            }
             Printooth.printer().print(printable)
         } catch (e: Exception) {
 
@@ -269,7 +270,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
         return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 
-    private fun getBitmapFromView(view: View): ArrayList<Bitmap> {
+    private fun getBitmapFromView(view: View): Bitmap {
         var bitmaplist : ArrayList<Bitmap>  = ArrayList<Bitmap>();
         val spec = View.MeasureSpec.makeMeasureSpec(
             0,
@@ -307,10 +308,10 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
         var bitmap = Bitmap.createScaledBitmap(returnedBitmap, width, height, true)
 
-        for (i in 1..noofprint){
-            bitmaplist.add(bitmap)
-        }
-        return bitmaplist;
+//        for (i in 1..noofprint){
+//            bitmaplist.add(bitmap)
+//        }
+        return bitmap;
     }
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
@@ -392,42 +393,45 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinteripdata(serviceBinding: PosServiceBinding, result: MethodChannel.Result)  {
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-        for (bitmap in bitmaplist){
-            printBitmap(bitmap, object : OnPrintProcess{
-                override fun onSuccess() {
-                    result.success(true);
-                }
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
+        printBitmap(bitmaplist, object : OnPrintProcess{
+            override fun onSuccess() {
+                result.success(true);
+            }
 
-                override fun onError(msg: String?) {
-                    result.success(false);
-                }
-            }, serviceBinding)
-        }
+            override fun onError(msg: String?) {
+                result.success(false);
+            }
+        }, serviceBinding)
+//        for (bitmap in bitmaplist){
+//
+//        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinterusbdata(serviceBinding: PosServiceBinding, result: MethodChannel.Result) {
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-        for (bitmap in bitmaplist){
-            printBitmap(bitmap, object : OnPrintProcess{
-                override fun onSuccess() {
-                    result.success(true);
-                }
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
+//        for (bitmap in bitmaplist){
+//
+//        }
+        printBitmap(bitmaplist, object : OnPrintProcess{
+            override fun onSuccess() {
+                result.success(true);
+            }
 
-                override fun onError(msg: String?) {
-                    result.success(false);
-                }
-            }, serviceBinding)
-        }
+            override fun onError(msg: String?) {
+                result.success(false);
+            }
+        }, serviceBinding)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun printxprinterbluetoothdata(serviceBinding: PosServiceBinding,process: OnPrintProcess) {
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
-        for (bitmap in bitmaplist){
-            printBitmap(bitmap, process, serviceBinding)
-        }
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
+//        for (bitmap in bitmaplist){
+//
+//        }
+        printBitmap(bitmaplist, process, serviceBinding)
     }
 
 
@@ -559,24 +563,24 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getimagebytes(): ArrayList<ByteArray?> {
+    fun getimagebytes(): ByteArray {
         val newbitmaplist: ArrayList<ByteArray?> = arrayListOf()
-        val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
+        val bitmaplist: Bitmap =  getBitmapFromView(orderrootget())
 
-       for (bitmap in bitmaplist){
-           var b2 = resizeImage(bitmap, 530, true)
-           val originalBitmap: Bitmap? = b2
-           val compressFormat = Bitmap.CompressFormat.JPEG
-           val compressionQuality = 10 // Adjust the quality as needed
+//       for (bitmap in bitmaplist){
+//
+//       }
+        var b2 = resizeImage(bitmaplist, 530, true)
+        val originalBitmap: Bitmap? = b2
+        val compressFormat = Bitmap.CompressFormat.JPEG
+        val compressionQuality = 10 // Adjust the quality as needed
 
 //           val compressedData =
 //               originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
 
-           newbitmaplist.add(bitmapToByteArray(b2!!))
-       }
-
-        return newbitmaplist;
+//        newbitmaplist.add(bitmapToByteArray(b2!!))
+        return bitmapToByteArray(b2!!);
     }
 
 
