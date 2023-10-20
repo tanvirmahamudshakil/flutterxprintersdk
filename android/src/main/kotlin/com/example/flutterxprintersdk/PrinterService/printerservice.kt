@@ -141,7 +141,8 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
         var allitemsheight = 0
         bind.items.removeAllViews()
-        for (j in orderModel.orderProducts!!.indices) {
+        var itemproduict = orderModel.orderProducts.filter { i-> i.product!!.type == "ITEM" }
+        for (j in itemproduict.indices) {
             val childView = getView(j, context, 0, printSize)
             bind.items.addView(childView)
             allitemsheight += childView!!.measuredHeight
@@ -316,15 +317,17 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
-        val item = orderModel.orderProducts!!.get(position)
+        var itemproduict = orderModel.orderProducts.filter { i-> i.product!!.type == "ITEM" }
+        val item = itemproduict[position]
         val str3 = StringBuilder()
-        if (position < orderModel.orderProducts!!.size - 1) {
+        if (position < itemproduict.size - 1) {
             if (orderModel.orderProducts!![position].product!!.sortOrder!! < orderModel.orderProducts!![position + 1].product!!.sortOrder!!) {
+
                 binding.underLine.visibility = View.VISIBLE
             }
         }
         if (style == 0) {
-            if (item.components!!.isNotEmpty()) {
+            if (item.components!!.isNotEmpty() ) {
                 str3.append(item.unit).append(" x ").append(item.product!!.shortName)
                 for (section in item.components!!) {
                     var _comName = ""
@@ -341,7 +344,10 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
                     }
                 }
             } else {
-                str3.append(item.unit).append(" x ").append(item.product!!.shortName)
+                if (item.product!!.type == "ITEM"){
+                    str3.append(item.unit).append(" x ").append(item.product!!.shortName)
+                }
+
             }
         } else {
             if (item.components!!.isNotEmpty()) {
@@ -354,16 +360,20 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
                     str3.append(item.unit).append(" x ").append(item.product!!.shortName).append(" : ")
                         .append(_comName)
                 }
-            } else {
+            } else  {
                 str3.append(item.unit).append(" x ").append(item.product!!.shortName)
             }
         }
         var price = 0.0
         price = item.netAmount!!
-        if(item.comment != null) str3.append("\nNote : ").append(item.comment)
+        if(item.comment != null && item.product!!.type == "ITEM") str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
         binding.itemText.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
-        binding.itemPrice.text = "£ ${String.format("%.2f", price.toFloat())}"
+       if(item.product!!.type == "ITEM"){
+           binding.itemPrice.text = "£ ${String.format("%.2f", price.toFloat())}"
+       }else{
+           binding.itemPrice.visibility = View.GONE
+       }
         binding.itemPrice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, fontSize.toFloat())
         binding.root.buildDrawingCache(true)
         return binding.root

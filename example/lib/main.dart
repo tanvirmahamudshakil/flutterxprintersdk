@@ -181,9 +181,9 @@ class _MyAppState extends State<MyApp> {
                       .xprinterconnect(printermodel);
 
                   var data2 =
-                                  await _flutterxprintersdkPlugin.printLocalOrder(
+                                  await _flutterxprintersdkPlugin.printorder(
                                 printerBusinessModel: printermodel,
-                                orderiteam: localorderjson,
+                                orderiteam: orderiteam,
                               );
                               print(data2);
 
