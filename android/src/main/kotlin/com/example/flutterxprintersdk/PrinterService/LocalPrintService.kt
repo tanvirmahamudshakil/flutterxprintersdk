@@ -358,10 +358,18 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     fun printxprinteripdata(serviceBinding: PosServiceBinding,  result: MethodChannel.Result) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
-            printBitmap(bitmap, result, serviceBinding)
+            printBitmap(bitmap, object : OnPrintProcess{
+                override fun onSuccess() {
+                    result.success(true)
+                }
+
+                override fun onError(msg: String?) {
+                    result.success(false)
+                }
+            }, serviceBinding)
         }
     }
-    fun printBitmap(bitmap: Bitmap?, result: MethodChannel.Result, serviceBinding: PosServiceBinding) {
+    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         try {
             val originalBitmap: Bitmap? = bitmap
             val compressFormat = Bitmap.CompressFormat.JPEG
@@ -371,10 +379,10 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                 originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
             var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 550, true)
-            printUSBbitamp(b2!!, result, serviceBinding)
+            printUSBbitamp(b2!!, process, serviceBinding)
 
         } catch (e: java.lang.Exception) {
-            result.error("1001","${e.toString()}","${e.toString()}")
+            process.onError(e.toString())
         }
     }
 
@@ -408,17 +416,17 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
-    private fun printUSBbitamp(printBmp: Bitmap, result: MethodChannel.Result, serviceBinding: PosServiceBinding) {
+    private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
         val height = printBmp.height
         // if height > 200 cut the bitmap
         if (height > 200) {
             serviceBinding.binder!!.WriteSendData(object : TaskCallback {
                 override fun OnSucceed() {
-                    result.success(true)
+                    process.onSuccess()
                 }
 
                 override fun OnFailed() {
-                    result.success(false)
+                    process.onError("error")
                 }
             }, ProcessData {
                 val list: MutableList<ByteArray> = java.util.ArrayList()
@@ -445,11 +453,11 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         } else {
             serviceBinding.binder!!.WriteSendData(object : TaskCallback {
                 override fun OnSucceed() {
-                    result.success(true)
+                    process.onSuccess()
                 }
 
                 override fun OnFailed() {
-                    result.success(false)
+                    process.onError("error")
                 }
             }, ProcessData {
                 val list: MutableList<ByteArray> = java.util.ArrayList()
