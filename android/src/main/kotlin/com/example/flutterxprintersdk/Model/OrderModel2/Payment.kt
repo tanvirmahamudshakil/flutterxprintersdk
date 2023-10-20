@@ -17,5 +17,4 @@ data class Payment (
   @SerializedName("comment"        ) var comment       : String? = null,
   @SerializedName("created_at"     ) var createdAt     : String? = null,
   @SerializedName("updated_at"     ) var updatedAt     : String? = null
-
 )

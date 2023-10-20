@@ -148,7 +148,7 @@ class printerservice(mcontext: Context, morderModel: OrderData, businessdata: Pr
 
 
         var paidOrNot = "";
-        if (orderModel.cashEntry!!.isNotEmpty()) {
+        if (orderModel.paymentType == "CARD") {
             paidOrNot ="ORDER IS PAID"
         } else  {
             paidOrNot = "ORDER NOT PAID"
