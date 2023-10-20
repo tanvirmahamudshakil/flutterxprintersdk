@@ -150,38 +150,28 @@ import io.flutter.plugin.common.MethodChannel.Result
         var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
         val json = Gson().toJson(orderiteamdata)
         var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
-        if (serviceBinding.IS_CONNECTED){
-          if (businessdata.printerConnection == "IP Connection"){
-            LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
-          }else if(businessdata.printerConnection == "USB Connection"){
-            LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
-          }else{
+        if (businessdata.printerConnection == "IP Connection"){
+          LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
+        }else if(businessdata.printerConnection == "USB Connection"){
+          LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
+        }else{
 //       printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
 //       bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
 //       printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
-          }
-          result.success("print successfull")
-        }else{
-          result.success("printer not connected")
         }
 
       }else{
         var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
         val json = Gson().toJson(orderiteamdata)
         var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
-        if (serviceBinding.IS_CONNECTED){
-          if (businessdata.printerConnection == "IP Connection"){
-            printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
-          }else if(businessdata.printerConnection == "USB Connection"){
-            printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding, result)
+        if (businessdata.printerConnection == "IP Connection"){
+          printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
+        }else if(businessdata.printerConnection == "USB Connection"){
+          printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding, result)
 
-          }else{
-            bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
-            printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
-          }
-          result.success("print successfull")
         }else{
-          result.success("printer not connected")
+          bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
+          printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
         }
       }
 
