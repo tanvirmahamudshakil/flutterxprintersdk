@@ -1,0 +1,52 @@
+{
+    "id": 10564,
+    "local_id": null,
+    "order_type": "DELIVERY",
+    "order_channel": "ONLINE",
+    "order_date": "2023-10-20 06:36:35",
+    "requester_type": "CONSUMER",
+    "requester_id": 4,
+    "requester_uuid": "99f37924-2524-43b9-b470-c5ccd79307c3",
+    "shipping_address_id": 4033,
+    "requested_delivery_timestamp": "2023-10-20 15:40:00",
+    "status": "NEW",
+    "net_amount": 13.49,
+    "discounted_amount": 1.349,
+    "delivery_charge": 0.0,
+    "payable_amount": 12.141,
+    "payment_type": "CASH",
+    "payment_id": null,
+    "prescriber_id": null,
+    "branch_id": 1002,
+    "comment": null,
+    "created_at": "2023-10-20T05:36:36.000000Z",
+    "updated_at": "2023-10-20T05:36:36.000000Z",
+    "payment": {
+        "id": 75000,
+        "requester_type": "CONSUMER",
+        "requester_id": 4,
+        "reference": "23102007ZQ26VS07KW89BJL",
+        "payment_date": "2023-10-20 07:26:20",
+        "amount": 1214,
+        "source": "STREAM",
+        "card_type": "VC",
+        "status": "APPROVED",
+        "comment": null,
+        "created_at": "2023-10-20T06:26:20.000000Z",
+        "updated_at": "2023-10-20T06:26:20.000000Z"
+    },
+    "cash_entry": [],
+    "branch": {
+        "id": 1002,
+        "name": "Sundon Park",
+        "value": "sundon-park",
+        "created_at": null,
+        "updated_at": null,
+        "property": {
+            "phone": "01582354091",
+            "email": "contact@theflava.co.uk",
+            "address": "4, Ashwell Parade, Luton LU3 3AZ",
+            "postcode": "LU3 3AZ"
+        }
+    }
+}
