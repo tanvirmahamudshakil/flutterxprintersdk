@@ -10,6 +10,6 @@ data class Branch (
   @SerializedName("value"      ) var value     : String?   = null,
   @SerializedName("created_at" ) var createdAt : String?   = null,
   @SerializedName("updated_at" ) var updatedAt : String?   = null,
-  @SerializedName("property"   ) var property  : Property? = Property()
+  @SerializedName("property"   ) var property  : Property? = null
 
 )

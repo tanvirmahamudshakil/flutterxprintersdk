@@ -17,6 +17,6 @@ data class Product (
   @SerializedName("creator_id"   ) var creatorId    : Int?      = null,
   @SerializedName("creator_uuid" ) var creatorUuid  : String?   = null,
   @SerializedName("tags"         ) var tags         : String?   = null,
-  @SerializedName("property"     ) var property     : Property? = Property()
+  @SerializedName("property"     ) var property     : Property? = null
 
 )

@@ -15,6 +15,6 @@ data class Componentss (
   @SerializedName("discountable_amount" ) var discountableAmount : Int?                  = null,
   @SerializedName("comment"             ) var comment            : String?               = null,
   @SerializedName("components"          ) var components         : ArrayList<Componentss> = arrayListOf(),
-  @SerializedName("product"             ) var product            : Product?              = Product()
+  @SerializedName("product"             ) var product            : Product?              = null
 
 )

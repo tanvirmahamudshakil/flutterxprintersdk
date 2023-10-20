@@ -14,7 +14,7 @@ data class OrderProducts (
   @SerializedName("net_amount"          ) var netAmount          : Double?               = null,
   @SerializedName("discountable_amount" ) var discountableAmount : Int?                  = null,
   @SerializedName("comment"             ) var comment            : String?               = null,
-  @SerializedName("product"             ) var product            : Product?              = Product(),
+  @SerializedName("product"             ) var product            : Product?              = null,
   @SerializedName("components"          ) var components         : ArrayList<Componentss> = arrayListOf()
 
 )
