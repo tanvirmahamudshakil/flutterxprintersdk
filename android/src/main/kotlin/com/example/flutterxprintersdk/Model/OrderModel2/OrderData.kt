@@ -35,7 +35,7 @@ data class OrderData (
   @SerializedName("shipping_address"             ) var shippingAddress            : ShippingAddress?          = null,
   @SerializedName("order_files"                  ) var orderFiles                 : ArrayList<String>        = arrayListOf(),
   @SerializedName("prescriber"                   ) var prescriber                 : String?                  = null,
-  @SerializedName("payment"                      ) var payment                    : String?                  = null,
+  @SerializedName("payment"                      ) var payment                    : Payment?                  = null,
   @SerializedName("cash_entry"                   ) var cashEntry                  : ArrayList<CashEntry>     = arrayListOf(),
   @SerializedName("branch"                       ) var branch                     : Branch?                  = Branch()
 
