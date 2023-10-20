@@ -8,7 +8,6 @@ enum Connectiontype { ip, usb, bluetooth, xbluetooth }
 
 class Flutterxprintersdk {
   final methodChannel = const MethodChannel('flutterxprintersdk');
-  final myEventChannel = const EventChannel('flutterxprintersdk');
   String printerconnect = "xprinterconnect";
   String bluetoothprintdata = "bluetoothprintdata";
   String printerdisconect = "printerdisconnect";
@@ -17,8 +16,7 @@ class Flutterxprintersdk {
   String orderview = "orderview";
 
   Future<String?> initialxprinter() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 

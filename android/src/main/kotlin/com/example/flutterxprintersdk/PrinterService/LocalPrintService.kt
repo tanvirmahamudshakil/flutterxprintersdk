@@ -26,6 +26,7 @@ import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.example.flutterxprintersdk.esepos.OnPrintProcess
 import com.example.xprinter.esepos.PosServiceBinding
+import io.flutter.plugin.common.MethodChannel
 import net.posprinter.posprinterface.ProcessData
 import net.posprinter.posprinterface.TaskCallback
 import net.posprinter.utils.BitmapToByteData
@@ -354,21 +355,13 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         return bitmaplist;
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printxprinteripdata(serviceBinding: PosServiceBinding) {
+    fun printxprinteripdata(serviceBinding: PosServiceBinding,  result: MethodChannel.Result) {
         val bitmaplist: ArrayList<Bitmap> =  getBitmapFromView(orderrootget())
         for (bitmap in bitmaplist){
-            printBitmap(bitmap, object : OnPrintProcess {
-                override fun onSuccess() {
-                    Log.d("xprinterdata", "onSuccess: successfully print")
-                }
-
-                override fun onError(msg: String?) {
-                    Log.d("xprinterdata", "onError: xprinter not print")
-                }
-            }, serviceBinding)
+            printBitmap(bitmap, result, serviceBinding)
         }
     }
-    fun printBitmap(bitmap: Bitmap?, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
+    fun printBitmap(bitmap: Bitmap?, result: MethodChannel.Result, serviceBinding: PosServiceBinding) {
         try {
             val originalBitmap: Bitmap? = bitmap
             val compressFormat = Bitmap.CompressFormat.JPEG
@@ -378,10 +371,10 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
                 originalBitmap?.let { compressBitmap(it, compressFormat, compressionQuality) }
 
             var b2 = resizeImage(byteArrayToBitmap(compressedData!!), 550, true)
-            printUSBbitamp(b2!!, process, serviceBinding)
+            printUSBbitamp(b2!!, result, serviceBinding)
 
         } catch (e: java.lang.Exception) {
-            process.onError(e.toString())
+            result.error("1001","${e.toString()}","${e.toString()}")
         }
     }
 
@@ -415,17 +408,17 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
-    private fun printUSBbitamp(printBmp: Bitmap, process: OnPrintProcess, serviceBinding: PosServiceBinding) {
+    private fun printUSBbitamp(printBmp: Bitmap, result: MethodChannel.Result, serviceBinding: PosServiceBinding) {
         val height = printBmp.height
         // if height > 200 cut the bitmap
         if (height > 200) {
             serviceBinding.binder!!.WriteSendData(object : TaskCallback {
                 override fun OnSucceed() {
-                    process.onSuccess()
+                    result.success(true)
                 }
 
                 override fun OnFailed() {
-                    process.onError("Failed")
+                    result.success(false)
                 }
             }, ProcessData {
                 val list: MutableList<ByteArray> = java.util.ArrayList()
@@ -452,11 +445,11 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         } else {
             serviceBinding.binder!!.WriteSendData(object : TaskCallback {
                 override fun OnSucceed() {
-                    process.onSuccess()
+                    result.success(true)
                 }
 
                 override fun OnFailed() {
-                    process.onError("Failed")
+                    result.success(false)
                 }
             }, ProcessData {
                 val list: MutableList<ByteArray> = java.util.ArrayList()

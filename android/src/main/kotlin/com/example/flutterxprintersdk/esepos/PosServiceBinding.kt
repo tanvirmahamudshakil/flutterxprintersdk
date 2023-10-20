@@ -49,63 +49,62 @@ class PosServiceBinding(mcontext: Context)  {
         context!!.bindService(posService, conn, Context.BIND_AUTO_CREATE)
     }
 
-    fun disposeBinding(listener: OnDeviceConnect) {
+    fun disposeBinding(result: MethodChannel.Result) {
 
         binder!!.DisconnectCurrentPort(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = false;
-                listener.onConnect(false)
+                result.success(true);
             }
             override fun OnFailed() {
                 IS_CONNECTED = true;
-                listener.onConnect(true)
+                result.success(false);
             }
         })
     }
 
-    fun checkConnection(listener: OnDeviceConnect) {
-
+    fun checkConnection(result: MethodChannel.Result) {
         binder!!.CheckLinkedState(object : TaskCallback {
             override fun OnSucceed() {
                 IS_CONNECTED = true;
-                listener.onConnect(true)
+                result.success(true);
             }
 
             override fun OnFailed() {
                 IS_CONNECTED = false;
-                listener.onConnect(false)
+                result.success(false);
             }
         })
     }
 
-    fun connectNet(ipAddress: String?, listener: OnDeviceConnect) {
+    fun connectNet(ipAddress: String?, result: MethodChannel.Result) {
         Log.d("tanvir", "xprinter: ${ipAddress}")
 
         if (ipAddress!! == null || ipAddress == "") {
-            listener.onConnect(false)
+            result.success(false);
         } else {
             if (binder != null && !TheApp().IS_CONNECT_NET_PRINTER) {
                 binder!!.ConnectNetPort(ipAddress, 9100, object : TaskCallback {
                     override fun OnSucceed() {
                         IS_CONNECTED = true
-                        listener.onConnect(true)
+                        result.success(true);
                     }
 
                     override fun OnFailed() {
                         IS_CONNECTED = false
                         TheApp().IS_CONNECT_NET_PRINTER = false
-                        listener.onConnect(false)
+                        result.success(false);
                     }
                 })
             } else {
                 Log.e("tanvir binder", "connectNet: binder null", )
                 IS_CONNECTED = false
-                listener.onConnect(false)
+                result.success(false);
             }
         }
     }
 
-    fun connetUSB(listener: OnDeviceConnect) {
+    fun connetUSB(result: MethodChannel.Result) {
         val usbList = PosPrinterDev.GetUsbPathNames(context)
         Log.d("usblist", "connetUSB: $usbList")
         if (usbList != null && usbList.size > 0) {
@@ -114,17 +113,17 @@ class PosServiceBinding(mcontext: Context)  {
                     override fun OnSucceed() {
                         IS_CONNECTED = true
 //                        setPortType(PortType.USB)
-                        listener.onConnect(true)
+                        result.success(true);
                     }
 
                     override fun OnFailed() {
                         IS_CONNECTED = false
-                        listener.onConnect(false)
+                        result.success(false);
                     }
                 })
             } else {
                 IS_CONNECTED = false
-                listener.onConnect(false)
+                result.success(false);
                 val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
                 intent.putExtra(
                     "msg",
@@ -133,32 +132,30 @@ class PosServiceBinding(mcontext: Context)  {
                 context!!.sendBroadcast(intent)
             }
         } else {
-//            Toast.makeText(context, "device not found", Toast.LENGTH_SHORT).show();
             IS_CONNECTED = false
-            listener.onConnect(false)
+            result.success(false);
             val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
             intent.putExtra("msg", "Could not connect to printer!")
             context!!.sendBroadcast(intent)
         }
     }
-    fun connetbluetooth(printeraddress : String?,listener: OnDeviceConnect) {
+    fun connetbluetooth(printeraddress : String?,result: MethodChannel.Result) {
         Toast.makeText(context, "${printeraddress}", Toast.LENGTH_SHORT).show();
         if (printeraddress != null && printeraddress == "") {
             if (binder != null) {
                 binder!!.ConnectBtPort(printeraddress, object : TaskCallback {
                     override fun OnSucceed() {
                         IS_CONNECTED = true
-//                        setPortType(PortType.USB)
-                        listener.onConnect(true)
+                        result.success(true)
                     }
                     override fun OnFailed() {
                         IS_CONNECTED = false
-                        listener.onConnect(false)
+                        result.success(false)
                     }
                 })
             } else {
                 IS_CONNECTED = false
-                listener.onConnect(false)
+                result.success(false)
                 val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
                 intent.putExtra(
                     "msg",
@@ -167,9 +164,8 @@ class PosServiceBinding(mcontext: Context)  {
                 context!!.sendBroadcast(intent)
             }
         } else {
-//            Toast.makeText(context, "device not found", Toast.LENGTH_SHORT).show();
             IS_CONNECTED = false
-            listener.onConnect(false)
+            result.success(false)
             val intent = Intent(TheApp().PRINTER_ALERT_ACTION)
             intent.putExtra("msg", "Could not connect to printer!")
             context!!.sendBroadcast(intent)

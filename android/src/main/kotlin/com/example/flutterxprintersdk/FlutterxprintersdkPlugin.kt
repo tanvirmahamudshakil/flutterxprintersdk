@@ -120,68 +120,24 @@ import io.flutter.plugin.common.MethodChannel.Result
       serviceBinding.initBinding()
     }
 
-    fun xprinterconnectcheck(call: MethodCall, result: Result) {
-      if (serviceBinding.IS_CONNECTED){
-        result.success(true)
-      }else{
-        result.success(false)
-      }
+    private fun xprinterconnectcheck(call: MethodCall, result: Result) {
+      serviceBinding.checkConnection(result)
     }
 
     private fun xprinterconnect(call: MethodCall, result: Result,  businessdata: PrinterBusinessData) {
       if (businessdata.printerConnection == "IP Connection"){
-        if(!serviceBinding.IS_CONNECTED){
-          serviceBinding.connectNet(businessdata.ip.toString(), object : OnDeviceConnect{
-            override fun onConnect(isConnect: Boolean) {
-              if (isConnect){
-                Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-                result.success("printer connected successfull")
-              }else{
-                Toast.makeText(context, "printer not connect. check your printer ip", Toast.LENGTH_SHORT).show()
-                result.success("printer not connect. check your printer ip")
-              }
-            }
-          });
-        }
+        serviceBinding.connectNet(businessdata.ip.toString(),result);
       }else if(businessdata.printerConnection == "USB Connection"){
-        if(!serviceBinding.IS_CONNECTED){
-          serviceBinding.connetUSB(object : OnDeviceConnect{
-            override fun onConnect(isConnect: Boolean) {
-              if (isConnect){
-                Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-                result.success("printer connected successfull")
-              }else{
-                Toast.makeText(context, "printer not connect. check your usb", Toast.LENGTH_SHORT).show()
-                result.success("printer not connect. check your printer ip")
-              }
-            }
-          });
-        }
+        serviceBinding.connetUSB(result);
       }else{
-        if(!serviceBinding.IS_CONNECTED){
-          serviceBinding.connetbluetooth(businessdata.bluetoothAddress,object : OnDeviceConnect{
-            override fun onConnect(isConnect: Boolean) {
-              if (isConnect){
-                Toast.makeText(context, "connect successfully", Toast.LENGTH_SHORT).show()
-                result.success("printer connected successfull")
-              }else{
-                Toast.makeText(context, "printer not connect. check your bluetooth address", Toast.LENGTH_SHORT).show()
-                result.success("printer not connect. check your bluetooth address")
-              }
-            }
-          });
-        }
+        serviceBinding.connetbluetooth(businessdata.bluetoothAddress,result);
       }
 
     }
 
     private fun  xprinterdisconnect(call: MethodCall, result: Result) {
       if (serviceBinding.IS_CONNECTED){
-        serviceBinding.disposeBinding(object : OnDeviceConnect{
-          override fun onConnect(isConnect: Boolean) {
-            result.success("printer disconnect successfull")
-          }
-        })
+        serviceBinding.disposeBinding(result)
       }else{
         result.success("connect printer not found")
       }
@@ -196,12 +152,11 @@ import io.flutter.plugin.common.MethodChannel.Result
         var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
         if (serviceBinding.IS_CONNECTED){
           if (businessdata.printerConnection == "IP Connection"){
-            LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+            LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
           }else if(businessdata.printerConnection == "USB Connection"){
-            LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding)
-//        printerservice(context,modeldata, businessdata).printUsb()
+            LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
           }else{
-//        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
+//       printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
 //       bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
 //       printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
           }
@@ -216,12 +171,11 @@ import io.flutter.plugin.common.MethodChannel.Result
         var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
         if (serviceBinding.IS_CONNECTED){
           if (businessdata.printerConnection == "IP Connection"){
-            printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding)
+            printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
           }else if(businessdata.printerConnection == "USB Connection"){
-            printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding)
-//        printerservice(context,modeldata, businessdata).printUsb()
+            printerservice(context,modeldata, businessdata).printxprinterusbdata(serviceBinding, result)
+
           }else{
-//        printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
             bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
             printerservice(context, modeldata,businessdata).bluetoothimageprint(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
           }
@@ -271,9 +225,9 @@ import io.flutter.plugin.common.MethodChannel.Result
     fun printimagebytes(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {
       var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
       val json = Gson().toJson(orderiteamdata)
-      var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
-      var imagebytesdata: ByteArray? =  LocalPrintService(context,modeldata, businessdata).getimagebytes()
-      result.success(imagebytesdata)
+      var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
+      var imagebytesdata: ArrayList<ByteArray?> =  printerservice(context,modeldata, businessdata).getimagebytes()
+      result.success(imagebytesdata[0])
     }
 
     fun orderactivity(call: MethodCall, result: Result, businessdata: PrinterBusinessData) {

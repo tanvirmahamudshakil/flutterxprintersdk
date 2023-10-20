@@ -178,7 +178,7 @@ class _MyAppState extends State<MyApp> {
               MaterialButton(
                 onPressed: () async {
                   var data = await _flutterxprintersdkPlugin
-                      .xprinterconnect(printermodel);
+                      .connectioncheck();
 
                   // var data2 =
                   //                 await _flutterxprintersdkPlugin.printorder(
@@ -202,20 +202,20 @@ class _MyAppState extends State<MyApp> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  // var data = await _flutterxprintersdkPlugin.getimagebytes(
-                  //     orderiteam: localorderjson,
-                  //     printerBusinessModel: printermodel);
-                  //     print(Uint8List.fromList(data!));
+                  var data = await _flutterxprintersdkPlugin.getimagebytes(
+                      orderiteam: orderiteam,
+                      printerBusinessModel: printermodel);
+                      print(Uint8List.fromList(data!));
                   //  ImagePrint().imageprint(data);
-                  // print("ascbashjcbajhsb ${data}");
-                  ImagePrintData().imageprint();
+                  print("ascbashjcbajhsb ${data}");
+                  // ImagePrintData().imageprint();
                 },
                 child: Text("image bytes data get"),
               ),
               MaterialButton(
                 onPressed: () async {
                     await _flutterxprintersdkPlugin.getorderview(
-                      orderiteam: localorderjson,
+                      orderiteam: orderiteam,
                       printerBusinessModel: printermodel);
                   //  ImagePrint().imageprint(data);
                   // print("ascbashjcbajhsb ${data}");
