@@ -102,13 +102,13 @@ class _MyAppState extends State<MyApp> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  // var data = await _flutterxprintersdkPlugin
-                  //     .xprinterconnect(printermodel);
-                  // print(data);
+                  var data = await _flutterxprintersdkPlugin
+                      .xprinterconnect(printermodel);
+                  print(data);
 
                   // //
-                  var data2 = await _flutterxprintersdkPlugin.printLocalOrder(
-                      orderiteam: localorderjson,
+                  var data2 = await _flutterxprintersdkPlugin.printorder(
+                      orderiteam: orderiteam,
                       printerBusinessModel: printermodel);
                   print(data2);
                 },
@@ -178,14 +178,14 @@ class _MyAppState extends State<MyApp> {
               MaterialButton(
                 onPressed: () async {
                   var data = await _flutterxprintersdkPlugin
-                      .connectioncheck();
+                      .xprinterconnect(printermodel);
 
-                  // var data2 =
-                  //                 await _flutterxprintersdkPlugin.printorder(
-                  //               printerBusinessModel: printermodel,
-                  //               orderiteam: orderiteam,
-                  //             );
-                  //             print(data2);
+                  var data2 =
+                                  await _flutterxprintersdkPlugin.printorder(
+                                printerBusinessModel: printermodel,
+                                orderiteam: orderiteam,
+                              );
+                              print(data2);
 
 
                   print(data);

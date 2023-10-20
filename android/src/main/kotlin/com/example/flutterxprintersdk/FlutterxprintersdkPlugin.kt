@@ -163,6 +163,7 @@ import io.flutter.plugin.common.MethodChannel.Result
       }else{
         var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
         val json = Gson().toJson(orderiteamdata)
+        Log.d("json data", "xprinterprint: ${json}")
         var modeldata = Gson().fromJson<OrderData>(json, OrderData::class.java)
         if (businessdata.printerConnection == "IP Connection"){
           printerservice(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
