@@ -102,8 +102,11 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         } else  {
             paidOrNot = "ORDER NOT PAID"
             bind.dueTotalContainer.visibility = View.VISIBLE
-            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
+//            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
+            bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
         }
+
+
 //        paidOrNot = "ORDER NOT PAID"
 //        bind.dueTotalContainer.visibility = View.VISIBLE
 //        bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
