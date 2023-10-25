@@ -269,11 +269,26 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         }
 
         if (item.extra.size > 0) {
-            val str = java.lang.StringBuilder("\nExtra :")
-            for (extraItem in item.extra) {
-                str.append("  *").append(extraItem.shortName)
+            val topping = java.lang.StringBuilder("\nTopping :")
+            val addon = java.lang.StringBuilder("\nAddon :")
+            val dressing = java.lang.StringBuilder("\nDressing :")
+            var toppinglist = item.extra.filter { it-> it.comment!!.lowercase() == "topping" }
+            var addonlistlist = item.extra.filter { it-> it.comment!!.lowercase()  == "addon" }
+            var dressinglist = item.extra.filter { it-> it.comment!!.lowercase()  == "dressing" }
+
+
+            for (extraItem in toppinglist) {
+                topping.append("  *").append(extraItem.shortName)
             }
-            str3.append(str.toString())
+            for (extraItem in addonlistlist) {
+                addon.append("  *").append(extraItem.shortName)
+            }
+            for (extraItem in dressinglist) {
+                dressing.append("  *").append(extraItem.shortName)
+            }
+          if(toppinglist.isNotEmpty())  str3.append(topping.toString())
+            if(addonlistlist.isNotEmpty())   str3.append(addon.toString())
+            if(dressinglist.isNotEmpty())   str3.append(dressing.toString())
         }
 
 
