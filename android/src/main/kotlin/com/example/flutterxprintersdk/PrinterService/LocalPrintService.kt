@@ -269,7 +269,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
         }
 
         if (item.extra.size > 0) {
-            val topping = java.lang.StringBuilder("\n :")
+            val topping = java.lang.StringBuilder("\n")
 //            val addon = java.lang.StringBuilder("\nAddon :")
 //            val dressing = java.lang.StringBuilder("\nDressing :")
 //            var toppinglist = item.extra.filter { it-> it.comment!!.lowercase() == "topping" }
