@@ -289,6 +289,7 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 //          if(toppinglist.isNotEmpty())  str3.append(topping.toString())
 //            if(addonlistlist.isNotEmpty())   str3.append(addon.toString())
 //            if(dressinglist.isNotEmpty())   str3.append(dressing.toString())
+            str3.append(topping.toString())
         }
 
 
