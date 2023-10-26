@@ -330,6 +330,9 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
 
         return binding.root
     }
+
+
+
     private fun getBitmapFromView(view: View): Bitmap {
         var bitmaplist : ArrayList<Bitmap>  = ArrayList<Bitmap>();
         val spec = View.MeasureSpec.makeMeasureSpec(
