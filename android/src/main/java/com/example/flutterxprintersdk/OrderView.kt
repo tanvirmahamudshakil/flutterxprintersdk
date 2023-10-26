@@ -204,11 +204,11 @@ class OrderView : AppCompatActivity() {
                 str3.append(item.unit).append(" x ").append(item.shortName)
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section!!.shortName!!.uppercase().equals("NONE")) {
+                    if (!section!!.shortName!!.uppercase().equals("NONE") && !section!!.shortName!!.uppercase().equals("NORMAL")) {
                         _comName = section!!.shortName.toString();
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) {
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")&& !section.components!!.shortName!!.uppercase().equals("NORMAL")) {
                             _comName += " -> " + section.components!!.shortName
                         }
                     }
@@ -223,11 +223,11 @@ class OrderView : AppCompatActivity() {
             if (item.components.size > 0) {
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section.shortName!!.uppercase().equals("NONE")) {
+                    if (!section.shortName!!.uppercase().equals("NONE") && !section!!.shortName!!.uppercase().equals("NORMAL")) {
                         _comName = section!!.shortName.toString()
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) _comName += " -> " + section.components!!.shortName
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")&& !section.components!!.shortName!!.uppercase().equals("NORMAL")) _comName += " -> " + section.components!!.shortName
                     }
                     str3.append(item.unit).append(" x ").append(item.shortName).append(" : ")
                         .append(_comName)
