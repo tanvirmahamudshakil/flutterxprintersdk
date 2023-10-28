@@ -178,9 +178,9 @@ class LocalPrintService(mcontext: Context, morderModel: LocalOrderDetails, busin
     @SuppressLint("SetTextI18n")
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Int): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
-        val item = orderModel.items!!.get(position)
+        val item = orderModel.items[position]
         val str3 = StringBuilder()
-        if (position < orderModel.items!!.size - 1) {
+        if (position < orderModel.items.size - 1) {
 //            if (orderModel.items!![position].components.sortOrder!! < orderModel.orderProducts!![position + 1].product!!.sortOrder!!) {
 //                binding.underLine.visibility = View.VISIBLE
 //            }
