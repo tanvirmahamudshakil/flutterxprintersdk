@@ -4,55 +4,90 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import com.example.example.Requester
 import com.example.example.ShippingAddress
+import com.example.flutterxprintersdk.Model.LocalOrderDetails.Address
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.Customer
 import com.example.flutterxprintersdk.Model.LocalOrderDetails.LocalOrderDetails
 import com.example.flutterxprintersdk.Model.OrderModel2.AddressProperty
 import com.example.flutterxprintersdk.databinding.ModelPrint2Binding
 import com.example.flutterxprintersdk.databinding.ViewPrint2Binding
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class OrderView : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        var noofprint: Int =1
 
         var orderjson =  intent.getStringExtra("orderiteam");
         var businessjson = intent.getStringExtra("business");
         var businessdata = Gson().fromJson<PrinterBusinessData>(businessjson, PrinterBusinessData::class.java)
-        var orderModel = Gson().fromJson<OrderData>(orderjson, OrderData::class.java)
+        var orderModel = Gson().fromJson<LocalOrderDetails>(orderjson, LocalOrderDetails::class.java)
         val bind: ViewPrint2Binding = ViewPrint2Binding.inflate(LayoutInflater.from(this))
+        if (orderModel.orderType == "DELIVERY"){
+
+        }else if(orderModel.orderType == "COLLECTION"){
+
+        }else{
+
+        }
+        val printSize: Int= 16
+
+        bind.businessName.text = businessdata.businessname
+
+
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH)
+        val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm a")
+
+        Log.d("order date", "orderrootget: ${orderModel.orderDate}")
+        var addedDeliveryCharge = 0.0
+        bind.businessLocation.text = businessdata.businessaddress
+        bind.businessPhone.text = businessdata.businessphone
+        bind.orderType.text = "${orderModel.orderType}"
+        bind.orderTime.text = "Order at : ${parser.parse(orderModel.orderDate)
+            ?.let { formatter.format(it) }}"
+        bind.collectionAt.text = "${orderModel.orderType} at : ${
+            orderModel.requestedDeliveryTimestamp?.let {
+                parser.parse(it)
+                    ?.let { formatter.format(it) }
+            }
+        }"
+        bind.orderNo.text = "${orderModel.localId}";
         var allitemsheight = 0
         bind.items.removeAllViews()
-//        for (j in orderModel.items!!.indices) {
-//            val childView = getView(j, this, 0, 16F, orderModel)
-//            bind.items.addView(childView)
-//            allitemsheight += childView!!.measuredHeight
-//        }
+        for (j in orderModel.items!!.indices) {
+            val childView = getView(j, this, 0, printSize.toFloat(), orderModel)
+            bind.items.addView(childView)
+            allitemsheight += childView!!.measuredHeight
+        }
         var paidOrNot = "";
-
         if (!orderModel.paymentType!!.uppercase().equals("NOTPAY")) {
             paidOrNot ="ORDER IS PAID"
         } else  {
             paidOrNot = "ORDER NOT PAID"
             bind.dueTotalContainer.visibility = View.VISIBLE
-            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
+//            bind.dueTotal.text = "£ " + String.format("%.2f", orderModel.payableAmount)
+            bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
         }
-        bind.dueTotalContainer.visibility = View.VISIBLE
-        bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
-        var addedDeliveryCharge = 0.0
+
+
+//        paidOrNot = "ORDER NOT PAID"
+//        bind.dueTotalContainer.visibility = View.VISIBLE
+//        bind.dueTotal.text = "£ " + String.format("%.2f", (orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
+
         bind.orderPaidMessage.text = paidOrNot
         bind.refundContainer.visibility = View.GONE
         val subTotal: Double = orderModel.netAmount!! - addedDeliveryCharge
         bind.subTotal.text = "£ " + String.format( "%.2f", subTotal)
         bind.txtDeliveryCharge.text = "Delivery Charge";
-        bind.deliveryCharge.text = "£ " + orderModel.deliveryCharge!!.toFloat().toString()
+        bind.deliveryCharge.text = "£ " + orderModel.deliveryCharge!!.toString()
         bind.cardPayContainer.visibility = View.GONE
         bind.cashPayContainer.visibility = View.GONE
         if (orderModel.orderChannel!!.uppercase() == "ONLINE") {
@@ -66,7 +101,7 @@ class OrderView : AppCompatActivity() {
             bind.discountTitle.text = discountStr
             var discountAmount = 0.0
             bind.discount.text =
-                "£ " + String.format( "%.2f", orderModel.discountedAmount!!.toFloat())
+                "£ " + String.format( "%.2f", orderModel.discountedAmount!!)
         }
         bind.plasticBagContainer.visibility = View.GONE
         bind.containerBagContainer.visibility = View.GONE
@@ -74,51 +109,24 @@ class OrderView : AppCompatActivity() {
         bind.tipsContainer.visibility = View.GONE
         bind.containerOrderNo.visibility = View.VISIBLE
         bind.total.text =
-            "£ " +String.format( "%.2f",(orderModel.netAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
+            "£ " +String.format( "%.2f",(orderModel.payableAmount!! - orderModel.discountedAmount!!) + orderModel.deliveryCharge!!)
         var dlAddress = "Service charge is not included\n\n"
-
-
-
         if (orderModel.orderType == "DELIVERY" || orderModel.orderType == "COLLECTION" || orderModel.orderType == "TAKEOUT") {
-            if (orderModel.requesterGuest != null){
-                val customerModel: RequesterGuest? = orderModel.requesterGuest
-                dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
-                dlAddress += "Phone : ${customerModel.phone}"
-                if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
-                    if (orderModel.shippingAddress != null) {
-                        val address: ShippingAddress? = orderModel.shippingAddress
-                        if (address!!.addressProperty != null) {
-                            val pro: AddressProperty = address.addressProperty!!
-                            // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
-                            val building = if (pro.house != null) pro.house else ""
+            val customerModel: Customer? = orderModel.customer
+            dlAddress += "Name : ${customerModel!!.firstName} ${customerModel!!.lastName}\n"
+            dlAddress += "Phone : ${customerModel.phone}"
+            if (customerModel.address != null ) {
+                val address: Address? = customerModel.address
+                if (address != null) {
+                    val pro: Address = address
+                    // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
+                    val building = if (pro.building != null) pro.building else ""
 //                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
-                            val streetName = if (pro.state != null) pro.state else ""
-                            val city = if (pro.town != null) pro.town else ""
-                            val state = if (pro.state != null) pro.state else ""
-                            val zip = if (pro.postcode != null) pro.postcode else ""
-                            dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
-                        }
-                    }
-                }
-            }else{
-                val customerModel: Requester? = orderModel.requester!!
-                dlAddress += "Name : ${customerModel!!.name}\n"
-                dlAddress += "Phone : ${customerModel.phone}"
-                if (orderModel.orderType != "COLLECTION" && orderModel.orderType != "TAKEOUT"){
-                    if (orderModel.shippingAddress != null) {
-                        val address: ShippingAddress? = orderModel.shippingAddress
-                        if (address!!.addressProperty != null) {
-                            val pro: AddressProperty = address.addressProperty!!
-                            // CustomerAddressProperties pro = customerModel.addresses.get(0).properties;
-                            val building = if (pro.house != null) pro.house else ""
-//                    val streetNumber = if (pro.street_number != null) pro.street_number else ""
-                            val streetName = if (pro.state != null) pro.state else ""
-                            val city = if (pro.town != null) pro.town else ""
-                            val state = if (pro.state != null) pro.state else ""
-                            val zip = if (pro.postcode != null) pro.postcode else ""
-                            dlAddress += "\nAddress : $building $streetName\n$city $state $zip"
-                        }
-                    }
+                    val streetName = if (pro.street != null) pro.street else ""
+                    val city = if (pro.city != null) pro.city else ""
+
+                    val zip = if (pro.postcode != null) pro.postcode else ""
+                    dlAddress += "\nAddress : $building $streetName $zip"
                 }
             }
         }
@@ -131,14 +139,11 @@ class OrderView : AppCompatActivity() {
 
 
         """.trimIndent()
-
         bind.comments.text = comment
         bind.address.text = dlAddress
-        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16F)
-
+        bind.address.setTextSize(TypedValue.COMPLEX_UNIT_DIP, printSize.toFloat())
         setContentView(bind.root)
     }
-
 
     fun getView(position: Int, mCtx: Context?, style: Int, fontSize: Float, orderModel: LocalOrderDetails): View? {
         val binding: ModelPrint2Binding = ModelPrint2Binding.inflate(LayoutInflater.from(mCtx))
@@ -199,11 +204,11 @@ class OrderView : AppCompatActivity() {
                 str3.append(item.unit).append(" x ").append(item.shortName)
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section!!.shortName!!.uppercase().equals("NONE")) {
+                    if (!section!!.shortName!!.uppercase().equals("NONE") && !section!!.shortName!!.uppercase().equals("NORMAL")) {
                         _comName = section!!.shortName.toString();
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) {
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")&& !section.components!!.shortName!!.uppercase().equals("NORMAL")) {
                             _comName += " -> " + section.components!!.shortName
                         }
                     }
@@ -218,11 +223,11 @@ class OrderView : AppCompatActivity() {
             if (item.components.size > 0) {
                 for (section in item.components) {
                     var _comName = ""
-                    if (!section.shortName!!.uppercase().equals("NONE")) {
+                    if (!section.shortName!!.uppercase().equals("NONE") && !section!!.shortName!!.uppercase().equals("NORMAL")) {
                         _comName = section!!.shortName.toString()
                     }
                     if (section.components != null) {
-                        if (!section.components!!.shortName!!.uppercase().equals("NONE")) _comName += " -> " + section.components!!.shortName
+                        if (!section.components!!.shortName!!.uppercase().equals("NONE")&& !section.components!!.shortName!!.uppercase().equals("NORMAL")) _comName += " -> " + section.components!!.shortName
                     }
                     str3.append(item.unit).append(" x ").append(item.shortName).append(" : ")
                         .append(_comName)
@@ -233,11 +238,27 @@ class OrderView : AppCompatActivity() {
         }
 
         if (item.extra.size > 0) {
-            val str = java.lang.StringBuilder("\nExtra :")
+            val topping = java.lang.StringBuilder("\n")
+//            val addon = java.lang.StringBuilder("\nAddon :")
+//            val dressing = java.lang.StringBuilder("\nDressing :")
+//            var toppinglist = item.extra.filter { it-> it.comment!!.lowercase() == "topping" }
+//            var addonlistlist = item.extra.filter { it-> it.comment!!.lowercase()  == "addon" }
+//            var dressinglist = item.extra.filter { it-> it.comment!!.lowercase()  == "dressing" }
+
+
             for (extraItem in item.extra) {
-                str.append("  *").append(extraItem.shortName)
+                topping.append("  *").append(extraItem.shortName)
             }
-            str3.append(str.toString())
+//            for (extraItem in addonlistlist) {
+//                addon.append("  *").append(extraItem.shortName)
+//            }
+//            for (extraItem in dressinglist) {
+//                dressing.append("  *").append(extraItem.shortName)
+//            }
+//          if(toppinglist.isNotEmpty())  str3.append(topping.toString())
+//            if(addonlistlist.isNotEmpty())   str3.append(addon.toString())
+//            if(dressinglist.isNotEmpty())   str3.append(dressing.toString())
+            str3.append(topping.toString())
         }
 
 
@@ -245,13 +266,13 @@ class OrderView : AppCompatActivity() {
 
 //        if (item.isDiscountApplied == null || !item.isDiscountApplied!!) {
 //            price = item.price!! * item.unit!!
-//            for (components in item.components){
-//                price += components.price!!
-//            }
-//            for (extraItem in item.extra) {
-//                price += extraItem.price!!
+//            if (item.extra != null) {
+//                for (extraItem in item.extra) {
+//                    price += extraItem.price!!
+//                }
 //            }
 //        } else price = item.price!!
+
         if (item.isDiscountApplied != null && item.isDiscountApplied == true){
             price = item.discountPrice!!.toDouble() * item.unit!!
         }else{
@@ -260,15 +281,13 @@ class OrderView : AppCompatActivity() {
                 if (item.components!!.isNotEmpty()) {
                     for ( component in item.components!!) {
                         price += component.price!!;
-                    if (component.components != null) {
-                        price += component.components!!.price!!;
+                        if (component.components != null) {
+                            price += component.components!!.price!!;
+                        }
                     }
-                }
                 }
             }
         }
-
-
 
         if (item.comment!!.isNotEmpty()) str3.append("\nNote : ").append(item.comment)
         binding.itemText.text = str3.toString()
@@ -280,4 +299,7 @@ class OrderView : AppCompatActivity() {
 
         return binding.root
     }
+
+
+
 }
