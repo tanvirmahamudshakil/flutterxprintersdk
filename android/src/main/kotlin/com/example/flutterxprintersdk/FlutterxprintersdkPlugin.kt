@@ -23,6 +23,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /** FlutterxprintersdkPlugin */
 
@@ -60,38 +64,40 @@ import io.flutter.plugin.common.MethodChannel.Result
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onMethodCall(call: MethodCall, result: Result) {
+    override  fun onMethodCall(call: MethodCall, result: Result) {
 
-      var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
+     CoroutineScope(Dispatchers.IO).launch {
+       var printerbusinessdata = call.argument<Map<String, Any>>("printer_model_data")
 
-      val json = Gson().toJson(printerbusinessdata)
-      Log.d("printer data", "onMethodCall: ${json}")
-      var businessdata = Gson().fromJson<PrinterBusinessData>(json, PrinterBusinessData::class.java)
-      if (call.method == "getPlatformVersion") {
-        xprinterinit();
-      }
-      else if(call.method == checkconnect){
-        xprinterconnectcheck(call, result);
-      }
-      else if(call.method == xprinterconnect) {
-        xprinterconnect(call, result, businessdata)
-      }
-      else if(call.method == bluetoothprintdata) {
-        bluetooth_print_data(call, result, businessdata);
-      } else if(call.method == print){
-        printdata(call, result, businessdata)
-      }else if(call.method == printerdisconnect) {
-        xprinterdisconnect(call, result);
-      }else if(call.method == printimage) {
-        printimagebytes(call, result, businessdata)
-      }else if(call.method == localorder) {
-        printdata(call, result, businessdata, true)
-      }else if(call.method == orderview) {
-        orderactivity(call, result, businessdata)
-      }
-      else {
-        result.notImplemented()
-      }
+       val json = Gson().toJson(printerbusinessdata)
+       Log.d("printer data", "onMethodCall: ${json}")
+       var businessdata = Gson().fromJson<PrinterBusinessData>(json, PrinterBusinessData::class.java)
+       if (call.method == "getPlatformVersion") {
+         xprinterinit();
+       }
+       else if(call.method == checkconnect){
+         xprinterconnectcheck(call, result);
+       }
+       else if(call.method == xprinterconnect) {
+         xprinterconnect(call, result, businessdata)
+       }
+       else if(call.method == bluetoothprintdata) {
+         bluetooth_print_data(call, result, businessdata);
+       } else if(call.method == print){
+         printdata(call, result, businessdata)
+       }else if(call.method == printerdisconnect) {
+         xprinterdisconnect(call, result);
+       }else if(call.method == printimage) {
+         printimagebytes(call, result, businessdata)
+       }else if(call.method == localorder) {
+         printdata(call, result, businessdata, true)
+       }else if(call.method == orderview) {
+         orderactivity(call, result, businessdata)
+       }
+       else {
+         result.notImplemented()
+       }
+     }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -114,8 +120,6 @@ import io.flutter.plugin.common.MethodChannel.Result
 
     }
 
-
-
     fun xprinterinit() {
       serviceBinding.initBinding()
     }
@@ -132,7 +136,6 @@ import io.flutter.plugin.common.MethodChannel.Result
       }else{
         serviceBinding.connetbluetooth(businessdata.bluetoothAddress,result);
       }
-
     }
 
     private fun  xprinterdisconnect(call: MethodCall, result: Result) {
@@ -144,16 +147,18 @@ import io.flutter.plugin.common.MethodChannel.Result
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun xprinterprint(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local: Boolean = false) {
-
+    suspend fun xprinterprint(call: MethodCall, result: Result, businessdata: PrinterBusinessData, local: Boolean = false) {
       if (local){
-        var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
-        val json = Gson().toJson(orderiteamdata)
-        var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
+     var model =   CoroutineScope(Dispatchers.IO).async {
+          var orderiteamdata = call.argument<Map<String, Any>>("orderiteam")
+          val json = Gson().toJson(orderiteamdata)
+          var modeldata = Gson().fromJson<LocalOrderDetails>(json, LocalOrderDetails::class.java)
+          modeldata;
+        }
         if (businessdata.printerConnection == "IP Connection"){
-          LocalPrintService(context,modeldata,businessdata).printxprinteripdata(serviceBinding, result)
+          LocalPrintService(context,model.await(),businessdata).printxprinteripdata(serviceBinding, result)
         }else if(businessdata.printerConnection == "USB Connection"){
-          LocalPrintService(context,modeldata, businessdata).printxprinteripdata(serviceBinding, result)
+          LocalPrintService(context,model.await(), businessdata).printxprinteripdata(serviceBinding, result)
         }else{
 //       printerservice(context,modeldata, businessdata).printxprinterbluetoothdata(serviceBinding)
 //       bluetoothprint(context).bluetoothconnect(businessdata.bluetoothName!!, businessdata.bluetoothAddress!!)
@@ -201,7 +206,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun printdata(call: MethodCall, result: Result,  businessdata: PrinterBusinessData, local : Boolean = false) {
+    suspend fun printdata(call: MethodCall, result: Result, businessdata: PrinterBusinessData, local : Boolean = false) {
       Log.d("xprinter", "printdata: ${businessdata.selectPrinter}")
       if (businessdata.selectPrinter == "X Printer"){
         Log.d("xprinterdata", "onMethodCall: loacal ${Boolean}")
